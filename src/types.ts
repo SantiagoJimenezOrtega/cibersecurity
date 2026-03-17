@@ -1,3 +1,10 @@
+export interface CertificateRecord {
+  moduleId: string;
+  moduleName: string;
+  userName: string;
+  date: string;
+}
+
 export interface Lesson {
   id: string;
   title: string;

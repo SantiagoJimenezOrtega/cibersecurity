@@ -29,11 +29,11 @@ export const generateCertificate = (userName: string, moduleName: string) => {
 
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(20);
-    doc.text('CERTIFICADO DE COMPLETACIÓN', 148.5, 70, { align: 'center' });
+    doc.text('CERTIFICATE OF COMPLETION', 148.5, 70, { align: 'center' });
 
     doc.setFontSize(14);
     doc.setTextColor(150, 150, 150);
-    doc.text('Este documento certifica que', 148.5, 95, { align: 'center' });
+    doc.text('This document certifies that', 148.5, 95, { align: 'center' });
 
     // User Name
     doc.setTextColor(255, 255, 255);
@@ -42,7 +42,7 @@ export const generateCertificate = (userName: string, moduleName: string) => {
 
     doc.setFontSize(14);
     doc.setTextColor(150, 150, 150);
-    doc.text('ha superado con éxito el entrenamiento práctico de', 148.5, 135, { align: 'center' });
+    doc.text('has successfully passed the practical training of', 148.5, 135, { align: 'center' });
 
     // Module Name
     doc.setTextColor(255, 100, 255); // Magenta/Accent color
@@ -57,10 +57,10 @@ export const generateCertificate = (userName: string, moduleName: string) => {
 
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
-    doc.text('Director de CyberLab', 100, 185, { align: 'center' });
-    doc.text('Fecha de Emisión', 197, 185, { align: 'center' });
+    doc.text('CyberLab Director', 100, 185, { align: 'center' });
+    doc.text('Issue Date', 197, 185, { align: 'center' });
 
-    const today = new Date().toLocaleDateString();
+    const today = new Date().toLocaleDateString('en-US');
     doc.setTextColor(200, 200, 200);
     doc.text(today, 197, 192, { align: 'center' });
 
@@ -71,5 +71,5 @@ export const generateCertificate = (userName: string, moduleName: string) => {
     doc.setFontSize(8);
     doc.text('CYBERLAB', 50, 50, { align: 'center', angle: -45 } as any);
 
-    doc.save(`Certificado_${moduleName.replace(/\s+/g, '_')}.pdf`);
+    doc.save(`Certificate_${moduleName.replace(/\s+/g, '_')}.pdf`);
 };

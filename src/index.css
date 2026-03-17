@@ -1190,6 +1190,151 @@ body {
   }
 }
 
+/* ─── Missing utility classes ─────────────────────────────────────── */
+
+/* Heights */
+.h-500 {
+  height: 500px;
+}
+
+.h-600 {
+  height: 600px;
+}
+
+/* Flex grow ratios */
+.flex-2 {
+  flex: 2;
+}
+
+.flex-3 {
+  flex: 3;
+}
+
+/* Max widths */
+.max-w-lg {
+  max-width: 32rem;
+}
+
+.max-w-3xl {
+  max-width: 48rem;
+}
+
+.max-w-4xl {
+  max-width: 56rem;
+}
+
+/* Border color */
+.border-glass-border {
+  border-color: var(--glass-border);
+}
+
+/* Rotate utilities */
+.rotate-12 {
+  transform: rotate(12deg);
+}
+
+/* Scale transforms */
+.hover\:scale-105:hover {
+  transform: scale(1.05);
+}
+
+.active\:scale-95:active {
+  transform: scale(0.95);
+}
+
+/* Translate utilities */
+.hover\:translate-x-2:hover {
+  transform: translateX(0.5rem);
+}
+
+.group:hover .group-hover\:translate-x-2 {
+  transform: translateX(0.5rem);
+}
+
+/* Disabled pseudo-class variants */
+.disabled\:opacity-20:disabled {
+  opacity: 0.2;
+}
+
+.disabled\:grayscale:disabled {
+  filter: grayscale(100%);
+}
+
+button:disabled.neon-button,
+button:disabled.neon-button-secondary {
+  opacity: 0.25;
+  filter: grayscale(100%);
+  cursor: not-allowed;
+}
+
+/* Neon button — secondary (cyan accent) */
+.neon-button-secondary {
+  background: rgba(0, 229, 255, 0.05);
+  border: 1.5px solid var(--accent-secondary);
+  color: var(--accent-secondary);
+  border-radius: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.neon-button-secondary:hover:not(:disabled) {
+  background: var(--accent-secondary);
+  color: var(--bg-primary);
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.5);
+}
+
+/* Neon button — danger (red accent) */
+.neon-button-danger {
+  background: rgba(255, 45, 85, 0.05);
+  border: 1.5px solid var(--accent-tertiary);
+  color: var(--accent-tertiary);
+  border-radius: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.neon-button-danger:hover:not(:disabled) {
+  background: var(--accent-tertiary);
+  color: var(--bg-primary);
+  box-shadow: 0 0 30px rgba(255, 45, 85, 0.5);
+}
+
+/* Spacing extras */
+.space-y-1 > * + * { margin-top: 0.25rem; }
+.space-y-2 > * + * { margin-top: 0.5rem; }
+.space-y-3 > * + * { margin-top: 0.75rem; }
+.space-y-4 > * + * { margin-top: 1rem; }
+.space-y-6 > * + * { margin-top: 1.5rem; }
+.space-y-8 > * + * { margin-top: 2rem; }
+
+/* Text alignment */
+.text-center { text-align: center; }
+.text-left   { text-align: left; }
+.text-right  { text-align: right; }
+
+/* Line clamp */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Misc */
+.select-none { user-select: none; }
+.pointer-events-none { pointer-events: none; }
+
+/* ─── Blockly Custom Theme ─────────────────────────────────────────── */
 /* Blockly Custom Theme */
 .blocklySvg {
   background-color: transparent !important;
