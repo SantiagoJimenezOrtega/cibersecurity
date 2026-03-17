@@ -43,16 +43,16 @@ interface PassCrackerProps {
 
 const PassCracker: React.FC<PassCrackerProps> = ({ onComplete }) => {
     const levels = [
-        { id: 1, target: '1234', title: 'Basic Manual Entry', type: 'manual' },
-        { id: 2, target: '8080', title: 'Heat Sensor Guessing', type: 'heat' },
-        { id: 3, target: '4422', title: 'Pattern Recognition', type: 'pattern' },
-        { id: 4, target: '9173', title: 'Timing Attack', type: 'timing' },
-        { id: 5, target: '0070', title: 'Dictionary Search', type: 'dictionary' },
-        { id: 6, target: '5566', title: 'Frequency Analysis', type: 'frequency' },
-        { id: 7, target: '1010', title: 'Binary Logic', type: 'manual' },
-        { id: 8, target: '3399', title: 'Advanced Heat', type: 'heat' },
-        { id: 9, target: '7788', title: 'Multi-threaded Brute', type: 'timing' },
-        { id: 10, target: '2025', title: 'The Ultimate Vault', type: 'timing' }
+        { id: 1,  target: '1234', title: 'Basic Manual Entry',       type: 'manual'     },
+        { id: 2,  target: '8080', title: 'Heat Sensor Guessing',      type: 'heat'       },
+        { id: 3,  target: '4242', title: 'Pattern Recognition',       type: 'pattern'    }, // FIX: changed from 4422→4242 to match XYXY hint
+        { id: 4,  target: '9173', title: 'Timing Attack',             type: 'timing'     },
+        { id: 5,  target: '0070', title: 'Dictionary Search',         type: 'dictionary' },
+        { id: 6,  target: '5566', title: 'Frequency Analysis',        type: 'frequency'  },
+        { id: 7,  target: '1010', title: 'Binary Logic',              type: 'manual'     },
+        { id: 8,  target: '3399', title: 'Advanced Heat',             type: 'heat'       },
+        { id: 9,  target: '7788', title: 'Multi-threaded Brute',      type: 'timing'     },
+        { id: 10, target: '2025', title: 'The Ultimate Vault',        type: 'timing'     },
     ];
 
     const [showIntro, setShowIntro] = useState(true);
@@ -74,18 +74,20 @@ const PassCracker: React.FC<PassCrackerProps> = ({ onComplete }) => {
     // Timing attack states
     const [spinningDigits, setSpinningDigits] = useState([true, true, true, true]);
     const [displayDigits, setDisplayDigits] = useState(['0', '0', '0', '0']);
+    // Use a ref so the interval always reads the latest spinningDigits without needing to restart
+    const spinningRef = React.useRef(spinningDigits);
+    spinningRef.current = spinningDigits;
 
     useEffect(() => {
-        let interval: any;
-        if (status === 'hacking' && levelData.type === 'timing') {
-            interval = setInterval(() => {
-                setDisplayDigits(prev => prev.map((d, i) => 
-                    spinningDigits[i] ? Math.floor(Math.random() * 10).toString() : d
-                ));
-            }, 100);
-        }
+        if (levelData.type !== 'timing' || status === 'success') return;
+        // Auto-start spinning as soon as a timing level loads
+        const interval = setInterval(() => {
+            setDisplayDigits(prev => prev.map((d, i) =>
+                spinningRef.current[i] ? Math.floor(Math.random() * 10).toString() : d
+            ));
+        }, 80);
         return () => clearInterval(interval);
-    }, [status, spinningDigits, levelData.type]);
+    }, [levelData.type, status]);
 
     useEffect(() => {
         terminalEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -108,59 +110,80 @@ const PassCracker: React.FC<PassCrackerProps> = ({ onComplete }) => {
         const target = levelData.target;
         let hintMsg = "[INTEL] ";
         const hL = hintLevel;
-        
-        switch(levelData.type) {
-            case 'manual':
+
+        switch (levelData.type) {
+            case 'manual': {
                 if (hL === 0) {
                     const sum = target.split('').reduce((acc, d) => acc + parseInt(d), 0);
-                    hintMsg += `Signal analysis: The security checksum for this PIN is ${sum}. (Sum of digits)`;
+                    hintMsg += `Signal analysis: The security checksum for this PIN is ${sum}. (Sum of all digits)`;
                 } else if (hL === 1) {
                     const first = parseInt(target[0]);
                     hintMsg += `Frequency intercepted: The first digit is ${first % 2 === 0 ? 'EVEN' : 'ODD'}.`;
                 } else {
-                    const unknownIndices = [];
-                    for(let i=0; i<4; i++) if(userPin[i] !== target[i]) unknownIndices.push(i);
+                    const unknownIndices: number[] = [];
+                    for (let i = 0; i < 4; i++) if (userPin[i] !== target[i]) unknownIndices.push(i);
                     const idx = unknownIndices.length > 0 ? unknownIndices[0] : 0;
-                    hintMsg += `Packet decryption successful: Digit ${idx+1} confirmed as ${target[idx]}.`;
+                    hintMsg += `Packet decryption successful: Digit ${idx + 1} confirmed as ${target[idx]}.`;
                 }
                 break;
-            case 'heat':
+            }
+            case 'heat': {
                 if (hL === 0) {
                     hintMsg += `Thermal profile: The target PIN is ${parseInt(target) > 5000 ? 'HIGHER' : 'LOWER'} than 5000.`;
                 } else if (hL === 1) {
                     const targetVal = parseInt(target);
                     const rangeMin = Math.max(0, targetVal - (Math.floor(Math.random() * 200) + 100));
                     const rangeMax = Math.min(9999, targetVal + (Math.floor(Math.random() * 200) + 100));
-                    hintMsg += `Radiation detection: The signal is fluctuating between ${rangeMin} and ${rangeMax}.`;
+                    hintMsg += `Radiation detection: Signal fluctuating between ${rangeMin} and ${rangeMax}.`;
                 } else {
-                    const lastDigit = target[3];
-                    hintMsg += `Core scan: The sequence ends in ${lastDigit}.`;
+                    hintMsg += `Core scan: The sequence ends in ${target[3]}.`;
                 }
                 break;
-            case 'pattern':
+            }
+            case 'pattern': {
+                // Target is XYXY (e.g. 4242). FIX: hints now correctly describe the XYXY structure.
+                const X = target[0]; // target[0] === target[2]
+                const Y = target[1]; // target[1] === target[3]
                 if (hL === 0) {
-                    hintMsg += "Traffic analysis: The sequence duplicates its internal structure.";
+                    hintMsg += "Traffic analysis: The sequence alternates two values — it never has three of the same digit in a row.";
                 } else if (hL === 1) {
-                    hintMsg += `Leak detected: The repeating value is ${target[0]}.`;
+                    hintMsg += `Leak detected: The pattern alternates. First digit value: ${X}. It reappears at position 3.`;
                 } else {
-                    hintMsg += `Full pattern breach: The target is a symmetrical ${target[0]}${target[1]}${target[0]}${target[1]} structure.`;
+                    hintMsg += `Full pattern breach: The structure is X-Y-X-Y where X=${X} and Y=${Y}. Target confirmed: ${X}${Y}${X}${Y}.`;
                 }
                 break;
-            case 'dictionary':
+            }
+            case 'dictionary': {
                 if (hL === 0) {
-                    if (target === '0070') hintMsg += "History: Used by a British intelligence operative.";
-                    else if (target === '1337') hintMsg += "History: Common among early computer enthusiasts.";
-                    else hintMsg += "History: This is a legacy system default.";
+                    if (target === '0070') hintMsg += "History: A British spy with a license to kill used a similar code. Think cinema classics.";
+                    else hintMsg += "History: This PIN appears in multiple early-2000s default system configurations.";
                 } else if (hL === 1) {
-                    hintMsg += `Metadata: This code was most popular in the year ${target === '2025' ? '2025' : '1990'}.`;
+                    if (target === '0070') hintMsg += "Format leak: The PIN starts with two zeros. It resembles a famous agent number.";
+                    else hintMsg += `Metadata: The PIN contains only digits between 0 and ${Math.max(...target.split('').map(Number))}.`;
                 } else {
-                    hintMsg += `Direct Intercept: The PIN starts with ${target[0]} and ends with ${target[3]}.`;
+                    hintMsg += `Direct intercept: PIN starts with '${target[0]}${target[1]}' and ends with '${target[2]}${target[3]}'.`;
                 }
                 break;
+            }
+            case 'frequency': {
+                // Frequency analysis: reveal how many of each digit value appear in the target
+                const digitCounts: Record<string, number> = {};
+                for (const d of target) digitCounts[d] = (digitCounts[d] || 0) + 1;
+                if (hL === 0) {
+                    const uniqueDigits = Object.keys(digitCounts).length;
+                    hintMsg += `Frequency scan: The PIN uses exactly ${uniqueDigits} distinct digit value${uniqueDigits > 1 ? 's' : ''}.`;
+                } else if (hL === 1) {
+                    const entries = Object.entries(digitCounts).map(([d, c]) => `'${d}' appears ${c}x`).join(', ');
+                    hintMsg += `Deep frequency scan: ${entries}.`;
+                } else {
+                    hintMsg += `Positional leak: The first two digits are '${target[0]}${target[1]}'.`;
+                }
+                break;
+            }
             default:
-                hintMsg += "Firewall weakening... keep trying to force a leak.";
+                hintMsg += "Firewall weakening... keep forcing the signal.";
         }
-        
+
         setHints(prev => [...prev, hintMsg]);
         setHintLevel(prev => prev + 1);
     };
@@ -203,13 +226,27 @@ const PassCracker: React.FC<PassCrackerProps> = ({ onComplete }) => {
             let feedback = `[x] PIN ${pin}: FAILED. `;
             if (levelData.type === 'heat') {
                 const diff = Math.abs(parseInt(pin) - parseInt(target));
-                if (diff < 100) feedback += "(CORES OVERHEATING - VERY CLOSE)";
-                else if (diff < 500) feedback += "(TEMPERATURE RISING - CLOSE)";
-                else feedback += "(CORES CHILLED - FAR)";
-            } else if (levelData.type === 'manual') {
+                if (diff < 50)  feedback += "(CORES MELTING — EXTREMELY CLOSE)";
+                else if (diff < 200) feedback += "(CORES OVERHEATING — VERY CLOSE)";
+                else if (diff < 600) feedback += "(TEMPERATURE RISING — CLOSE)";
+                else feedback += "(CORES CHILLED — FAR)";
+            } else if (levelData.type === 'manual' || levelData.type === 'pattern' || levelData.type === 'dictionary') {
                 let correctCount = 0;
-                for(let i=0; i<4; i++) if(pin[i] === target[i]) correctCount++;
-                feedback += `(${correctCount} digits in correct position)`;
+                for (let i = 0; i < 4; i++) if (pin[i] === target[i]) correctCount++;
+                feedback += `(${correctCount}/4 digits in correct position)`;
+            } else if (levelData.type === 'frequency') {
+                // Count how many digits the guess shares with target regardless of position (frequency match)
+                const targetDigits = target.split('');
+                const guessDigits = pin.split('');
+                let freqMatch = 0;
+                const used = [...targetDigits];
+                for (const d of guessDigits) {
+                    const idx = used.indexOf(d);
+                    if (idx !== -1) { freqMatch++; used.splice(idx, 1); }
+                }
+                let posMatch = 0;
+                for (let i = 0; i < 4; i++) if (pin[i] === target[i]) posMatch++;
+                feedback += `(${posMatch}/4 exact position | ${freqMatch}/4 correct frequency)`;
             }
             
             setHints(prev => [...prev.slice(-12), feedback]);
@@ -228,27 +265,41 @@ const PassCracker: React.FC<PassCrackerProps> = ({ onComplete }) => {
     };
 
     const lockDigit = (index: number) => {
+        // Capture the digit value RIGHT NOW before the interval can change it (race condition fix)
+        const lockedValue = displayDigits[index];
         const newSpinning = [...spinningDigits];
         newSpinning[index] = false;
-        
-        // In timing attack, we check if they locked the right one
-        if (displayDigits[index] === levelData.target[index]) {
-            setHints(prev => [...prev, `[+] Digit ${index + 1} locked: ${displayDigits[index]} (MATCH FOUND)`]);
-        } else {
-            setHints(prev => [...prev, `[!] Digit ${index + 1} locked: ${displayDigits[index]} (MISMATCH - RECALIBRATING)`]);
-            // Restart spin after a delay maybe? Or just keep it locked and fail at end
-        }
-        
+        spinningRef.current = newSpinning;
         setSpinningDigits(newSpinning);
 
+        const isMatch = lockedValue === levelData.target[index];
+        if (isMatch) {
+            setHints(prev => [...prev, `[+] Digit ${index + 1} locked: ${lockedValue} ✓ (MATCH FOUND)`]);
+        } else {
+            setHints(prev => [...prev, `[!] Digit ${index + 1} locked: ${lockedValue} ✗ (MISMATCH — releasing lock...)`]);
+            // Unlock this digit after a short delay so the student can retry
+            setTimeout(() => {
+                setSpinningDigits(prev => {
+                    const restored = [...prev];
+                    restored[index] = true;
+                    spinningRef.current = restored;
+                    return restored;
+                });
+                setHints(prev => [...prev, `[~] Digit ${index + 1} re-released. Keep watching the sequence...`]);
+            }, 1200);
+            return;
+        }
+
+        // Freeze the locked digit in displayDigits so it doesn't get overwritten
+        setDisplayDigits(prev => {
+            const updated = [...prev];
+            updated[index] = lockedValue;
+            return updated;
+        });
+
         if (newSpinning.every(s => !s)) {
-            if (displayDigits.join('') === levelData.target) {
-                setHints(prev => [...prev, "[SUCCESS] Full sequence matched. Protocol breached.", "[V] ACCESS GRANTED"]);
-                setStatus('success');
-            } else {
-                setHints(prev => [...prev, "[FAILURE] Sequence mismatch. Anti-tamper triggered.", "[!] RESTARTING SCAN..."]);
-                setTimeout(resetLevel, 2000);
-            }
+            setHints(prev => [...prev, "[SUCCESS] Full sequence matched. Protocol breached.", "[V] ACCESS GRANTED"]);
+            setStatus('success');
         }
     };
 
@@ -384,11 +435,12 @@ const PassCracker: React.FC<PassCrackerProps> = ({ onComplete }) => {
                         <div>
                             <h4 className="text-white font-bold mb-1">Intel Report: {levelData.title}</h4>
                             <p className="text-xs text-text-secondary leading-relaxed">
-                                {levelData.type === 'manual' && "Standard brute force. Try common patterns (sequential, repetitive). Terminal will tell you how many digits match."}
-                                {levelData.type === 'heat' && "Thermal attack. The terminal senses core temperature (proximity to the correct PIN). Use binary search logic."}
-                                {levelData.type === 'timing' && "Timing vulnerability detected! The PIN digits are spinning in memory. Click the digits below to LOCK them when they match the target."}
-                                {levelData.type === 'pattern' && "Memory leak found! The target PIN follows a pattern: first two match, last two match (XYXY). Find it."}
-                                {levelData.type === 'dictionary' && "Common password list loaded. Try the 'standard' hacker digits (0070, 1337, etc)."}
+                                {levelData.type === 'manual' && "Standard brute force. Try common patterns (sequential, repetitive). Terminal tells you how many digits are in the correct position."}
+                                {levelData.type === 'heat' && "Thermal attack. The terminal senses core temperature — the closer your PIN is numerically, the hotter it gets. Use binary search logic."}
+                                {levelData.type === 'timing' && "Timing vulnerability! The PIN digits are spinning in memory. Watch each digit and click LOCK the instant it shows the correct value. Wrong locks auto-release."}
+                                {levelData.type === 'pattern' && "Memory leak found! The target PIN alternates two values in XYXY format (e.g. 4242). Terminal tells you how many digits match position."}
+                                {levelData.type === 'dictionary' && "Common password database loaded. Try culturally significant numbers — spy codes, pop culture references, famous years..."}
+                                {levelData.type === 'frequency' && "Frequency analysis attack! The terminal reports: exact position matches AND how many digits you have right regardless of position. Use this dual feedback to isolate each digit."}
                             </p>
                         </div>
                     </div>
@@ -549,7 +601,12 @@ const PassCracker: React.FC<PassCrackerProps> = ({ onComplete }) => {
                                 <ShieldAlert size={20} />
                                 <span className="text-[10px] font-black uppercase tracking-ultra">Bypass Strategy:</span>
                                 <span className="text-xs text-text-secondary">
-                                    {levelData.type === 'heat' ? "Observe the core temperature. Lower diff = higher temp." : "Manual entropy testing required."}
+                                    {levelData.type === 'heat'       && "Observe the core temperature. Numerically closer = hotter cores."}
+                                    {levelData.type === 'timing'     && "Watch the spinning digits. Click LOCK the instant they show the right value."}
+                                    {levelData.type === 'pattern'    && "The PIN is X-Y-X-Y. Find X and Y, then the answer is immediate."}
+                                    {levelData.type === 'dictionary' && "Think like an attacker: what culturally famous numbers would someone choose?"}
+                                    {levelData.type === 'frequency'  && "Use both feedback numbers together: narrow positions using exact match, narrow values using frequency match."}
+                                    {levelData.type === 'manual'     && "Manual entropy testing required. Watch for digit position feedback."}
                                 </span>
                              </div>
                         </div>
