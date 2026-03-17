@@ -575,6 +575,10 @@ body {
   min-height: 700px;
 }
 
+.max-w-xl {
+  max-width: 36rem;
+}
+
 .max-w-2xl {
   max-width: 42rem;
 }
@@ -646,6 +650,10 @@ body {
 
 .z-10 {
   z-index: 10;
+}
+
+.z-50 {
+  z-index: 50;
 }
 
 .top-minus-16 {
@@ -843,6 +851,10 @@ body {
 
 .border-accent-tertiary-30 {
   border-color: rgba(255, 45, 85, 0.3);
+}
+
+.border-accent-secondary-30 {
+  border-color: rgba(0, 229, 255, 0.3);
 }
 
 .border-white-5 {
@@ -1123,6 +1135,15 @@ body {
   box-shadow: 0 0 30px rgba(0, 255, 157, 0.5);
 }
 
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(-15%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
+  50% { transform: translateY(0); animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+}
+
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
@@ -1167,4 +1188,57 @@ body {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Blockly Custom Theme */
+.blocklySvg {
+  background-color: transparent !important;
+}
+
+.blocklyMainBackground {
+  fill: #0a0f1a !important;
+  fill-opacity: 0.8 !important;
+}
+
+.blocklyFlyoutBackground {
+  fill: #161b2a !important;
+  fill-opacity: 0.9 !important;
+}
+
+.blocklyToolboxDiv {
+  background-color: #0d111a !important;
+  color: #fff !important;
+  border-right: 1px solid var(--accent-primary-20) !important;
+}
+
+.blocklyTreeLabel {
+  color: #a0aec0 !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 600 !important;
+}
+
+.blocklyTreeRow.blocklyTreeSelected .blocklyTreeLabel {
+  color: var(--accent-primary) !important;
+}
+
+.blocklyScrollbarHandle {
+  fill: var(--accent-primary-20) !important;
+}
+
+/* Custom Scrollbar for Terminal */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--accent-primary-20);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary-40);
 }
