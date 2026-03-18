@@ -74,20 +74,23 @@ const PassCracker: React.FC<PassCrackerProps> = ({ onComplete }) => {
     // Timing attack states
     const [spinningDigits, setSpinningDigits] = useState([true, true, true, true]);
     const [displayDigits, setDisplayDigits] = useState(['0', '0', '0', '0']);
-    // Use a ref so the interval always reads the latest spinningDigits without needing to restart
+    // activeTimingDigit: which digit is currently spinning (one at a time)
+    const [activeTimingDigit, setActiveTimingDigit] = useState(0);
     const spinningRef = React.useRef(spinningDigits);
     spinningRef.current = spinningDigits;
 
     useEffect(() => {
         if (levelData.type !== 'timing' || status === 'success') return;
-        // Auto-start spinning as soon as a timing level loads
+        // Only spin the active digit, one at a time — 600ms so user can read it
         const interval = setInterval(() => {
-            setDisplayDigits(prev => prev.map((d, i) =>
-                spinningRef.current[i] ? Math.floor(Math.random() * 10).toString() : d
-            ));
-        }, 80);
+            setDisplayDigits(prev => {
+                const updated = [...prev];
+                updated[activeTimingDigit] = Math.floor(Math.random() * 10).toString();
+                return updated;
+            });
+        }, 600);
         return () => clearInterval(interval);
-    }, [levelData.type, status]);
+    }, [levelData.type, status, activeTimingDigit]);
 
     useEffect(() => {
         terminalEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -265,41 +268,33 @@ const PassCracker: React.FC<PassCrackerProps> = ({ onComplete }) => {
     };
 
     const lockDigit = (index: number) => {
-        // Capture the digit value RIGHT NOW before the interval can change it (race condition fix)
+        // Only allow locking the currently active digit
+        if (index !== activeTimingDigit) return;
+
+        // Capture the value at click time to avoid race condition
         const lockedValue = displayDigits[index];
-        const newSpinning = [...spinningDigits];
-        newSpinning[index] = false;
-        spinningRef.current = newSpinning;
-        setSpinningDigits(newSpinning);
-
         const isMatch = lockedValue === levelData.target[index];
+
         if (isMatch) {
-            setHints(prev => [...prev, `[+] Digit ${index + 1} locked: ${lockedValue} ✓ (MATCH FOUND)`]);
+            // Freeze this digit
+            const newSpinning = [...spinningDigits];
+            newSpinning[index] = false;
+            spinningRef.current = newSpinning;
+            setSpinningDigits(newSpinning);
+            setDisplayDigits(prev => { const u = [...prev]; u[index] = lockedValue; return u; });
+            setHints(prev => [...prev, `[+] Digit ${index + 1} locked: ${lockedValue} ✓ — moving to digit ${index + 2 <= 4 ? index + 2 : '—'}...`]);
+
+            if (newSpinning.every(s => !s)) {
+                setHints(prev => [...prev, "[SUCCESS] Full sequence matched. Protocol breached.", "[V] ACCESS GRANTED"]);
+                setStatus('success');
+            } else {
+                // Advance to next unlocked digit
+                const next = newSpinning.findIndex(s => s);
+                setActiveTimingDigit(next);
+            }
         } else {
-            setHints(prev => [...prev, `[!] Digit ${index + 1} locked: ${lockedValue} ✗ (MISMATCH — releasing lock...)`]);
-            // Unlock this digit after a short delay so the student can retry
-            setTimeout(() => {
-                setSpinningDigits(prev => {
-                    const restored = [...prev];
-                    restored[index] = true;
-                    spinningRef.current = restored;
-                    return restored;
-                });
-                setHints(prev => [...prev, `[~] Digit ${index + 1} re-released. Keep watching the sequence...`]);
-            }, 1200);
-            return;
-        }
-
-        // Freeze the locked digit in displayDigits so it doesn't get overwritten
-        setDisplayDigits(prev => {
-            const updated = [...prev];
-            updated[index] = lockedValue;
-            return updated;
-        });
-
-        if (newSpinning.every(s => !s)) {
-            setHints(prev => [...prev, "[SUCCESS] Full sequence matched. Protocol breached.", "[V] ACCESS GRANTED"]);
-            setStatus('success');
+            setHints(prev => [...prev, `[!] Digit ${index + 1}: ${lockedValue} ✗ — wrong value, keep watching...`]);
+            // Don't advance — user retries the same digit
         }
     };
 
@@ -308,7 +303,9 @@ const PassCracker: React.FC<PassCrackerProps> = ({ onComplete }) => {
         setHints([`[SYSTEM] Initializing hacking module for Level ${currentLevel + 1}...`, `[!] Target: ${levelData.title}`]);
         setStatus('idle');
         setSpinningDigits([true, true, true, true]);
+        spinningRef.current = [true, true, true, true];
         setDisplayDigits(['0', '0', '0', '0']);
+        setActiveTimingDigit(0);
         setAttempts(0);
         setFailCount(0);
         setRevealedCount(0);
@@ -437,7 +434,7 @@ const PassCracker: React.FC<PassCrackerProps> = ({ onComplete }) => {
                             <p className="text-xs text-text-secondary leading-relaxed">
                                 {levelData.type === 'manual' && "Standard brute force. Try common patterns (sequential, repetitive). Terminal tells you how many digits are in the correct position."}
                                 {levelData.type === 'heat' && "Thermal attack. The terminal senses core temperature — the closer your PIN is numerically, the hotter it gets. Use binary search logic."}
-                                {levelData.type === 'timing' && "Timing vulnerability! The PIN digits are spinning in memory. Watch each digit and click LOCK the instant it shows the correct value. Wrong locks auto-release."}
+                                {levelData.type === 'timing' && "Timing vulnerability! One digit spins at a time — watch the ACTIVE digit (red glow) change every second. Click LOCK when it shows the right number. Locked digits turn green and the next one activates automatically."}
                                 {levelData.type === 'pattern' && "Memory leak found! The target PIN alternates two values in XYXY format (e.g. 4242). Terminal tells you how many digits match position."}
                                 {levelData.type === 'dictionary' && "Common password database loaded. Try culturally significant numbers — spy codes, pop culture references, famous years..."}
                                 {levelData.type === 'frequency' && "Frequency analysis attack! The terminal reports: exact position matches AND how many digits you have right regardless of position. Use this dual feedback to isolate each digit."}
@@ -474,24 +471,44 @@ const PassCracker: React.FC<PassCrackerProps> = ({ onComplete }) => {
                                                         autoComplete="off"
                                                     />
                                                 )}
-                                                {levelData.type === 'timing' && (
-                                                    <div className={`w-16 h-20 bg-bg-tertiary border-2 ${spinningDigits[i] ? 'border-accent-tertiary-30' : 'border-accent-primary shadow-neon'} rounded-2xl flex items-center justify-center text-4xl font-black text-white`}>
-                                                        {displayDigits[i]}
-                                                    </div>
-                                                )}
+                                                {levelData.type === 'timing' && (() => {
+                                                    const isActive  = spinningDigits[i] && i === activeTimingDigit;
+                                                    const isLocked  = !spinningDigits[i];
+                                                    const isPending = spinningDigits[i] && i !== activeTimingDigit;
+                                                    return (
+                                                        <div className="flex flex-col items-center gap-2">
+                                                            {/* Digit box */}
+                                                            <div className={`w-16 h-20 rounded-2xl flex items-center justify-center text-4xl font-black transition-all
+                                                                ${isLocked  ? 'bg-accent-primary-10 border-2 border-accent-primary shadow-neon text-accent-primary' : ''}
+                                                                ${isActive  ? 'bg-bg-tertiary border-2 border-accent-tertiary shadow-neon text-white animate-pulse' : ''}
+                                                                ${isPending ? 'bg-bg-tertiary border-2 border-white-10 text-text-muted opacity-40' : ''}
+                                                            `}>
+                                                                {isPending ? '?' : displayDigits[i]}
+                                                            </div>
+                                                            {/* Label below */}
+                                                            <span className={`text-[9px] font-black uppercase tracking-widest
+                                                                ${isLocked  ? 'text-accent-primary' : ''}
+                                                                ${isActive  ? 'text-accent-tertiary' : ''}
+                                                                ${isPending ? 'text-text-muted opacity-40' : ''}
+                                                            `}>
+                                                                {isLocked ? '✓ LOCKED' : isActive ? '◉ ACTIVE' : 'WAITING'}
+                                                            </span>
+                                                            {/* LOCK button — only on active digit */}
+                                                            {isActive && (
+                                                                <button
+                                                                    onClick={() => lockDigit(i)}
+                                                                    className="w-full py-2 bg-accent-tertiary text-bg-primary rounded-xl hover:bg-white hover:text-bg-primary transition-all text-[10px] font-black uppercase tracking-widest shadow-neon"
+                                                                >
+                                                                    ⬛ LOCK
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })()}
                                                 {status === 'success' && levelData.type !== 'timing' && (
                                                     <div className="w-16 h-20 bg-accent-primary-10 border-2 border-accent-primary rounded-2xl flex items-center justify-center text-4xl font-black text-white shadow-neon">
                                                         {levelData.target[i]}
                                                     </div>
-                                                )}
-                                                
-                                                {levelData.type === 'timing' && spinningDigits[i] && (
-                                                    <button 
-                                                        onClick={() => lockDigit(i)}
-                                                        className="mt-2 p-2 bg-accent-tertiary text-bg-primary rounded-xl hover:bg-white transition-all text-[10px] font-black uppercase"
-                                                    >
-                                                        LOCK
-                                                    </button>
                                                 )}
                                             </div>
                                         ))}
