@@ -257,9 +257,9 @@ const SocialEngPro: React.FC<SocialEngProProps> = ({ onComplete }) => {
                             disabled={!userName.trim() || isGenerating}
                             onClick={() => {
                                 setIsGenerating(true);
-                                setTimeout(() => {
+                                setTimeout(async () => {
                                     const moduleName = 'Social Engineering Pro';
-                                    generateCertificate(userName, moduleName);
+                                    await generateCertificate(userName, moduleName);
                                     onComplete({
                                         moduleId: 'social-eng-sim',
                                         moduleName,

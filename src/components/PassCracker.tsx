@@ -382,9 +382,9 @@ const PassCracker: React.FC<PassCrackerProps> = ({ onComplete }) => {
                             disabled={!userName.trim() || isGenerating}
                             onClick={() => {
                                 setIsGenerating(true);
-                                setTimeout(() => {
+                                setTimeout(async () => {
                                     const moduleName = "Interactive Password Cracking";
-                                    generateCertificate(userName, moduleName);
+                                    await generateCertificate(userName, moduleName);
                                     onComplete({
                                         moduleId: 'pass-crack',
                                         moduleName,

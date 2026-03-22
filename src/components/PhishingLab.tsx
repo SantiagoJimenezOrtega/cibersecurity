@@ -247,9 +247,9 @@ const PhishingLab: React.FC<PhishingLabProps> = ({ onComplete }) => {
                             disabled={!userName.trim() || isGenerating}
                             onClick={() => {
                                 setIsGenerating(true);
-                                setTimeout(() => {
+                                setTimeout(async () => {
                                     const moduleName = "Phishing Detection Training";
-                                    generateCertificate(userName, moduleName);
+                                    await generateCertificate(userName, moduleName);
                                     onComplete({
                                         moduleId: 'social-eng',
                                         moduleName,

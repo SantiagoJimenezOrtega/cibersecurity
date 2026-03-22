@@ -247,7 +247,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectLesson, completedLessons,
                                     Issued to: <span className="text-white font-bold uppercase">{cert.userName}</span>
                                 </p>
                                 <button
-                                    onClick={() => generateCertificate(cert.userName, cert.moduleName)}
+                                    onClick={() => void generateCertificate(cert.userName, cert.moduleName)}
                                     className="neon-button-secondary w-full py-3 text-[10px] flex items-center justify-center gap-2 mt-auto"
                                 >
                                     <Download size={14} /> Re-Download

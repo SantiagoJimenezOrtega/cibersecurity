@@ -72,6 +72,11 @@ function App() {
         currentLessonId={currentLessonId}
         onSelectLesson={setCurrentLessonId}
         completedLessons={completedLessons}
+        onResetProgress={() => {
+          setCompletedLessons([]);
+          setCertificates([]);
+          setCurrentLessonId(null);
+        }}
       />
       <main className="flex-1 h-full overflow-y-auto ml-64 custom-scrollbar">
         {renderContent()}
