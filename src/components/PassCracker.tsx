@@ -67,7 +67,7 @@ const PassCracker: React.FC<PassCrackerProps> = ({ onComplete }) => {
     const [failCount, setFailCount] = useState(0);
     const [revealedCount, setRevealedCount] = useState(0);
     const [hintLevel, setHintLevel] = useState(0);
-    const [userName, setUserName] = useState('');
+    const [userName, setUserName] = useState(() => localStorage.getItem('cyberlab-username') ?? '');
     const [isGenerating, setIsGenerating] = useState(false);
     const terminalEndRef = useRef<HTMLDivElement>(null);
 

@@ -181,7 +181,7 @@ const SocialEngPro: React.FC<SocialEngProProps> = ({ onComplete }) => {
     const [decision, setDecision] = useState<'comply' | 'refuse' | null>(null);
     const [score, setScore] = useState(0);
     const [completed, setCompleted] = useState(false);
-    const [userName, setUserName] = useState('');
+    const [userName, setUserName] = useState(() => localStorage.getItem('cyberlab-username') ?? '');
     const [isGenerating, setIsGenerating] = useState(false);
 
     const scenario = scenarios[current];

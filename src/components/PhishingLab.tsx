@@ -191,7 +191,7 @@ const PhishingLab: React.FC<PhishingLabProps> = ({ onComplete }) => {
 
     const email = phishingEmails[currentIndex];
 
-    const [userName, setUserName] = React.useState('');
+    const [userName, setUserName] = React.useState(() => localStorage.getItem('cyberlab-username') ?? '');
     const [isGenerating, setIsGenerating] = React.useState(false);
 
     if (showIntro) {

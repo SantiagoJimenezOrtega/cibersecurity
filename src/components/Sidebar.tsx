@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Bug, Key, Home, Settings, Info, Lock, Users, CheckCircle2, Trash2, Trophy, BookOpen, X, AlertTriangle, ShieldAlert, Brain } from 'lucide-react';
+import { Shield, Bug, Key, Home, Settings, Info, Lock, Users, CheckCircle2, Trash2, Trophy, BookOpen, X, AlertTriangle, ShieldAlert, Brain, User, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface SidebarProps {
@@ -12,6 +12,14 @@ interface SidebarProps {
 /* ── Settings Modal ─────────────────────────────────────────────────── */
 const SettingsModal: React.FC<{ onClose: () => void; onResetProgress: () => void; onResetCerts: () => void }> = ({ onClose, onResetProgress, onResetCerts }) => {
     const [confirmReset, setConfirmReset] = useState<'progress' | 'certs' | null>(null);
+    const [nameInput, setNameInput] = useState(() => localStorage.getItem('cyberlab-username') ?? '');
+    const [nameSaved, setNameSaved] = useState(false);
+
+    const handleSaveName = () => {
+        localStorage.setItem('cyberlab-username', nameInput.trim());
+        setNameSaved(true);
+        setTimeout(() => setNameSaved(false), 2000);
+    };
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6"
@@ -33,6 +41,38 @@ const SettingsModal: React.FC<{ onClose: () => void; onResetProgress: () => void
                 </div>
 
                 <div className="p-8 flex flex-col gap-4">
+
+                    {/* Certificate name */}
+                    <div className="cyber-card p-5 bg-accent-primary-5 border-accent-primary-20 flex items-center justify-between gap-4">
+                        <div className="flex items-start gap-4 flex-1 min-w-0">
+                            <div className="p-3 bg-accent-primary-10 rounded-xl text-accent-primary shrink-0">
+                                <User size={20} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-white font-bold text-sm mb-1">Certificate Name</p>
+                                <p className="text-text-muted text-xs leading-relaxed mb-3">This name will be pre-filled when you earn a certificate.</p>
+                                <input
+                                    type="text"
+                                    value={nameInput}
+                                    onChange={e => { setNameInput(e.target.value); setNameSaved(false); }}
+                                    onKeyDown={e => e.key === 'Enter' && nameInput.trim() && handleSaveName()}
+                                    placeholder="Enter your full name…"
+                                    className="w-full bg-bg-primary border border-white-10 rounded-xl px-4 py-2 text-sm text-white placeholder-text-muted focus:outline-none focus:border-accent-primary transition-all"
+                                />
+                            </div>
+                        </div>
+                        <button
+                            onClick={handleSaveName}
+                            disabled={!nameInput.trim()}
+                            className={`shrink-0 px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all flex items-center gap-1 ${
+                                nameSaved
+                                    ? 'bg-accent-primary text-bg-primary'
+                                    : 'border border-accent-primary-20 text-accent-primary hover:bg-accent-primary hover:text-bg-primary disabled:opacity-30 disabled:cursor-not-allowed'
+                            }`}
+                        >
+                            {nameSaved ? <><Check size={12} /> Saved</> : 'Save'}
+                        </button>
+                    </div>
 
                     {/* Reset certificates */}
                     <div className="cyber-card p-5 bg-accent-tertiary-5 border-accent-tertiary-20 flex items-center justify-between gap-4">
