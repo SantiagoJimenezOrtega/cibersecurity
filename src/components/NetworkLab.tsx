@@ -764,7 +764,7 @@ const Level7Sniffing: React.FC<LevelProps> = ({ onComplete }) => {
           const isCorrect = submitted && ans === item.correct;
           const isWrong = submitted && ans !== item.correct;
           return (
-            <div key={item.id} className={`p-4 rounded-xl border transition-all ${isCorrect ? 'border-accent-primary-20 bg-accent-primary-5' : isWrong ? 'border-accent-tertiary-20 bg-accent-tertiary-5' : 'border-white-10 bg-white-5'}`}>
+            <div key={item.id} className={`p-4 rounded-xl border transition-all ${isCorrect ? 'border-accent-primary-20 bg-accent-primary-5' : isWrong ? 'border-accent-tertiary-20 bg-accent-tertiary-5' : 'border-white-10 bg-bg-tertiary'}`}>
               <div className="flex items-center justify-between gap-4">
                 <div style={{ flex: 1 }}>
                   <p className="text-white font-bold text-sm">{item.label}</p>
@@ -978,7 +978,7 @@ const Level9Firewall: React.FC<LevelProps> = ({ onComplete }) => {
           const isCorrect = submitted && dec === pkt.correct;
           const isWrong = submitted && dec !== pkt.correct;
           return (
-            <div key={i} className={`p-4 rounded-xl border transition-all ${isCorrect ? 'border-accent-primary-20 bg-accent-primary-5' : isWrong ? 'border-accent-tertiary-20 bg-accent-tertiary-5' : 'border-white-10 bg-white-5'}`}>
+            <div key={i} className={`p-4 rounded-xl border transition-all ${isCorrect ? 'border-accent-primary-20 bg-accent-primary-5' : isWrong ? 'border-accent-tertiary-20 bg-accent-tertiary-5' : 'border-white-10 bg-bg-tertiary'}`}>
               <div className="flex items-center gap-4">
                 <div style={{ flex: 1 }} className="font-mono text-xs">
                   <span className="text-accent-secondary">{pkt.proto}</span>
@@ -1116,15 +1116,15 @@ const Level10PacketBuilder: React.FC<LevelProps> = ({ onComplete }) => {
               className="w-full bg-bg-tertiary border border-white-10 rounded-xl px-4 py-3 text-sm text-white placeholder-text-muted focus:outline-none focus:border-accent-secondary transition-all" />
           </div>
 
-          <div className="mb-6 flex items-center gap-4 p-4 bg-white-5 rounded-xl border border-white-10">
+          <div className="mb-6 flex items-center gap-4 p-4 bg-bg-tertiary rounded-xl border border-white-10">
             <button onClick={() => { setUseEncryption(e => !e); setErrors([]); }}
-              className={`w-12 h-6 rounded-full border transition-all relative flex-shrink-0 ${useEncryption ? 'bg-accent-primary border-accent-primary' : 'bg-white-10 border-white-10'}`}
+              className={`w-12 h-6 rounded-full border transition-all relative flex-shrink-0 ${useEncryption ? 'bg-accent-primary border-accent-primary' : 'bg-bg-primary border-white-10'}`}
             >
-              <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all ${useEncryption ? 'left-6' : 'left-0.5'}`} />
+              <div className={`absolute top-0.5 w-5 h-5 rounded-full transition-all ${useEncryption ? 'bg-bg-primary left-6' : 'bg-white left-0.5'}`} />
             </button>
             <div>
               <p className="text-white font-bold text-sm">Use Encryption (TLS / HTTPS)</p>
-              <p className="text-text-muted text-xs">Required for port 443 — encrypts the entire payload</p>
+              <p className="text-text-secondary text-xs">Required for port 443 — encrypts the entire payload</p>
             </div>
             {useEncryption && <Lock size={18} className="text-accent-primary" style={{ marginLeft: 'auto' }} />}
           </div>

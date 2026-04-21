@@ -225,7 +225,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentLessonId, onSelectLesson, comp
     const [showSettings, setShowSettings] = useState(false);
     const [showHelp, setShowHelp] = useState(false);
 
-    const isSocialEngLocked = completedLessons.length < 3;
+    const isSocialEngLocked = false;
 
     const menuItems = [
         { id: null,             icon: <Home size={20} />,   label: 'Home / Progress',   locked: false },

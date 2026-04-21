@@ -22,7 +22,7 @@ const MODULE_NAMES: Record<string, string> = {
 };
 
 const Dashboard: React.FC<DashboardProps> = ({ onSelectLesson, completedLessons, certificates }) => {
-    const isSocialEngUnlocked = completedLessons.length >= 3;
+    const isSocialEngUnlocked = true;
     const progressPct = Math.round((completedLessons.length / TOTAL_MODULES) * 100);
 
     const getIcon = (name: string) => {
