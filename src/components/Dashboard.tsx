@@ -22,7 +22,6 @@ const MODULE_NAMES: Record<string, string> = {
 };
 
 const Dashboard: React.FC<DashboardProps> = ({ onSelectLesson, completedLessons, certificates }) => {
-    const isSocialEngUnlocked = true;
     const progressPct = Math.round((completedLessons.length / TOTAL_MODULES) * 100);
 
     const getIcon = (name: string) => {
@@ -151,9 +150,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectLesson, completedLessons,
                                             ? 'text-accent-primary border-accent-primary-20 bg-accent-primary-5'
                                             : lesson.difficulty === 'Beginner'
                                                 ? 'text-accent-primary border-accent-primary-20 bg-accent-primary-5'
-                                                : 'text-accent-tertiary border-accent-tertiary-20 bg-accent-tertiary-5'
+                                                : lesson.difficulty === 'Advanced'
+                                                    ? 'text-accent-secondary border-accent-secondary-20 bg-accent-secondary-5'
+                                                    : 'text-accent-tertiary border-accent-tertiary-20 bg-accent-tertiary-5'
                                     }`}>
-                                        {isCompleted ? '✓ Completed' : `Level ${lesson.difficulty === 'Beginner' ? 'Basic' : 'Intermediate'}`}
+                                        {isCompleted ? '✓ Completed' : lesson.difficulty}
                                     </span>
                                 </div>
 
@@ -174,44 +175,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectLesson, completedLessons,
                     );
                 })}
 
-                {/* Social Engineering locked card */}
-                <motion.div
-                    whileHover={isSocialEngUnlocked ? { scale: 1.02, y: -5 } : {}}
-                    onClick={() => isSocialEngUnlocked && onSelectLesson('social-eng-sim')}
-                    className={`cyber-card flex flex-col border ${
-                        isSocialEngUnlocked
-                            ? 'cursor-pointer border-accent-primary-30 hover:shadow-neon'
-                            : 'opacity-50 grayscale border-dashed border-white-5'
-                    }`}
-                >
-                    <div className={`p-4 rounded-2xl mb-6 w-fit ${isSocialEngUnlocked ? 'bg-accent-primary-10 text-accent-primary' : 'bg-white-5 text-text-muted'}`}>
-                        <Users size={24} />
-                    </div>
-                    <h3 className={`text-2xl font-bold mb-3 ${isSocialEngUnlocked ? 'text-white' : 'text-white opacity-50'}`}>Social Engineering Pro</h3>
-                    <p className="text-text-muted text-sm mb-6 flex-1">
-                        Learn real techniques to protect yourself from psychological manipulation online.
-                    </p>
-                    {isSocialEngUnlocked ? (
-                        <button className="neon-button w-full py-4 flex items-center justify-center gap-2 transition-all">
-                            Start <ArrowRight size={18} />
-                        </button>
-                    ) : (
-                        <div className="w-full">
-                            <div className="mb-3 flex items-center gap-2">
-                                <div className="flex-1 h-1.5 bg-white-5 rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-accent-primary rounded-full transition-all"
-                                        style={{ width: `${Math.min(100, (completedLessons.length / 3) * 100)}%` }}
-                                    />
-                                </div>
-                                <span className="text-[10px] text-text-muted font-bold">{completedLessons.length}/3</span>
-                            </div>
-                            <button disabled className="w-full bg-white-5 text-text-muted border border-white-5 py-3 rounded-xl cursor-not-allowed font-bold text-sm uppercase tracking-widest">
-                                Complete {3 - completedLessons.length} more module{3 - completedLessons.length !== 1 ? 's' : ''}
-                            </button>
-                        </div>
-                    )}
-                </motion.div>
             </section>
 
             {/* ── Certificate Gallery ────────────────────────────────────── */}

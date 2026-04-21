@@ -145,8 +145,8 @@ const HelpModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         { icon: <Bug size={18} />, name: 'Malware Lab', color: 'text-accent-primary', bg: 'bg-accent-primary-10 border-accent-primary-20', desc: 'Build simulated malware using visual drag-and-drop blocks. Learn how attack logic is structured — 10 escalating missions.' },
         { icon: <Key size={18} />, name: 'Password Cracking', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '10 levels using 5 different attack techniques: brute force, heat sensor, timing attack, pattern recognition, and frequency analysis.' },
         { icon: <ShieldAlert size={18} />, name: 'Phishing Detector', color: 'text-accent-tertiary', bg: 'bg-accent-tertiary-5 border-accent-tertiary-20', desc: 'Analyze 10 real-world emails and classify them as phishing or legitimate. Learn to spot red flags before they cause damage.' },
-        { icon: <Brain size={18} />, name: 'Social Engineering Pro', color: 'text-accent-primary', bg: 'bg-accent-primary-5 border-accent-primary-20', desc: '10 realistic attack scenarios — phone calls, chats, and in-person encounters. Unlocks after completing 3 modules.' },
-        { icon: <Network size={18} />, name: 'Network Packet Lab', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '10 levels covering packet anatomy, the OSI model, TCP handshakes, routing, HTTP vs HTTPS sniffing, ARP spoofing, and firewall rules.' },
+        { icon: <Brain size={18} />, name: 'Social Engineering Pro', color: 'text-accent-primary', bg: 'bg-accent-primary-5 border-accent-primary-20', desc: '10 realistic attack scenarios — phone calls, chats, and in-person encounters. Learn to recognize and resist psychological manipulation.' },
+        { icon: <Network size={18} />, name: 'Network Packet Lab', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '10 levels covering packet anatomy, OSI model, TCP handshakes, routing, HTTP/HTTPS sniffing, ARP spoofing, and firewall rules.' },
     ];
 
     return (
@@ -175,11 +175,11 @@ const HelpModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                         <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-4">How it works</p>
                         <div className="grid grid-cols-1 gap-3">
                             {[
-                                '1. Select a module from the sidebar to start a training mission.',
-                                '2. Read the theory intro — each module starts with context about the real attack.',
-                                '3. Complete all levels inside the module to unlock your certificate.',
+                                '1. Select any module from the sidebar to start a training mission.',
+                                '2. Read the theory intro — each module starts with real-world context.',
+                                '3. Complete all 10 levels inside the module to earn your certificate.',
                                 '4. Enter your name and download your PDF certificate.',
-                                '5. Complete 3 modules to unlock Social Engineering Pro.',
+                                '5. All 5 modules are available from day one — no unlock requirements.',
                             ].map((step, i) => (
                                 <div key={i} className="flex items-start gap-3 text-sm text-text-secondary">
                                     <div className="w-5 h-5 rounded-full bg-accent-primary-10 border border-accent-primary-20 text-accent-primary text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">

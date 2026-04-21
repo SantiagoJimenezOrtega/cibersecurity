@@ -11,7 +11,7 @@ export interface Lesson {
   description: string;
   icon: string;
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
-  category: 'Coding' | 'Network' | 'Password' | 'SafeBrowsing';
+  category: 'Coding' | 'Network' | 'Password' | 'SafeBrowsing' | 'Social';
 }
 
 export const lessons: Lesson[] = [
@@ -46,5 +46,13 @@ export const lessons: Lesson[] = [
     icon: 'Network',
     difficulty: 'Intermediate',
     category: 'Network'
+  },
+  {
+    id: 'social-eng-sim',
+    title: 'Social Engineering Pro',
+    description: 'Face 10 realistic manipulation scenarios — phone calls, chats, and in-person encounters. Learn to recognize and resist psychological attacks.',
+    icon: 'Users',
+    difficulty: 'Advanced',
+    category: 'Social'
   }
 ];
