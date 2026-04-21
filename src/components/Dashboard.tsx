@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Bug, Key, ShieldAlert, Zap, Globe, ArrowRight, Users, Trophy, Award, Download } from 'lucide-react';
+import { Bug, Key, ShieldAlert, Zap, Globe, ArrowRight, Users, Trophy, Award, Download, Network } from 'lucide-react';
 import { lessons } from '../types';
 import type { CertificateRecord } from '../types';
 import { generateCertificate } from '../utils/certificate';
@@ -11,13 +11,14 @@ interface DashboardProps {
     certificates: CertificateRecord[];
 }
 
-const TOTAL_MODULES = 4;
+const TOTAL_MODULES = 5;
 
 const MODULE_NAMES: Record<string, string> = {
     'malware-101': 'Malware Lab',
     'pass-crack': 'Password Cracking',
     'social-eng': 'Phishing Detector',
     'social-eng-sim': 'Social Engineering Pro',
+    'net-packets': 'Network Packet Lab',
 };
 
 const Dashboard: React.FC<DashboardProps> = ({ onSelectLesson, completedLessons, certificates }) => {
@@ -30,6 +31,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectLesson, completedLessons,
             case 'Key': return <Key size={24} />;
             case 'ShieldAlert': return <ShieldAlert size={24} />;
             case 'Users': return <Users size={24} />;
+            case 'Network': return <Network size={24} />;
             default: return <Zap size={24} />;
         }
     };

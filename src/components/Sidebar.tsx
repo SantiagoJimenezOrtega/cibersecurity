@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Bug, Key, Home, Settings, Info, Lock, Users, CheckCircle2, Trash2, Trophy, BookOpen, X, AlertTriangle, ShieldAlert, Brain, User, Check } from 'lucide-react';
+import { Shield, Bug, Key, Home, Settings, Info, Lock, Users, CheckCircle2, Trash2, Trophy, BookOpen, X, AlertTriangle, ShieldAlert, Brain, User, Check, Network } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface SidebarProps {
@@ -146,6 +146,7 @@ const HelpModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         { icon: <Key size={18} />, name: 'Password Cracking', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '10 levels using 5 different attack techniques: brute force, heat sensor, timing attack, pattern recognition, and frequency analysis.' },
         { icon: <ShieldAlert size={18} />, name: 'Phishing Detector', color: 'text-accent-tertiary', bg: 'bg-accent-tertiary-5 border-accent-tertiary-20', desc: 'Analyze 10 real-world emails and classify them as phishing or legitimate. Learn to spot red flags before they cause damage.' },
         { icon: <Brain size={18} />, name: 'Social Engineering Pro', color: 'text-accent-primary', bg: 'bg-accent-primary-5 border-accent-primary-20', desc: '10 realistic attack scenarios — phone calls, chats, and in-person encounters. Unlocks after completing 3 modules.' },
+        { icon: <Network size={18} />, name: 'Network Packet Lab', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '10 levels covering packet anatomy, the OSI model, TCP handshakes, routing, HTTP vs HTTPS sniffing, ARP spoofing, and firewall rules.' },
     ];
 
     return (
@@ -231,7 +232,8 @@ const Sidebar: React.FC<SidebarProps> = ({ currentLessonId, onSelectLesson, comp
         { id: 'malware-101',    icon: <Bug size={20} />,    label: 'Malware Lab',        locked: false },
         { id: 'pass-crack',     icon: <Key size={20} />,    label: 'Password Cracking',  locked: false },
         { id: 'social-eng',     icon: <Shield size={20} />, label: 'Phishing Detector',  locked: false },
-        { id: 'social-eng-sim', icon: <Users size={20} />,  label: 'Social Engineering', locked: isSocialEngLocked },
+        { id: 'social-eng-sim', icon: <Users size={20} />,   label: 'Social Engineering', locked: isSocialEngLocked },
+        { id: 'net-packets',    icon: <Network size={20} />, label: 'Network Packets',    locked: false },
     ];
 
     const handleResetCerts = () => {

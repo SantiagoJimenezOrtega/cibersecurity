@@ -5,6 +5,7 @@ import MalwareLab from './components/MalwareLab';
 import PassCracker from './components/PassCracker';
 import PhishingLab from './components/PhishingLab';
 import SocialEngPro from './components/SocialEngPro';
+import NetworkLab from './components/NetworkLab';
 import type { CertificateRecord } from './types';
 
 const STORAGE_KEYS = {
@@ -55,6 +56,8 @@ function App() {
         return <PhishingLab onComplete={(cert) => handleComplete('social-eng', cert)} />;
       case 'social-eng-sim':
         return <SocialEngPro onComplete={(cert) => handleComplete('social-eng-sim', cert)} />;
+      case 'net-packets':
+        return <NetworkLab onComplete={(cert) => handleComplete('net-packets', cert)} />;
       default:
         return (
           <Dashboard

@@ -38,5 +38,13 @@ export const lessons: Lesson[] = [
     icon: 'ShieldAlert',
     difficulty: 'Intermediate',
     category: 'SafeBrowsing'
+  },
+  {
+    id: 'net-packets',
+    title: 'Network Packet Lab',
+    description: 'Explore how data travels across the internet — packet anatomy, OSI model, TCP handshakes, routing, sniffing, ARP spoofing, and firewall rules.',
+    icon: 'Network',
+    difficulty: 'Intermediate',
+    category: 'Network'
   }
 ];
