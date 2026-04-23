@@ -1,9 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Network, ArrowRight, Lock, Server, Monitor, Globe,
-  Eye, CheckCircle2, XCircle, Package, ShieldCheck,
-  Trophy, Download, Check, Shield, Wifi, Cpu, RefreshCw, Zap
+  Network, ArrowRight, Lock, Monitor, Globe,
+  CheckCircle2, XCircle, ShieldCheck,
+  Trophy, Download, Check, Shield, Wifi, RefreshCw, Zap,
+  AlertTriangle, Router, Smartphone, Home, WifiOff
 } from 'lucide-react';
 import { generateCertificate } from '../utils/certificate';
 import type { CertificateRecord } from '../types';
@@ -24,159 +25,378 @@ interface NetworkLabProps {
 const INTRO_SLIDES: IntroSlide[] = [
   {
     icon: <Network size={40} />,
-    subtitle: 'What is a network packet?',
-    title: 'Data Travels in Packets',
-    body: "When you send a message, watch a video, or load a webpage, your data doesn't travel as one big chunk. It's broken into small pieces called packets — each carries part of your data plus addressing and control information.",
-    highlight: 'Every YouTube video you watch arrives as millions of tiny packets, each finding its own path through the internet before being reassembled on your screen.',
+    subtitle: 'How we connect',
+    title: 'Wired & Wireless Networks',
+    body: "Every device you use — phone, laptop, TV — connects to the internet in one of two ways: through a physical cable (wired) or through radio waves (wireless). Understanding how these connections work is the first step to staying safe online.",
+    highlight: 'More than 5 billion people are connected to the internet today — through a mix of cables, Wi-Fi, and mobile networks.',
   },
   {
-    icon: <Package size={40} />,
-    subtitle: 'Anatomy of a packet',
-    title: "What's Inside a Packet?",
-    body: 'A packet has three key parts: the Header (source/destination addresses, protocol, sequence number), the Payload (the actual data), and a Trailer (error-checking). The header is the envelope — the payload is the letter inside.',
-    highlight: 'IP headers alone contain over 12 different fields — each one with a specific job in getting your data safely to the right place.',
-  },
-  {
-    icon: <Globe size={40} />,
-    subtitle: 'The OSI Model',
-    title: 'Seven Layers of Communication',
-    body: 'The OSI model describes 7 layers of network communication, from physical cables (Layer 1) up to applications like your browser (Layer 7). Each layer adds its own header when sending and strips it when receiving — called encapsulation and decapsulation.',
-    highlight: 'When you type a URL, data passes down all 7 layers on your device, travels across networks, then back up all 7 layers on the server — in milliseconds.',
+    icon: <Router size={40} />,
+    subtitle: 'Your home network',
+    title: 'How Devices Connect',
+    body: 'At home, your modem connects to your ISP (Internet Service Provider). Your router shares that connection with all your devices. Each device gets a unique address on the network so data can find its way to the right place.',
+    highlight: 'Your router is like a post office — it makes sure every message reaches the right device in your home.',
   },
   {
     icon: <Shield size={40} />,
-    subtitle: 'Security risks',
-    title: 'Why Packets Are a Security Target',
-    body: 'Attackers can intercept packets (sniffing), modify them (man-in-the-middle), or flood a target with fakes (DDoS). Understanding packet structure is essential for building firewalls, intrusion detection systems, and encrypted protocols like HTTPS.',
-    highlight: "In 2013, Edward Snowden revealed that intelligence agencies were intercepting and storing billions of raw network packets daily — that's exactly what we'll explore in this lab.",
+    subtitle: 'Staying safe',
+    title: 'Common Cybersecurity Risks',
+    body: 'Being connected is powerful, but it comes with risks. Hackers use tricks like phishing emails, fake websites, and weak passwords to steal your information. Knowing the risks is your first line of defense.',
+    highlight: "Over 80% of cyberattacks start with a simple phishing email — they don't need to hack your computer if they can trick you into giving your password.",
+  },
+  {
+    icon: <Lock size={40} />,
+    subtitle: 'Your mission',
+    title: 'Build Your Network Knowledge',
+    body: "In this lab you'll identify connection types, understand how data travels, recognize common cyber threats, and learn the habits that keep you safe. Each level builds on the last — by the end, you'll think like a cybersecurity professional.",
+    highlight: 'Cybersecurity is not just about technology — 95% of breaches are caused by human error. Your awareness is the most powerful security tool.',
   },
 ];
 
-// ── Level 1: Packet Anatomy ───────────────────────────────────────────────────
-const L1_SECTIONS = [
-  { id: 'eth',     label: 'Ethernet Header',  color: '#a855f7', desc: 'MAC addresses & EtherType' },
-  { id: 'ip',      label: 'IP Header',         color: '#00e5ff', desc: 'IP addresses, TTL, Protocol' },
-  { id: 'tcp',     label: 'TCP Header',        color: '#00ff9d', desc: 'Ports, Sequence, Flags' },
-  { id: 'payload', label: 'Payload / Data',    color: '#ff9d00', desc: 'The actual content' },
-];
-
-const L1_QUESTIONS = [
-  { q: 'Which section contains the Source and Destination IP addresses?', answer: 'ip' },
-  { q: 'Which section contains the actual data being transmitted (e.g., a webpage)?', answer: 'payload' },
-  { q: 'Which section contains the port numbers (e.g., 443 for HTTPS)?', answer: 'tcp' },
-  { q: 'Which section contains hardware MAC addresses for local network delivery?', answer: 'eth' },
-];
-
-const Level1PacketAnatomy: React.FC<LevelProps> = ({ onComplete }) => {
-  const [qIdx, setQIdx] = useState(0);
-  const [selected, setSelected] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
-  const [score, setScore] = useState(0);
-
-  const q = L1_QUESTIONS[qIdx];
-
-  const handleSelect = (id: string) => {
-    if (feedback) return;
-    setSelected(id);
-    const ok = id === q.answer;
-    setFeedback(ok ? 'correct' : 'wrong');
-    if (ok) setScore(s => s + 1);
-  };
-
-  const handleNext = () => {
-    if (qIdx + 1 >= L1_QUESTIONS.length) {
-      onComplete(score >= 3);
-    } else {
-      setQIdx(i => i + 1);
-      setSelected(null);
-      setFeedback(null);
-    }
-  };
+// ── Shared helpers ────────────────────────────────────────────────────────────
+const MCQ: React.FC<{
+  question: string;
+  options: string[];
+  answer: number;
+  explanation: string;
+  qNum: number;
+  qTotal: number;
+  onNext: (correct: boolean) => void;
+}> = ({ question, options, answer, explanation, qNum, qTotal, onNext }) => {
+  const [selected, setSelected] = useState<number | null>(null);
+  const correct = selected === answer;
 
   return (
-    <div className="cyber-card p-8">
-      <div className="flex items-center gap-3 mb-2">
-        <Package size={20} className="text-accent-secondary" />
-        <h2 className="text-xl font-black text-white">Packet Anatomy</h2>
-        <span className="ml-auto text-xs text-text-muted font-bold">Question {qIdx + 1}/{L1_QUESTIONS.length}</span>
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-[10px] font-black text-text-muted uppercase tracking-widest">Question {qNum} of {qTotal}</p>
       </div>
-      <p className="text-text-secondary text-sm mb-6">Click on the correct section of the packet to answer each question.</p>
-
-      {/* Packet visual */}
-      <div className="flex rounded-2xl overflow-hidden border border-white-10 mb-8" style={{ minHeight: '5rem' }}>
-        {L1_SECTIONS.map(s => (
-          <button
-            key={s.id}
-            onClick={() => handleSelect(s.id)}
-            style={{ flex: s.id === 'payload' ? 2 : 1, cursor: feedback ? 'default' : 'pointer' }}
-            className={`py-5 text-center transition-all border-r last:border-r-0 border-white-10 relative ${
-              feedback && selected === s.id
-                ? feedback === 'correct'
-                  ? 'bg-accent-primary-10'
-                  : 'bg-accent-tertiary-10'
-                : feedback && s.id === q.answer
-                  ? 'bg-accent-primary-5'
-                  : 'hover:bg-white-5'
+      <div className="p-5 bg-accent-secondary-5 border border-accent-secondary-20 rounded-2xl mb-5">
+        <p className="text-white font-bold">{question}</p>
+      </div>
+      <div className="grid grid-cols-1 gap-3 mb-5">
+        {options.map((opt, i) => (
+          <button key={i} onClick={() => selected === null && setSelected(i)}
+            className={`p-4 rounded-xl border text-left text-sm font-semibold transition-all ${
+              selected === null
+                ? 'bg-white-5 border-white-10 text-text-secondary hover:border-accent-secondary-20 hover:text-white hover:bg-accent-secondary-5 cursor-pointer'
+                : i === answer
+                  ? 'bg-accent-primary-10 border-accent-primary-20 text-accent-primary'
+                  : selected === i
+                    ? 'bg-accent-tertiary-10 border-accent-tertiary-20 text-accent-tertiary'
+                    : 'bg-white-5 border-white-10 text-text-muted opacity-40 cursor-default'
             }`}
           >
-            <div className="w-3 h-3 rounded-full mx-auto mb-2" style={{ backgroundColor: s.color }} />
-            <p className="text-xs font-bold text-white px-2">{s.label}</p>
-            <p className="text-[10px] text-text-muted mt-1 px-1">{s.desc}</p>
-            {feedback && selected === s.id && feedback === 'correct' && (
-              <div className="absolute top-2 right-2 text-accent-primary"><CheckCircle2 size={14} /></div>
-            )}
-            {feedback && selected === s.id && feedback === 'wrong' && (
-              <div className="absolute top-2 right-2 text-accent-tertiary"><XCircle size={14} /></div>
-            )}
-            {feedback && s.id === q.answer && selected !== s.id && (
-              <div className="absolute top-2 right-2 text-accent-primary"><CheckCircle2 size={14} /></div>
-            )}
+            <span className="font-black text-[10px] uppercase tracking-wider opacity-50 mr-2">{String.fromCharCode(65 + i)}.</span>
+            {opt}
           </button>
         ))}
       </div>
-
-      <div className="p-5 bg-accent-secondary-5 border border-accent-secondary-20 rounded-2xl mb-4">
-        <p className="text-[10px] font-black uppercase tracking-widest text-accent-secondary mb-2">Which section is it?</p>
-        <p className="text-white font-bold">{q.q}</p>
-      </div>
-
-      {feedback && (
-        <motion.div
-          initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-          className={`p-4 rounded-xl mb-4 ${feedback === 'correct' ? 'bg-accent-primary-5 border border-accent-primary-20' : 'bg-accent-tertiary-5 border border-accent-tertiary-20'}`}
+      {selected !== null && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+          className={`p-4 rounded-xl mb-4 ${correct ? 'bg-accent-primary-5 border border-accent-primary-20' : 'bg-accent-tertiary-5 border border-accent-tertiary-20'}`}
         >
-          <p className={`text-sm font-bold ${feedback === 'correct' ? 'text-accent-primary' : 'text-accent-tertiary'}`}>
-            {feedback === 'correct' ? '✓ Correct!' : `✗ Not quite. The answer is: ${L1_SECTIONS.find(s => s.id === q.answer)?.label}`}
+          <p className={`text-sm font-bold mb-1 ${correct ? 'text-accent-primary' : 'text-accent-tertiary'}`}>
+            {correct ? '✓ Correct!' : '✗ Not quite.'}
           </p>
+          <p className="text-text-secondary text-xs leading-relaxed">{explanation}</p>
         </motion.div>
       )}
-
-      {feedback && (
-        <button onClick={handleNext} className="neon-button-secondary w-full py-3 text-sm flex items-center justify-center gap-2">
-          {qIdx + 1 >= L1_QUESTIONS.length ? 'Finish Level' : 'Next Question'} <ArrowRight size={16} />
+      {selected !== null && (
+        <button onClick={() => onNext(correct)} className="neon-button-secondary w-full py-3 text-sm flex items-center justify-center gap-2">
+          {qNum >= qTotal ? 'Finish Level' : 'Next Question'} <ArrowRight size={16} />
         </button>
       )}
     </div>
   );
 };
 
-// ── Level 2: OSI Model ────────────────────────────────────────────────────────
-const OSI_LAYERS   = ['Physical', 'Data Link', 'Network', 'Transport', 'Session', 'Presentation', 'Application'];
-const OSI_DESCS    = ['Cables, signals, bits', 'MAC addresses, switches', 'IP addresses, routing', 'TCP/UDP, end-to-end', 'Session management', 'Encryption, data format', 'HTTP, DNS, apps'];
-const OSI_COLORS   = ['#ff2d55','#ff6b35','#ff9d00','#00ff9d','#00e5ff','#a855f7','#ec4899'];
+// ── Level 1: Wired vs Wireless ────────────────────────────────────────────────
+const L1_SCENARIOS = [
+  { text: 'Your laptop has an Ethernet cable plugged into the wall.', answer: 'wired', icon: '🖥️' },
+  { text: 'Your phone connects to the school Wi-Fi network.', answer: 'wireless', icon: '📱' },
+  { text: 'A desktop computer is connected to the router via a cable.', answer: 'wired', icon: '🖥️' },
+  { text: 'A smart TV streams Netflix through the home Wi-Fi.', answer: 'wireless', icon: '📺' },
+  { text: 'A printer is connected to the network using an Ethernet port.', answer: 'wired', icon: '🖨️' },
+  { text: 'You use your phone as a hotspot for your laptop.', answer: 'wireless', icon: '📡' },
+];
 
-const Level2OSIModel: React.FC<LevelProps> = ({ onComplete }) => {
-  const [shuffled] = useState(() => [...OSI_LAYERS].sort(() => Math.random() - 0.5));
+const Level1WiredWireless: React.FC<LevelProps> = ({ onComplete }) => {
+  const [idx, setIdx] = useState(0);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [score, setScore] = useState(0);
+
+  const scenario = L1_SCENARIOS[idx];
+  const isCorrect = selected === scenario.answer;
+
+  const handleSelect = (val: string) => {
+    if (selected) return;
+    setSelected(val);
+    if (val === scenario.answer) setScore(s => s + 1);
+  };
+
+  const handleNext = () => {
+    if (idx + 1 >= L1_SCENARIOS.length) { onComplete(score + (isCorrect ? 1 : 0) >= 4); return; }
+    setIdx(i => i + 1);
+    setSelected(null);
+  };
+
+  return (
+    <div className="cyber-card p-8">
+      <div className="flex items-center gap-3 mb-2">
+        <Wifi size={20} className="text-accent-secondary" />
+        <h2 className="text-xl font-black text-white">Wired or Wireless?</h2>
+        <span className="ml-auto text-xs text-text-muted font-bold">{idx + 1}/{L1_SCENARIOS.length}</span>
+      </div>
+      <p className="text-text-secondary text-sm mb-6">Read each scenario and identify the type of connection.</p>
+
+      <div className="p-6 bg-accent-secondary-5 border border-accent-secondary-20 rounded-2xl mb-6 text-center">
+        <p className="text-4xl mb-3">{scenario.icon}</p>
+        <p className="text-white font-bold text-lg">{scenario.text}</p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 mb-5">
+        {['wired', 'wireless'].map(opt => (
+          <button key={opt} onClick={() => handleSelect(opt)} disabled={!!selected}
+            className={`p-5 rounded-2xl border font-black text-sm uppercase tracking-wider transition-all flex flex-col items-center gap-3 ${
+              selected === opt
+                ? opt === scenario.answer
+                  ? 'bg-accent-primary-10 border-accent-primary text-accent-primary'
+                  : 'bg-accent-tertiary-10 border-accent-tertiary text-accent-tertiary'
+                : selected && opt === scenario.answer
+                  ? 'bg-accent-primary-5 border-accent-primary-20 text-accent-primary'
+                  : !selected
+                    ? 'bg-white-5 border-white-10 text-text-secondary hover:border-accent-secondary-20 hover:text-white hover:bg-accent-secondary-5 cursor-pointer'
+                    : 'bg-white-5 border-white-10 text-text-muted opacity-30 cursor-default'
+            }`}
+          >
+            {opt === 'wired' ? <Monitor size={24} /> : <Wifi size={24} />}
+            {opt === 'wired' ? 'Wired' : 'Wireless'}
+            <p className="text-[10px] font-normal normal-case opacity-70">
+              {opt === 'wired' ? 'Cable / Ethernet' : 'Wi-Fi / Radio waves'}
+            </p>
+          </button>
+        ))}
+      </div>
+
+      {selected && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+          className={`p-4 rounded-xl mb-4 ${isCorrect ? 'bg-accent-primary-5 border border-accent-primary-20' : 'bg-accent-tertiary-5 border border-accent-tertiary-20'}`}
+        >
+          <p className={`text-sm font-bold ${isCorrect ? 'text-accent-primary' : 'text-accent-tertiary'}`}>
+            {isCorrect ? `✓ Correct! This is a ${scenario.answer} connection.` : `✗ This is actually a ${scenario.answer} connection.`}
+          </p>
+        </motion.div>
+      )}
+
+      {selected && (
+        <button onClick={handleNext} className="neon-button-secondary w-full py-3 text-sm flex items-center justify-center gap-2">
+          {idx + 1 >= L1_SCENARIOS.length ? 'Finish Level' : 'Next Scenario'} <ArrowRight size={16} />
+        </button>
+      )}
+    </div>
+  );
+};
+
+// ── Level 2: Network Components Match ─────────────────────────────────────────
+const L2_PAIRS = [
+  { device: 'Modem',          desc: 'Connects your home to the internet via your ISP' },
+  { device: 'Router',         desc: 'Shares the internet connection with all home devices' },
+  { device: 'Switch',         desc: 'Connects multiple wired devices in the same network' },
+  { device: 'Access Point',   desc: 'Broadcasts the Wi-Fi signal so devices can connect wirelessly' },
+];
+
+const Level2NetworkComponents: React.FC<LevelProps> = ({ onComplete }) => {
+  const [shuffledDescs] = useState(() => [...L2_PAIRS].map(p => p.desc).sort(() => Math.random() - 0.5));
+  const [selectedDevice, setSelectedDevice] = useState<string | null>(null);
+  const [matched, setMatched] = useState<Record<string, string>>({});
+  const [wrongDesc, setWrongDesc] = useState<string | null>(null);
+
+  const handleDeviceClick = (device: string) => {
+    if (matched[device]) return;
+    setSelectedDevice(d => d === device ? null : device);
+    setWrongDesc(null);
+  };
+
+  const handleDescClick = (desc: string) => {
+    if (!selectedDevice) return;
+    const correct = L2_PAIRS.find(p => p.device === selectedDevice)?.desc === desc;
+    if (correct) {
+      setMatched(m => ({ ...m, [selectedDevice]: desc }));
+      setSelectedDevice(null);
+    } else {
+      setWrongDesc(desc);
+      setTimeout(() => setWrongDesc(null), 700);
+    }
+  };
+
+  const allMatched = Object.keys(matched).length === L2_PAIRS.length;
+
+  return (
+    <div className="cyber-card p-8">
+      <div className="flex items-center gap-3 mb-2">
+        <Router size={20} className="text-accent-secondary" />
+        <h2 className="text-xl font-black text-white">Network Components</h2>
+      </div>
+      <p className="text-text-secondary text-sm mb-6">
+        Click a device name, then click its correct description. Match all 4!
+      </p>
+
+      <div className="grid grid-cols-2 gap-6">
+        <div className="space-y-3">
+          <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3">Devices</p>
+          {L2_PAIRS.map(p => (
+            <button key={p.device} onClick={() => handleDeviceClick(p.device)} disabled={!!matched[p.device]}
+              className={`w-full p-4 rounded-xl border text-left transition-all ${
+                matched[p.device]
+                  ? 'bg-accent-primary-5 border-accent-primary-20 opacity-40 cursor-default'
+                  : selectedDevice === p.device
+                    ? 'bg-accent-secondary-10 border-accent-secondary text-white cursor-pointer'
+                    : 'bg-white-5 border-white-10 text-text-secondary hover:border-accent-secondary-20 hover:text-white cursor-pointer'
+              }`}
+            >
+              <p className="font-black text-sm">{p.device}</p>
+              {matched[p.device] && <p className="text-[10px] text-accent-primary font-bold mt-1">✓ Matched</p>}
+            </button>
+          ))}
+        </div>
+
+        <div className="space-y-3">
+          <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3">Descriptions</p>
+          {shuffledDescs.map(desc => {
+            const isMatched = Object.values(matched).includes(desc);
+            return (
+              <button key={desc} onClick={() => handleDescClick(desc)} disabled={isMatched || !selectedDevice}
+                className={`w-full p-4 rounded-xl border text-left text-xs leading-relaxed transition-all ${
+                  isMatched
+                    ? 'bg-accent-primary-5 border-accent-primary-20 text-accent-primary opacity-40 cursor-default'
+                    : wrongDesc === desc
+                      ? 'bg-accent-tertiary-10 border-accent-tertiary text-accent-tertiary'
+                      : !selectedDevice
+                        ? 'bg-white-5 border-white-10 text-text-muted opacity-40 cursor-not-allowed'
+                        : 'bg-accent-secondary-5 border-accent-secondary-20 text-text-secondary hover:bg-accent-secondary-10 cursor-pointer'
+                }`}
+              >
+                {desc}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {selectedDevice && !allMatched && (
+        <div className="mt-4 p-3 bg-accent-secondary-5 border border-accent-secondary-20 rounded-xl">
+          <p className="text-accent-secondary text-sm">Selected: <strong>{selectedDevice}</strong> — now click its description</p>
+        </div>
+      )}
+
+      {allMatched && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-6">
+          <div className="p-4 bg-accent-primary-5 border border-accent-primary-20 rounded-xl mb-4">
+            <p className="text-accent-primary font-bold">✓ All matched! These are the key pieces of every home and office network.</p>
+          </div>
+          <button onClick={() => onComplete(true)} className="neon-button-secondary w-full py-3 text-sm flex items-center justify-center gap-2">
+            Continue <ArrowRight size={16} />
+          </button>
+        </motion.div>
+      )}
+    </div>
+  );
+};
+
+// ── Level 3: How Data Travels ─────────────────────────────────────────────────
+const L3_QUESTIONS = [
+  {
+    q: "Why does the internet break data into small pieces called 'packets' instead of sending one big file?",
+    opts: [
+      'Because files are too large to name',
+      'So multiple packets can travel different paths and arrive faster and more reliably',
+      'To make it easier for hackers to intercept',
+      'Because computers can only store small amounts of data',
+    ],
+    ans: 1,
+    exp: "Packets can take different routes across the internet and arrive out of order — your device reassembles them. This makes the network more reliable: if one path is busy or broken, packets take another route.",
+  },
+  {
+    q: 'What information does every packet carry so it can reach the right destination?',
+    opts: [
+      'The name of the person who sent it',
+      'The source and destination address (IP addresses)',
+      'A password to unlock it at the destination',
+      'The time and date it was created',
+    ],
+    ans: 1,
+    exp: 'Every packet has a header containing the source IP (where it came from) and destination IP (where it\'s going) — like the addresses on an envelope.',
+  },
+  {
+    q: "When you load a webpage, your device receives hundreds of packets. What does it do with them?",
+    opts: [
+      'Displays each packet one by one as they arrive',
+      'Waits for the first packet then ignores the rest',
+      'Reassembles them in the correct order to display the full webpage',
+      'Sends them back to the server for verification',
+    ],
+    ans: 2,
+    exp: 'Packets are numbered so your device knows the correct order. It waits until all pieces arrive and then reassembles them — just like putting together a puzzle.',
+  },
+  {
+    q: 'Which analogy best describes how packets work?',
+    opts: [
+      'Like a telephone call — continuous, unbroken stream of data',
+      'Like mailing a book one page at a time — each page finds its own route and they\'re reassembled on arrival',
+      'Like a fax — the whole document is sent at once over a single line',
+      'Like a radio broadcast — everyone receives the same data simultaneously',
+    ],
+    ans: 1,
+    exp: 'Packets are like mailing a book page by page. Each page (packet) may travel a different route through the postal system (internet). The recipient assembles the pages in order once all arrive.',
+  },
+];
+
+const Level3HowDataTravels: React.FC<LevelProps> = ({ onComplete }) => {
+  const [qIdx, setQIdx] = useState(0);
+  const [score, setScore] = useState(0);
+
+  const handleNext = (correct: boolean) => {
+    const newScore = score + (correct ? 1 : 0);
+    if (qIdx + 1 >= L3_QUESTIONS.length) { onComplete(newScore >= 3); return; }
+    setScore(newScore);
+    setQIdx(i => i + 1);
+  };
+
+  const q = L3_QUESTIONS[qIdx];
+  return (
+    <div className="cyber-card p-8">
+      <div className="flex items-center gap-3 mb-6">
+        <Globe size={20} className="text-accent-secondary" />
+        <h2 className="text-xl font-black text-white">How Data Travels</h2>
+      </div>
+      <MCQ key={qIdx} question={q.q} options={q.opts} answer={q.ans} explanation={q.exp}
+        qNum={qIdx + 1} qTotal={L3_QUESTIONS.length} onNext={handleNext} />
+    </div>
+  );
+};
+
+// ── Level 4: Internet Connection Journey — Order the Steps ────────────────────
+const L4_STEPS = [
+  { id: 'a', text: 'Your device sends a request through your home Wi-Fi or cable' },
+  { id: 'b', text: 'The router receives it and sends it to the modem' },
+  { id: 'c', text: 'The modem connects to your ISP (Internet Service Provider)' },
+  { id: 'd', text: 'The ISP routes your request across the internet' },
+  { id: 'e', text: 'The website\'s server receives your request and sends back the webpage' },
+];
+
+const Level4InternetJourney: React.FC<LevelProps> = ({ onComplete }) => {
+  const [shuffled] = useState(() => [...L4_STEPS].sort(() => Math.random() - 0.5));
   const [selected, setSelected] = useState<string[]>([]);
   const [done, setDone] = useState(false);
   const [result, setResult] = useState(false);
 
-  const handleClick = (layer: string) => {
-    if (done || selected.includes(layer)) return;
-    const next = [...selected, layer];
+  const handleClick = (id: string) => {
+    if (done || selected.includes(id)) return;
+    const next = [...selected, id];
     setSelected(next);
-    if (next.length === OSI_LAYERS.length) {
-      const ok = next.every((l, i) => l === OSI_LAYERS[i]);
+    if (next.length === L4_STEPS.length) {
+      const ok = next.every((s, i) => s === L4_STEPS[i].id);
       setDone(true);
       setResult(ok);
     }
@@ -187,57 +407,47 @@ const Level2OSIModel: React.FC<LevelProps> = ({ onComplete }) => {
   return (
     <div className="cyber-card p-8">
       <div className="flex items-center gap-3 mb-2">
-        <span style={{ fontSize: '1.25rem' }}>📚</span>
-        <h2 className="text-xl font-black text-white">OSI Model — Layer Order</h2>
+        <Globe size={20} className="text-accent-secondary" />
+        <h2 className="text-xl font-black text-white">Internet Connection Journey</h2>
       </div>
       <p className="text-text-secondary text-sm mb-6">
-        Click the 7 OSI layers in order from <strong className="text-white">Layer 1 (Physical)</strong> to <strong className="text-white">Layer 7 (Application)</strong>.
+        Click the steps <strong className="text-white">in the correct order</strong> — from your device all the way to the website.
       </p>
 
       {/* Progress slots */}
       <div className="flex gap-1 mb-6">
-        {OSI_LAYERS.map((_, i) => {
-          const layer = selected[i];
-          const correct = layer && layer === OSI_LAYERS[i];
-          const wrong = layer && layer !== OSI_LAYERS[i];
+        {L4_STEPS.map((_, i) => {
+          const stepId = selected[i];
+          const correct = stepId === L4_STEPS[i].id;
           return (
             <div key={i} style={{ flex: 1 }}
-              className={`h-10 rounded-xl border flex items-center justify-center text-[10px] font-black transition-all ${
-                layer
-                  ? done && wrong
-                    ? 'bg-accent-tertiary-10 border-accent-tertiary-20 text-accent-tertiary'
-                    : done && correct
-                      ? 'bg-accent-primary-10 border-accent-primary-20 text-accent-primary'
-                      : 'bg-accent-secondary-10 border-accent-secondary-20 text-accent-secondary'
+              className={`h-8 rounded-xl border flex items-center justify-center text-[10px] font-black transition-all ${
+                stepId
+                  ? done && !correct ? 'bg-accent-tertiary-10 border-accent-tertiary-20 text-accent-tertiary'
+                    : done && correct ? 'bg-accent-primary-10 border-accent-primary-20 text-accent-primary'
+                    : 'bg-accent-secondary-10 border-accent-secondary-20 text-accent-secondary'
                   : 'bg-white-5 border-white-10 text-text-muted'
               }`}
             >
-              {layer ? (done ? (correct ? '✓' : '✗') : `${i + 1}`) : `${i + 1}`}
+              {stepId ? (done ? (correct ? '✓' : '✗') : `${i + 1}`) : `${i + 1}`}
             </div>
           );
         })}
       </div>
 
-      {/* Layer tiles */}
-      <div className="grid grid-cols-2 gap-3 mb-6">
-        {shuffled.map(layer => {
-          const idx = OSI_LAYERS.indexOf(layer);
-          const isSelected = selected.includes(layer);
+      {/* Step tiles */}
+      <div className="space-y-3 mb-6">
+        {shuffled.map(step => {
+          const isSelected = selected.includes(step.id);
           return (
-            <button key={layer} onClick={() => handleClick(layer)} disabled={isSelected || done}
-              className={`p-4 rounded-xl border text-left transition-all ${
+            <button key={step.id} onClick={() => handleClick(step.id)} disabled={isSelected || done}
+              className={`w-full p-4 rounded-xl border text-left text-sm transition-all ${
                 isSelected
-                  ? 'opacity-30 cursor-not-allowed bg-white-5 border-white-10'
-                  : 'bg-accent-secondary-5 border-accent-secondary-20 hover:bg-accent-secondary-10 cursor-pointer'
+                  ? 'opacity-30 cursor-not-allowed bg-white-5 border-white-10 text-text-muted'
+                  : 'bg-accent-secondary-5 border-accent-secondary-20 text-text-secondary hover:bg-accent-secondary-10 hover:text-white cursor-pointer'
               }`}
             >
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: OSI_COLORS[idx] }} />
-                <div>
-                  <p className="text-white font-bold text-sm">{layer}</p>
-                  <p className="text-text-muted text-[10px]">{OSI_DESCS[idx]}</p>
-                </div>
-              </div>
+              {step.text}
             </button>
           );
         })}
@@ -248,8 +458,8 @@ const Level2OSIModel: React.FC<LevelProps> = ({ onComplete }) => {
           className={`p-4 rounded-xl mb-4 ${result ? 'bg-accent-primary-5 border border-accent-primary-20' : 'bg-accent-tertiary-5 border border-accent-tertiary-20'}`}
         >
           <p className={`text-sm font-bold ${result ? 'text-accent-primary' : 'text-accent-tertiary'}`}>
-            {result ? '✓ Perfect! Physical → Data Link → Network → Transport → Session → Presentation → Application'
-                     : '✗ Not quite. The correct order is Physical (1) → Application (7). Click Reset to try again.'}
+            {result ? '✓ Perfect order! Device → Router → Modem → ISP → Internet → Server'
+                     : '✗ Not quite. The correct path goes: Device → Router → Modem → ISP → Internet → Server.'}
           </p>
         </motion.div>
       )}
@@ -257,7 +467,7 @@ const Level2OSIModel: React.FC<LevelProps> = ({ onComplete }) => {
       <div className="flex gap-3">
         {done && !result && (
           <button onClick={handleReset} className="flex-1 py-3 border border-white-10 text-text-muted rounded-xl text-sm font-bold uppercase flex items-center justify-center gap-2 hover:bg-white-5 transition-all">
-            <RefreshCw size={14} /> Reset
+            <RefreshCw size={14} /> Try Again
           </button>
         )}
         {done && (
@@ -270,522 +480,73 @@ const Level2OSIModel: React.FC<LevelProps> = ({ onComplete }) => {
   );
 };
 
-// ── Level 3: IP Addressing ────────────────────────────────────────────────────
-const L3_QUESTIONS = [
-  {
-    q: 'Which of these is a private (non-routable on the internet) IP address?',
-    opts: ['8.8.8.8', '10.0.0.1', '1.1.1.1', '93.184.216.34'],
-    ans: 1,
-    exp: '10.0.0.1 belongs to the 10.0.0.0/8 private range (RFC 1918). Private IPs are never routed on the public internet.',
-  },
-  {
-    q: 'What is the subnet mask for a /24 network (e.g. 192.168.1.0/24)?',
-    opts: ['255.255.0.0', '255.0.0.0', '255.255.255.0', '255.255.255.128'],
-    ans: 2,
-    exp: '/24 means the first 24 bits are the network part, giving the mask 255.255.255.0. This allows 254 usable host addresses.',
-  },
-  {
-    q: 'Which protocol automatically assigns IP addresses to new devices on a network?',
-    opts: ['DNS', 'DHCP', 'FTP', 'ARP'],
-    ans: 1,
-    exp: 'DHCP (Dynamic Host Configuration Protocol) automatically assigns IP addresses, subnet masks, gateways, and DNS servers to devices when they join the network.',
-  },
-  {
-    q: 'What does the TTL (Time to Live) field in an IP packet do?',
-    opts: ['Encrypts the packet data', "Defines the packet's maximum size", 'Limits the number of routers the packet can pass through', 'Specifies the destination port'],
-    ans: 2,
-    exp: 'TTL starts at a value (e.g. 64) and decrements by 1 at each router. When it hits 0 the packet is discarded — preventing infinite routing loops.',
-  },
+// ── Level 5: Private vs Public Networks ───────────────────────────────────────
+const L5_NETWORKS = [
+  { name: 'Coffee shop Wi-Fi',          correct: 'public',  icon: '☕', hint: 'Open to anyone who walks in' },
+  { name: 'Your home Wi-Fi',            correct: 'private', icon: '🏠', hint: 'Password-protected, only your family' },
+  { name: 'School network',             correct: 'private', icon: '🏫', hint: 'Controlled by IT, only for students/staff' },
+  { name: 'Airport free Wi-Fi',         correct: 'public',  icon: '✈️', hint: 'Open to all travelers' },
+  { name: 'Your phone\'s mobile data',  correct: 'private', icon: '📱', hint: 'Your personal SIM, only you use it' },
+  { name: 'Hotel lobby Wi-Fi',          correct: 'public',  icon: '🏨', hint: 'Available to all hotel guests' },
 ];
 
-const Level3IPAddressing: React.FC<LevelProps> = ({ onComplete }) => {
-  const [qIdx, setQIdx] = useState(0);
-  const [selected, setSelected] = useState<number | null>(null);
-  const [score, setScore] = useState(0);
-
-  const q = L3_QUESTIONS[qIdx];
-  const isCorrect = selected === q.ans;
-
-  const handleSelect = (i: number) => {
-    if (selected !== null) return;
-    setSelected(i);
-    if (i === q.ans) setScore(s => s + 1);
-  };
-
-  const handleNext = () => {
-    if (qIdx + 1 >= L3_QUESTIONS.length) onComplete(score >= 3);
-    else { setQIdx(i => i + 1); setSelected(null); }
-  };
-
-  return (
-    <div className="cyber-card p-8">
-      <div className="flex items-center gap-3 mb-2">
-        <Globe size={20} className="text-accent-secondary" />
-        <h2 className="text-xl font-black text-white">IP Addressing & Protocols</h2>
-        <span className="ml-auto text-xs text-text-muted font-bold">{qIdx + 1}/{L3_QUESTIONS.length}</span>
-      </div>
-      <p className="text-text-secondary text-sm mb-6">Answer each question about IP addressing concepts.</p>
-
-      <div className="p-5 bg-accent-secondary-5 border border-accent-secondary-20 rounded-2xl mb-5">
-        <p className="text-white font-bold">{q.q}</p>
-      </div>
-
-      <div className="grid grid-cols-1 gap-3 mb-5">
-        {q.opts.map((opt, i) => (
-          <button key={i} onClick={() => handleSelect(i)}
-            className={`p-4 rounded-xl border text-left text-sm font-semibold transition-all ${
-              selected === null
-                ? 'bg-white-5 border-white-10 text-text-secondary hover:border-accent-secondary-20 hover:text-white hover:bg-accent-secondary-5 cursor-pointer'
-                : i === q.ans
-                  ? 'bg-accent-primary-10 border-accent-primary-20 text-accent-primary'
-                  : selected === i
-                    ? 'bg-accent-tertiary-10 border-accent-tertiary-20 text-accent-tertiary'
-                    : 'bg-white-5 border-white-10 text-text-muted opacity-40 cursor-default'
-            }`}
-          >
-            <span className="font-black text-[10px] uppercase tracking-wider opacity-50" style={{ marginRight: '0.5rem' }}>{String.fromCharCode(65 + i)}.</span>
-            {opt}
-          </button>
-        ))}
-      </div>
-
-      {selected !== null && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-          className={`p-4 rounded-xl mb-4 ${isCorrect ? 'bg-accent-primary-5 border border-accent-primary-20' : 'bg-accent-tertiary-5 border border-accent-tertiary-20'}`}
-        >
-          <p className={`text-sm font-bold mb-1 ${isCorrect ? 'text-accent-primary' : 'text-accent-tertiary'}`}>
-            {isCorrect ? '✓ Correct!' : '✗ Not quite.'}
-          </p>
-          <p className="text-text-secondary text-xs leading-relaxed">{q.exp}</p>
-        </motion.div>
-      )}
-
-      {selected !== null && (
-        <button onClick={handleNext} className="neon-button-secondary w-full py-3 text-sm flex items-center justify-center gap-2">
-          {qIdx + 1 >= L3_QUESTIONS.length ? 'Finish Level' : 'Next Question'} <ArrowRight size={16} />
-        </button>
-      )}
-    </div>
-  );
-};
-
-// ── Level 4: TCP 3-Way Handshake ──────────────────────────────────────────────
-const HS_STEPS = [
-  { label: 'SYN',     from: 'client', desc: 'Client → Server: "I want to connect!"' },
-  { label: 'SYN-ACK', from: 'server', desc: 'Server → Client: "OK, I acknowledge. Ready!"' },
-  { label: 'ACK',     from: 'client', desc: 'Client → Server: "Connection established!"' },
-];
-const HS_BUTTONS = ['FIN', 'ACK', 'SYN-ACK', 'RST', 'SYN'];
-
-const Level4TCPHandshake: React.FC<LevelProps> = ({ onComplete }) => {
-  const [step, setStep] = useState(0);
-  const [shake, setShake] = useState(false);
-  const [done, setDone] = useState(false);
-
-  const handleClick = (label: string) => {
-    if (done) return;
-    if (label === HS_STEPS[step].label) {
-      if (step + 1 >= HS_STEPS.length) { setDone(true); }
-      else setStep(s => s + 1);
-    } else {
-      setShake(true);
-      setTimeout(() => setShake(false), 600);
-    }
-  };
-
-  return (
-    <div className="cyber-card p-8">
-      <div className="flex items-center gap-3 mb-2">
-        <Wifi size={20} className="text-accent-secondary" />
-        <h2 className="text-xl font-black text-white">TCP 3-Way Handshake</h2>
-      </div>
-      <p className="text-text-secondary text-sm mb-6">
-        Before any data flows over TCP, a 3-step handshake establishes the connection. Click the correct step in order.
-      </p>
-
-      {/* Diagram */}
-      <div className="flex items-center justify-between mb-8 px-4">
-        <div className="flex flex-col items-center gap-2">
-          <div className="p-4 bg-accent-secondary-10 border border-accent-secondary-20 rounded-2xl">
-            <Monitor size={32} className="text-accent-secondary" />
-          </div>
-          <span className="text-xs font-bold text-white">CLIENT</span>
-          <span className="text-[10px] text-text-muted font-mono">192.168.1.10</span>
-        </div>
-
-        <div className="flex-1 px-6 flex flex-col gap-3">
-          {HS_STEPS.map((s, i) => {
-            const isPast = i < step || done;
-            const fromClient = s.from === 'client';
-            return (
-              <motion.div key={s.label} animate={{ opacity: isPast || done ? 1 : i === step ? 0.4 : 0.15 }}
-                className={`flex items-center gap-2 ${fromClient ? 'flex-row' : 'flex-row-reverse'}`}
-              >
-                <div className={`text-[10px] font-black px-3 py-1 rounded-full border ${isPast || done ? 'border-accent-primary-20 text-accent-primary bg-accent-primary-5' : 'border-white-10 text-text-muted bg-white-5'}`}>
-                  {s.label}
-                </div>
-                <div className={`flex-1 h-px ${isPast || done ? 'bg-accent-primary' : 'bg-white-10'}`} />
-                <ArrowRight size={14} className={isPast || done ? 'text-accent-primary' : 'text-text-muted'}
-                  style={fromClient ? {} : { transform: 'rotate(180deg)' }} />
-              </motion.div>
-            );
-          })}
-        </div>
-
-        <div className="flex flex-col items-center gap-2">
-          <div className="p-4 bg-accent-primary-10 border border-accent-primary-20 rounded-2xl">
-            <Server size={32} className="text-accent-primary" />
-          </div>
-          <span className="text-xs font-bold text-white">SERVER</span>
-          <span className="text-[10px] text-text-muted font-mono">93.184.216.34</span>
-        </div>
-      </div>
-
-      {!done && (
-        <div className="p-4 bg-accent-secondary-5 border border-accent-secondary-20 rounded-xl mb-5">
-          <p className="text-accent-secondary text-[10px] font-black uppercase tracking-widest mb-1">
-            Step {step + 1} of 3
-          </p>
-          <p className="text-text-secondary text-sm">
-            {HS_STEPS[step].from === 'client' ? 'Client sends to Server' : 'Server sends to Client'} — which TCP flag?
-          </p>
-        </div>
-      )}
-
-      {done && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-          className="p-4 bg-accent-primary-5 border border-accent-primary-20 rounded-xl mb-5"
-        >
-          <p className="text-accent-primary font-bold">✓ Connection established! SYN → SYN-ACK → ACK. Data can now flow securely.</p>
-        </motion.div>
-      )}
-
-      {!done && (
-        <motion.div animate={shake ? { x: [-8, 8, -6, 6, 0] } : {}} className="flex gap-3 flex-wrap">
-          {HS_BUTTONS.map(btn => (
-            <button key={btn} onClick={() => handleClick(btn)}
-              className="px-5 py-3 rounded-xl border font-black text-sm uppercase tracking-wider transition-all bg-accent-secondary-5 border-accent-secondary-20 text-accent-secondary hover:bg-accent-secondary-10 cursor-pointer"
-            >
-              {btn}
-            </button>
-          ))}
-        </motion.div>
-      )}
-
-      {done && (
-        <button onClick={() => onComplete(true)} className="neon-button-secondary w-full py-3 text-sm flex items-center justify-center gap-2">
-          Continue <ArrowRight size={16} />
-        </button>
-      )}
-    </div>
-  );
-};
-
-// ── Level 5: Port Numbers ─────────────────────────────────────────────────────
-const PORT_PAIRS = [
-  { service: 'HTTP',  port: '80',  desc: 'Unencrypted web' },
-  { service: 'HTTPS', port: '443', desc: 'Secure web (TLS)' },
-  { service: 'SSH',   port: '22',  desc: 'Secure remote shell' },
-  { service: 'DNS',   port: '53',  desc: 'Domain resolution' },
-  { service: 'FTP',   port: '21',  desc: 'File transfer' },
-];
-
-const Level5Ports: React.FC<LevelProps> = ({ onComplete }) => {
-  const [shuffledPorts] = useState(() => PORT_PAIRS.map(p => p.port).sort(() => Math.random() - 0.5));
-  const [selectedSvc, setSelectedSvc] = useState<string | null>(null);
-  const [matched, setMatched] = useState<Record<string, string>>({});
-  const [wrongPort, setWrongPort] = useState<string | null>(null);
-
-  const handleSvcClick = (svc: string) => {
-    if (matched[svc]) return;
-    setSelectedSvc(s => s === svc ? null : svc);
-    setWrongPort(null);
-  };
-
-  const handlePortClick = (port: string) => {
-    if (!selectedSvc) return;
-    const correct = PORT_PAIRS.find(p => p.service === selectedSvc)?.port === port;
-    if (correct) {
-      setMatched(m => ({ ...m, [selectedSvc]: port }));
-      setSelectedSvc(null);
-    } else {
-      setWrongPort(port);
-      setTimeout(() => setWrongPort(null), 700);
-    }
-  };
-
-  const allMatched = Object.keys(matched).length === PORT_PAIRS.length;
-
-  return (
-    <div className="cyber-card p-8">
-      <div className="flex items-center gap-3 mb-2">
-        <Cpu size={20} className="text-accent-secondary" />
-        <h2 className="text-xl font-black text-white">Port Numbers</h2>
-      </div>
-      <p className="text-text-secondary text-sm mb-6">
-        Click a service, then click its matching port number. Ports tell the OS which application should handle each packet.
-      </p>
-
-      <div className="grid grid-cols-2 gap-6">
-        {/* Services */}
-        <div className="space-y-3">
-          <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3">Services</p>
-          {PORT_PAIRS.map(p => (
-            <button key={p.service} onClick={() => handleSvcClick(p.service)} disabled={!!matched[p.service]}
-              className={`w-full p-4 rounded-xl border text-left transition-all ${
-                matched[p.service]
-                  ? 'bg-accent-primary-5 border-accent-primary-20 opacity-40 cursor-default'
-                  : selectedSvc === p.service
-                    ? 'bg-accent-secondary-10 border-accent-secondary text-white cursor-pointer'
-                    : 'bg-white-5 border-white-10 text-text-secondary hover:border-accent-secondary-20 hover:text-white cursor-pointer'
-              }`}
-            >
-              <p className="font-black text-sm">{p.service}</p>
-              <p className="text-[10px] text-text-muted">{p.desc}</p>
-              {matched[p.service] && (
-                <p className="text-[10px] text-accent-primary font-bold mt-1">→ Port {matched[p.service]}</p>
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* Ports */}
-        <div>
-          <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3">Port Numbers</p>
-          <div className="grid grid-cols-2 gap-3">
-            {shuffledPorts.map(port => {
-              const isMatched = Object.values(matched).includes(port);
-              return (
-                <button key={port} onClick={() => handlePortClick(port)} disabled={isMatched || !selectedSvc}
-                  className={`p-4 rounded-xl border font-black text-2xl text-center transition-all ${
-                    isMatched
-                      ? 'bg-accent-primary-5 border-accent-primary-20 text-accent-primary opacity-40 cursor-default'
-                      : wrongPort === port
-                        ? 'bg-accent-tertiary-10 border-accent-tertiary text-accent-tertiary'
-                        : !selectedSvc
-                          ? 'bg-white-5 border-white-10 text-text-muted opacity-40 cursor-not-allowed'
-                          : 'bg-accent-secondary-5 border-accent-secondary-20 text-accent-secondary hover:bg-accent-secondary-10 cursor-pointer'
-                  }`}
-                >
-                  {port}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {selectedSvc && !allMatched && (
-        <div className="mt-4 p-3 bg-accent-secondary-5 border border-accent-secondary-20 rounded-xl">
-          <p className="text-accent-secondary text-sm">
-            Selected: <strong>{selectedSvc}</strong> — now click its port number
-          </p>
-        </div>
-      )}
-
-      {allMatched && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-6">
-          <div className="p-4 bg-accent-primary-5 border border-accent-primary-20 rounded-xl mb-4">
-            <p className="text-accent-primary font-bold">✓ All ports matched! Memorizing common ports is a core skill in network security.</p>
-          </div>
-          <button onClick={() => onComplete(true)} className="neon-button-secondary w-full py-3 text-sm flex items-center justify-center gap-2">
-            Continue <ArrowRight size={16} />
-          </button>
-        </motion.div>
-      )}
-    </div>
-  );
-};
-
-// ── Level 6: Packet Routing ───────────────────────────────────────────────────
-const L6_QUESTIONS = [
-  {
-    q: 'Your packet starts at PC (192.168.1.10) and needs to reach a web server on the internet. Where does it go first?',
-    opts: ['Directly to the web server', 'Default Gateway — Router A (192.168.1.1)', 'DNS Server (8.8.8.8)', 'Broadcast to all local devices'],
-    ans: 1,
-    exp: 'Packets destined for the internet always go to the default gateway first — the local router that bridges your network to the outside world.',
-  },
-  {
-    q: 'Router A receives the packet. It checks its routing table. Which path does it choose?',
-    opts: ['Return it to PC', 'ISP Border Router B (10.0.0.1)', 'Broadcast to all routers', 'Drop — TTL expired'],
-    ans: 1,
-    exp: 'Routers forward packets hop-by-hop using routing tables. Router A sends the packet to the ISP border router (Router B) as the next hop toward the internet.',
-  },
-  {
-    q: 'The packet started with TTL=64 and has passed through 3 routers. What is the TTL now?',
-    opts: ['64', '63', '61', '0'],
-    ans: 2,
-    exp: 'TTL decrements by 1 at each router. After 3 hops: 64 − 3 = 61. If it ever reaches 0 a "Time Exceeded" ICMP message is sent back.',
-  },
-  {
-    q: 'The web server receives your packet. What does it check first to route it to the correct application?',
-    opts: ['Source IP address', 'TTL value', 'Destination port number', 'Packet size'],
-    ans: 2,
-    exp: 'The server OS uses the destination port (e.g. 443 for HTTPS) to hand the packet to the right application — this is Transport Layer (L4) multiplexing at work.',
-  },
-];
-
-const L6_HOPS = ['PC\n192.168.1.10', 'Router A\n192.168.1.1', 'Router B\n10.0.0.1', 'Server\n93.184.216.34'];
-
-const Level6PacketRouting: React.FC<LevelProps> = ({ onComplete }) => {
-  const [qIdx, setQIdx] = useState(0);
-  const [selected, setSelected] = useState<number | null>(null);
-  const [score, setScore] = useState(0);
-
-  const q = L6_QUESTIONS[qIdx];
-  const isCorrect = selected === q.ans;
-
-  const handleSelect = (i: number) => {
-    if (selected !== null) return;
-    setSelected(i);
-    if (i === q.ans) setScore(s => s + 1);
-  };
-
-  const handleNext = () => {
-    if (qIdx + 1 >= L6_QUESTIONS.length) onComplete(score >= 3);
-    else { setQIdx(i => i + 1); setSelected(null); }
-  };
-
-  return (
-    <div className="cyber-card p-8">
-      <div className="flex items-center gap-3 mb-2">
-        <Globe size={20} className="text-accent-secondary" />
-        <h2 className="text-xl font-black text-white">Packet Routing</h2>
-        <span className="ml-auto text-xs text-text-muted font-bold">{qIdx + 1}/{L6_QUESTIONS.length}</span>
-      </div>
-      <p className="text-text-secondary text-sm mb-6">Follow a packet's journey across the internet, hop by hop.</p>
-
-      {/* Route visualization */}
-      <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
-        {L6_HOPS.map((hop, i) => (
-          <React.Fragment key={i}>
-            <div className={`flex-shrink-0 flex flex-col items-center gap-1 p-3 rounded-xl border transition-all ${i <= qIdx ? 'bg-accent-secondary-10 border-accent-secondary-20' : 'bg-white-5 border-white-10 opacity-30'}`}>
-              <div className={`p-2 rounded-lg ${i === 0 ? 'text-accent-secondary' : i === L6_HOPS.length - 1 ? 'text-accent-primary' : 'text-text-muted'}`}>
-                {i === 0 ? <Monitor size={18} /> : i === L6_HOPS.length - 1 ? <Server size={18} /> : <Globe size={18} />}
-              </div>
-              {hop.split('\n').map((line, j) => (
-                <p key={j} className={`text-[10px] font-bold text-center font-mono ${j === 0 ? 'text-white' : 'text-text-muted'}`}>{line}</p>
-              ))}
-            </div>
-            {i < L6_HOPS.length - 1 && (
-              <ArrowRight size={14} className={`flex-shrink-0 ${i < qIdx ? 'text-accent-secondary' : 'text-text-muted opacity-30'}`} />
-            )}
-          </React.Fragment>
-        ))}
-      </div>
-
-      <div className="p-5 bg-accent-secondary-5 border border-accent-secondary-20 rounded-2xl mb-5">
-        <p className="text-white font-bold">{q.q}</p>
-      </div>
-
-      <div className="grid grid-cols-1 gap-3 mb-5">
-        {q.opts.map((opt, i) => (
-          <button key={i} onClick={() => handleSelect(i)}
-            className={`p-4 rounded-xl border text-left text-sm font-semibold transition-all ${
-              selected === null
-                ? 'bg-white-5 border-white-10 text-text-secondary hover:border-accent-secondary-20 hover:text-white hover:bg-accent-secondary-5 cursor-pointer'
-                : i === q.ans
-                  ? 'bg-accent-primary-10 border-accent-primary-20 text-accent-primary'
-                  : selected === i
-                    ? 'bg-accent-tertiary-10 border-accent-tertiary-20 text-accent-tertiary'
-                    : 'bg-white-5 border-white-10 text-text-muted opacity-40 cursor-default'
-            }`}
-          >
-            {opt}
-          </button>
-        ))}
-      </div>
-
-      {selected !== null && (
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-          className={`p-4 rounded-xl mb-4 ${isCorrect ? 'bg-accent-primary-5 border border-accent-primary-20' : 'bg-accent-tertiary-5 border border-accent-tertiary-20'}`}
-        >
-          <p className={`text-sm font-bold mb-1 ${isCorrect ? 'text-accent-primary' : 'text-accent-tertiary'}`}>
-            {isCorrect ? '✓ Correct!' : '✗ Not quite.'}
-          </p>
-          <p className="text-text-secondary text-xs leading-relaxed">{q.exp}</p>
-        </motion.div>
-      )}
-
-      {selected !== null && (
-        <button onClick={handleNext} className="neon-button-secondary w-full py-3 text-sm flex items-center justify-center gap-2">
-          {qIdx + 1 >= L6_QUESTIONS.length ? 'Finish Level' : 'Next Question'} <ArrowRight size={16} />
-        </button>
-      )}
-    </div>
-  );
-};
-
-// ── Level 7: HTTP vs HTTPS Sniffing ──────────────────────────────────────────
-const SNIFF_ITEMS = [
-  { id: 'urlpath',  label: 'URL Path & Query',   sample: 'GET /account/transfer?to=attacker&amount=500', correct: 'hidden' },
-  { id: 'password', label: 'Login Password',      sample: 'POST body: password=S3cret!23',               correct: 'hidden' },
-  { id: 'cookie',   label: 'Session Cookie',      sample: 'Cookie: auth_token=a1b2c3d4e5...',            correct: 'hidden' },
-  { id: 'domain',   label: 'Domain Name',         sample: 'SNI: banking.example.com',                    correct: 'visible' },
-  { id: 'ip',       label: 'IP Addresses',        sample: '192.168.1.10 → 93.184.216.34',                correct: 'visible' },
-  { id: 'body',     label: 'HTTP Response Body',  sample: 'Balance: $12,450.00 | Account: 4111...',      correct: 'hidden' },
-];
-
-const Level7Sniffing: React.FC<LevelProps> = ({ onComplete }) => {
-  const [answers, setAnswers] = useState<Record<string, 'visible' | 'hidden'>>({});
+const Level5PrivatePublic: React.FC<LevelProps> = ({ onComplete }) => {
+  const [answers, setAnswers] = useState<Record<number, 'private' | 'public'>>({});
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
 
-  const handleToggle = (id: string, val: 'visible' | 'hidden') => {
+  const handleToggle = (i: number, val: 'private' | 'public') => {
     if (submitted) return;
-    setAnswers(a => ({ ...a, [id]: val }));
+    setAnswers(a => ({ ...a, [i]: val }));
   };
 
   const handleSubmit = () => {
     let s = 0;
-    SNIFF_ITEMS.forEach(item => { if (answers[item.id] === item.correct) s++; });
+    L5_NETWORKS.forEach((n, i) => { if (answers[i] === n.correct) s++; });
     setScore(s);
     setSubmitted(true);
   };
 
-  const allAnswered = SNIFF_ITEMS.every(i => answers[i.id]);
+  const allAnswered = L5_NETWORKS.every((_, i) => answers[i] !== undefined);
 
   return (
     <div className="cyber-card p-8">
       <div className="flex items-center gap-3 mb-2">
-        <Eye size={20} className="text-accent-secondary" />
-        <h2 className="text-xl font-black text-white">Sniffing — HTTP vs HTTPS</h2>
+        <WifiOff size={20} className="text-accent-secondary" />
+        <h2 className="text-xl font-black text-white">Private or Public Network?</h2>
       </div>
-      <p className="text-text-secondary text-sm mb-2">
-        An attacker intercepts your traffic to <strong className="text-white">banking.example.com</strong>. If the site uses <strong className="text-accent-primary">HTTPS</strong>, which data is <strong className="text-accent-primary">hidden</strong> from them? Which is still <strong className="text-accent-tertiary">visible</strong>?
-      </p>
+      <p className="text-text-secondary text-sm mb-2">Classify each network. This matters for your security!</p>
       <div className="p-3 bg-accent-tertiary-5 border border-accent-tertiary-20 rounded-xl mb-5">
-        <p className="text-accent-tertiary text-xs font-bold">⚠ Even HTTPS reveals domain names and IP addresses — only the payload is encrypted.</p>
+        <p className="text-accent-tertiary text-xs font-bold">⚠ Public networks are risky — anyone nearby can see your unencrypted traffic.</p>
       </div>
 
       <div className="space-y-3 mb-5">
-        {SNIFF_ITEMS.map(item => {
-          const ans = answers[item.id];
-          const isCorrect = submitted && ans === item.correct;
-          const isWrong = submitted && ans !== item.correct;
+        {L5_NETWORKS.map((net, i) => {
+          const ans = answers[i];
+          const isCorrect = submitted && ans === net.correct;
+          const isWrong = submitted && ans && ans !== net.correct;
           return (
-            <div key={item.id} className={`p-4 rounded-xl border transition-all ${isCorrect ? 'border-accent-primary-20 bg-accent-primary-5' : isWrong ? 'border-accent-tertiary-20 bg-accent-tertiary-5' : 'border-white-10 bg-bg-tertiary'}`}>
+            <div key={i} className={`p-4 rounded-xl border transition-all ${isCorrect ? 'border-accent-primary-20 bg-accent-primary-5' : isWrong ? 'border-accent-tertiary-20 bg-accent-tertiary-5' : 'border-white-10 bg-bg-tertiary'}`}>
               <div className="flex items-center justify-between gap-4">
-                <div style={{ flex: 1 }}>
-                  <p className="text-white font-bold text-sm">{item.label}</p>
-                  <p className="text-text-muted text-[10px] font-mono mt-1">{item.sample}</p>
+                <div className="flex items-center gap-3 flex-1">
+                  <span className="text-2xl">{net.icon}</span>
+                  <div>
+                    <p className="text-white font-bold text-sm">{net.name}</p>
+                    {submitted && <p className="text-text-muted text-[10px]">{net.hint}</p>}
+                  </div>
                 </div>
                 <div className="flex gap-2 flex-shrink-0">
-                  <button onClick={() => handleToggle(item.id, 'visible')} disabled={submitted}
-                    className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase border transition-all ${ans === 'visible' ? 'bg-accent-tertiary-10 border-accent-tertiary text-accent-tertiary' : 'border-white-10 text-text-muted hover:border-accent-tertiary-20 hover:text-accent-tertiary cursor-pointer'}`}
-                  >
-                    <Eye size={10} style={{ display: 'inline', marginRight: '4px' }} />Visible
-                  </button>
-                  <button onClick={() => handleToggle(item.id, 'hidden')} disabled={submitted}
-                    className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase border transition-all ${ans === 'hidden' ? 'bg-accent-primary-10 border-accent-primary text-accent-primary' : 'border-white-10 text-text-muted hover:border-accent-primary-20 hover:text-accent-primary cursor-pointer'}`}
-                  >
-                    <Lock size={10} style={{ display: 'inline', marginRight: '4px' }} />HTTPS Hides
-                  </button>
+                  <button onClick={() => handleToggle(i, 'private')} disabled={submitted}
+                    className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase border transition-all ${ans === 'private' ? 'bg-accent-primary-10 border-accent-primary text-accent-primary' : 'border-white-10 text-text-muted hover:border-accent-primary-20 hover:text-accent-primary cursor-pointer'}`}
+                  >🔒 Private</button>
+                  <button onClick={() => handleToggle(i, 'public')} disabled={submitted}
+                    className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase border transition-all ${ans === 'public' ? 'bg-accent-tertiary-10 border-accent-tertiary text-accent-tertiary' : 'border-white-10 text-text-muted hover:border-accent-tertiary-20 hover:text-accent-tertiary cursor-pointer'}`}
+                  >🌐 Public</button>
                 </div>
               </div>
               {submitted && isWrong && (
                 <p className="text-accent-tertiary text-[10px] mt-2 font-bold">
-                  ✗ {item.correct === 'hidden' ? 'HTTPS encrypts this — the attacker cannot read it.' : 'This remains visible even in HTTPS (IP/domain headers are not encrypted).'}
+                  ✗ This is a <strong>{net.correct}</strong> network — {net.hint.toLowerCase()}.
                 </p>
               )}
             </div>
@@ -804,8 +565,8 @@ const Level7Sniffing: React.FC<LevelProps> = ({ onComplete }) => {
       {submitted && (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
           <div className={`p-4 rounded-xl mb-4 ${score >= 5 ? 'bg-accent-primary-5 border border-accent-primary-20' : 'bg-accent-secondary-5 border border-accent-secondary-20'}`}>
-            <p className={`font-bold mb-1 ${score >= 5 ? 'text-accent-primary' : 'text-accent-secondary'}`}>{score}/{SNIFF_ITEMS.length} correct</p>
-            <p className="text-text-secondary text-xs leading-relaxed">HTTPS encrypts the entire payload — URL paths, cookies, passwords, body. But IP addresses and domain names (via SNI) remain visible even in HTTPS.</p>
+            <p className={`font-bold mb-1 ${score >= 5 ? 'text-accent-primary' : 'text-accent-secondary'}`}>{score}/{L5_NETWORKS.length} correct</p>
+            <p className="text-text-secondary text-xs leading-relaxed">Always think twice before connecting to a public network — avoid logging into banks or entering passwords on public Wi-Fi.</p>
           </div>
           <button onClick={() => onComplete(score >= 4)} className="neon-button-secondary w-full py-3 text-sm flex items-center justify-center gap-2">
             Continue <ArrowRight size={16} />
@@ -816,189 +577,286 @@ const Level7Sniffing: React.FC<LevelProps> = ({ onComplete }) => {
   );
 };
 
-// ── Level 8: ARP Spoofing ─────────────────────────────────────────────────────
-const L8_QUESTIONS = [
+// ── Level 6: Common Cybersecurity Risks — Match ───────────────────────────────
+const L6_PAIRS = [
+  { threat: 'Phishing',          desc: 'A fake email tricks you into clicking a link and entering your password' },
+  { threat: 'Malware',           desc: 'Malicious software installed on your device without your knowledge' },
+  { threat: 'Weak Password',     desc: 'Using "123456" makes it easy for attackers to guess your credentials' },
+  { threat: 'Social Engineering',desc: 'An attacker pretends to be IT support to get you to reveal your password' },
+];
+
+const Level6CyberRisks: React.FC<LevelProps> = ({ onComplete }) => {
+  const [shuffledDescs] = useState(() => [...L6_PAIRS].map(p => p.desc).sort(() => Math.random() - 0.5));
+  const [selectedThreat, setSelectedThreat] = useState<string | null>(null);
+  const [matched, setMatched] = useState<Record<string, string>>({});
+  const [wrongDesc, setWrongDesc] = useState<string | null>(null);
+
+  const handleThreatClick = (threat: string) => {
+    if (matched[threat]) return;
+    setSelectedThreat(t => t === threat ? null : threat);
+    setWrongDesc(null);
+  };
+
+  const handleDescClick = (desc: string) => {
+    if (!selectedThreat) return;
+    const correct = L6_PAIRS.find(p => p.threat === selectedThreat)?.desc === desc;
+    if (correct) {
+      setMatched(m => ({ ...m, [selectedThreat]: desc }));
+      setSelectedThreat(null);
+    } else {
+      setWrongDesc(desc);
+      setTimeout(() => setWrongDesc(null), 700);
+    }
+  };
+
+  const allMatched = Object.keys(matched).length === L6_PAIRS.length;
+
+  return (
+    <div className="cyber-card p-8">
+      <div className="flex items-center gap-3 mb-2">
+        <AlertTriangle size={20} className="text-accent-secondary" />
+        <h2 className="text-xl font-black text-white">Cybersecurity Threats</h2>
+      </div>
+      <p className="text-text-secondary text-sm mb-6">Match each threat with its correct description. Click a threat, then its description.</p>
+
+      <div className="grid grid-cols-2 gap-6">
+        <div className="space-y-3">
+          <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3">Threats</p>
+          {L6_PAIRS.map(p => (
+            <button key={p.threat} onClick={() => handleThreatClick(p.threat)} disabled={!!matched[p.threat]}
+              className={`w-full p-4 rounded-xl border text-left transition-all ${
+                matched[p.threat]
+                  ? 'bg-accent-primary-5 border-accent-primary-20 opacity-40 cursor-default'
+                  : selectedThreat === p.threat
+                    ? 'bg-accent-secondary-10 border-accent-secondary text-white cursor-pointer'
+                    : 'bg-white-5 border-white-10 text-text-secondary hover:border-accent-secondary-20 hover:text-white cursor-pointer'
+              }`}
+            >
+              <p className="font-black text-sm">{p.threat}</p>
+              {matched[p.threat] && <p className="text-[10px] text-accent-primary font-bold mt-1">✓ Matched</p>}
+            </button>
+          ))}
+        </div>
+
+        <div className="space-y-3">
+          <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3">Descriptions</p>
+          {shuffledDescs.map(desc => {
+            const isMatched = Object.values(matched).includes(desc);
+            return (
+              <button key={desc} onClick={() => handleDescClick(desc)} disabled={isMatched || !selectedThreat}
+                className={`w-full p-4 rounded-xl border text-left text-xs leading-relaxed transition-all ${
+                  isMatched
+                    ? 'bg-accent-primary-5 border-accent-primary-20 text-accent-primary opacity-40 cursor-default'
+                    : wrongDesc === desc
+                      ? 'bg-accent-tertiary-10 border-accent-tertiary text-accent-tertiary'
+                      : !selectedThreat
+                        ? 'bg-white-5 border-white-10 text-text-muted opacity-40 cursor-not-allowed'
+                        : 'bg-accent-secondary-5 border-accent-secondary-20 text-text-secondary hover:bg-accent-secondary-10 cursor-pointer'
+                }`}
+              >
+                {desc}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {selectedThreat && !allMatched && (
+        <div className="mt-4 p-3 bg-accent-secondary-5 border border-accent-secondary-20 rounded-xl">
+          <p className="text-accent-secondary text-sm">Selected: <strong>{selectedThreat}</strong> — now click its description</p>
+        </div>
+      )}
+
+      {allMatched && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-6">
+          <div className="p-4 bg-accent-primary-5 border border-accent-primary-20 rounded-xl mb-4">
+            <p className="text-accent-primary font-bold">✓ All matched! Recognizing these threats is your first line of defense.</p>
+          </div>
+          <button onClick={() => onComplete(true)} className="neon-button-secondary w-full py-3 text-sm flex items-center justify-center gap-2">
+            Continue <ArrowRight size={16} />
+          </button>
+        </motion.div>
+      )}
+    </div>
+  );
+};
+
+// ── Level 7: Spot the Phishing ────────────────────────────────────────────────
+const L7_MESSAGES = [
   {
-    q: 'What does ARP stand for, and what does it do?',
-    opts: ['Automated Routing Protocol — finds shortest path', 'Address Resolution Protocol — maps IP addresses to MAC addresses', 'Authentication Request Packet — verifies identity', 'Application Relay Protocol — proxies traffic'],
-    ans: 1,
-    exp: 'ARP maps IP addresses (Layer 3) to MAC addresses (Layer 2). When your PC wants to reach 192.168.1.1, it broadcasts "Who has 192.168.1.1? Tell me your MAC." The router replies with its MAC.',
+    from: 'security@bank0f-america.net',
+    subject: 'URGENT: Your account will be closed in 24 hours!',
+    body: 'Dear Customer, We detected suspicious activity. Click here immediately to verify your account or it will be permanently suspended.',
+    type: 'phishing',
+    clues: ['Fake domain (bank0f-america.net — notice the 0 instead of o)', 'Creates false urgency', 'Threatens consequences to panic you'],
   },
   {
-    q: 'In an ARP spoofing attack, what exactly does the attacker do?',
-    opts: ['Floods the network with SYN packets', 'Sends fake ARP replies linking their MAC to a victim\'s IP', 'Intercepts DNS queries to redirect traffic', 'Overflows the router\'s CAM table'],
-    ans: 1,
-    exp: 'The attacker broadcasts fake ARP replies: "192.168.1.1 is at MAC AA:BB:CC:DD:EE:FF (attacker\'s MAC)." Victims cache this and send all traffic to the attacker — a classic Man-in-the-Middle position.',
+    from: 'noreply@github.com',
+    subject: 'Your pull request was merged',
+    body: "Congrats! Your pull request #42 'Fix login bug' was merged into main by @teamlead. View it on GitHub.",
+    type: 'legitimate',
+    clues: ['Correct official domain (github.com)', 'No urgency or threats', 'Specific details about your actual activity'],
   },
   {
-    q: 'After a successful ARP spoofing attack, what can the attacker do?',
-    opts: ['Only crash the network — no data access', 'Only monitor traffic, cannot modify it', 'Intercept, read, and modify traffic between victims in real time', 'Only affect devices that initiated communication'],
-    ans: 2,
-    exp: 'ARP spoofing gives the attacker a full MITM position. They can read unencrypted data (passwords, cookies), inject malicious content into web pages, and forward modified traffic so victims notice nothing unusual.',
+    from: 'prize-winner@free-gifts-2024.com',
+    subject: 'You won an iPhone 15! Claim NOW',
+    body: "Congratulations!!! You've been selected as today's winner. Send your home address and credit card to claim your free prize immediately!",
+    type: 'phishing',
+    clues: ['Suspicious domain (free-gifts-2024.com)', 'Too good to be true offer', 'Asks for personal and financial information'],
   },
   {
-    q: 'Which defense best prevents ARP spoofing on a managed enterprise network?',
-    opts: ['Using a stronger Wi-Fi password', 'Updating all devices\' operating systems', 'Dynamic ARP Inspection (DAI) on managed switches', 'Running antivirus on each endpoint'],
-    ans: 2,
-    exp: 'Dynamic ARP Inspection (DAI) validates ARP packets against a trusted DHCP snooping binding table. Any ARP reply not matching the table is dropped, preventing poisoned entries from reaching devices.',
+    from: 'notifications@linkedin.com',
+    subject: 'John Smith viewed your profile',
+    body: 'Hi Alex, John Smith from Acme Corp viewed your LinkedIn profile. See who else viewed your profile this week.',
+    type: 'legitimate',
+    clues: ['Official LinkedIn domain', 'Normal notification with no action required', 'No requests for personal information'],
   },
 ];
 
-const Level8ARP: React.FC<LevelProps> = ({ onComplete }) => {
-  const [qIdx, setQIdx] = useState(0);
-  const [selected, setSelected] = useState<number | null>(null);
+const Level7Phishing: React.FC<LevelProps> = ({ onComplete }) => {
+  const [idx, setIdx] = useState(0);
+  const [selected, setSelected] = useState<string | null>(null);
   const [score, setScore] = useState(0);
 
-  const q = L8_QUESTIONS[qIdx];
-  const isCorrect = selected === q.ans;
+  const msg = L7_MESSAGES[idx];
+  const isCorrect = selected === msg.type;
 
-  const handleSelect = (i: number) => {
-    if (selected !== null) return;
-    setSelected(i);
-    if (i === q.ans) setScore(s => s + 1);
+  const handleSelect = (val: string) => {
+    if (selected) return;
+    setSelected(val);
+    if (val === msg.type) setScore(s => s + 1);
   };
 
   const handleNext = () => {
-    if (qIdx + 1 >= L8_QUESTIONS.length) onComplete(score >= 3);
-    else { setQIdx(i => i + 1); setSelected(null); }
+    if (idx + 1 >= L7_MESSAGES.length) { onComplete(score + (isCorrect ? 1 : 0) >= 3); return; }
+    setIdx(i => i + 1);
+    setSelected(null);
   };
 
   return (
     <div className="cyber-card p-8">
       <div className="flex items-center gap-3 mb-2">
-        <ShieldCheck size={20} className="text-accent-secondary" />
-        <h2 className="text-xl font-black text-white">ARP Spoofing Attack</h2>
-        <span className="ml-auto text-xs text-text-muted font-bold">{qIdx + 1}/{L8_QUESTIONS.length}</span>
+        <AlertTriangle size={20} className="text-accent-secondary" />
+        <h2 className="text-xl font-black text-white">Spot the Phishing Email</h2>
+        <span className="ml-auto text-xs text-text-muted font-bold">{idx + 1}/{L7_MESSAGES.length}</span>
       </div>
-      <p className="text-text-secondary text-sm mb-4">ARP is a fundamental LAN protocol — its lack of authentication makes it a classic attack surface.</p>
+      <p className="text-text-secondary text-sm mb-5">Read this email carefully. Is it legitimate or a phishing attempt?</p>
 
-      {qIdx === 1 && (
-        <div className="p-4 bg-accent-tertiary-5 border border-accent-tertiary-20 rounded-xl mb-5 font-mono text-xs text-text-secondary">
-          <p className="text-accent-tertiary font-bold mb-2">ARP Spoof — Scenario:</p>
-          <p>• Victim A (192.168.1.10) wants to reach Router (192.168.1.1)</p>
-          <p className="text-accent-tertiary mt-1">• Attacker sends: "192.168.1.1 is at MAC AA:BB:CC:DD:EE:FF" (FAKE)</p>
-          <p className="mt-1">• Victim A caches this → all packets now go to the attacker</p>
+      <div className="p-5 bg-bg-tertiary border border-white-10 rounded-2xl mb-5 font-mono text-xs space-y-2">
+        <p><span className="text-text-muted">From: </span><span className="text-accent-tertiary">{msg.from}</span></p>
+        <p><span className="text-text-muted">Subject: </span><span className="text-white font-bold">{msg.subject}</span></p>
+        <div className="border-t border-white-10 pt-3 mt-3">
+          <p className="text-text-secondary leading-relaxed font-sans text-sm">{msg.body}</p>
         </div>
-      )}
-
-      <div className="p-5 bg-accent-secondary-5 border border-accent-secondary-20 rounded-2xl mb-5">
-        <p className="text-white font-bold">{q.q}</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 mb-5">
-        {q.opts.map((opt, i) => (
-          <button key={i} onClick={() => handleSelect(i)}
-            className={`p-4 rounded-xl border text-left text-sm font-semibold transition-all ${
-              selected === null
-                ? 'bg-white-5 border-white-10 text-text-secondary hover:border-accent-secondary-20 hover:text-white hover:bg-accent-secondary-5 cursor-pointer'
-                : i === q.ans
-                  ? 'bg-accent-primary-10 border-accent-primary-20 text-accent-primary'
-                  : selected === i
-                    ? 'bg-accent-tertiary-10 border-accent-tertiary-20 text-accent-tertiary'
-                    : 'bg-white-5 border-white-10 text-text-muted opacity-40 cursor-default'
+      <div className="grid grid-cols-2 gap-4 mb-5">
+        {[
+          { val: 'phishing', label: 'Phishing', emoji: '🎣', color: 'tertiary' },
+          { val: 'legitimate', label: 'Legitimate', emoji: '✅', color: 'primary' },
+        ].map(opt => (
+          <button key={opt.val} onClick={() => handleSelect(opt.val)} disabled={!!selected}
+            className={`p-5 rounded-2xl border font-black text-sm uppercase tracking-wider transition-all flex flex-col items-center gap-2 ${
+              selected === opt.val
+                ? opt.val === msg.type
+                  ? 'bg-accent-primary-10 border-accent-primary text-accent-primary'
+                  : 'bg-accent-tertiary-10 border-accent-tertiary text-accent-tertiary'
+                : selected && opt.val === msg.type
+                  ? 'bg-accent-primary-5 border-accent-primary-20 text-accent-primary'
+                  : !selected
+                    ? 'bg-white-5 border-white-10 text-text-secondary hover:border-accent-secondary-20 hover:text-white cursor-pointer'
+                    : 'bg-white-5 border-white-10 text-text-muted opacity-30 cursor-default'
             }`}
           >
-            {opt}
+            <span className="text-2xl">{opt.emoji}</span>
+            {opt.label}
           </button>
         ))}
       </div>
 
-      {selected !== null && (
+      {selected && (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
           className={`p-4 rounded-xl mb-4 ${isCorrect ? 'bg-accent-primary-5 border border-accent-primary-20' : 'bg-accent-tertiary-5 border border-accent-tertiary-20'}`}
         >
-          <p className={`text-sm font-bold mb-1 ${isCorrect ? 'text-accent-primary' : 'text-accent-tertiary'}`}>
-            {isCorrect ? '✓ Correct!' : '✗ Not quite.'}
+          <p className={`text-sm font-bold mb-2 ${isCorrect ? 'text-accent-primary' : 'text-accent-tertiary'}`}>
+            {isCorrect ? `✓ Correct! This is ${msg.type}.` : `✗ This is actually ${msg.type}.`}
           </p>
-          <p className="text-text-secondary text-xs leading-relaxed">{q.exp}</p>
+          <p className="text-text-muted text-[10px] font-black uppercase tracking-widest mb-1">Red flags / clues:</p>
+          <ul className="space-y-1">
+            {msg.clues.map((c, i) => (
+              <li key={i} className="text-text-secondary text-xs">• {c}</li>
+            ))}
+          </ul>
         </motion.div>
       )}
 
-      {selected !== null && (
+      {selected && (
         <button onClick={handleNext} className="neon-button-secondary w-full py-3 text-sm flex items-center justify-center gap-2">
-          {qIdx + 1 >= L8_QUESTIONS.length ? 'Finish Level' : 'Next Question'} <ArrowRight size={16} />
+          {idx + 1 >= L7_MESSAGES.length ? 'Finish Level' : 'Next Email'} <ArrowRight size={16} />
         </button>
       )}
     </div>
   );
 };
 
-// ── Level 9: Firewall Rules ───────────────────────────────────────────────────
-const FW_RULES_TEXT = `RULE 1: ALLOW  TCP  ANY → 192.168.1.100 : 443
-RULE 2: ALLOW  TCP  10.0.0.0/8 → 192.168.1.100 : 22
-RULE 3: DENY   ALL`;
-
-interface FWPacket { src: string; proto: string; port: number; correct: 'allow' | 'deny'; reason: string; }
-const FW_PACKETS: FWPacket[] = [
-  { src: '1.2.3.4',   proto: 'TCP', port: 443, correct: 'allow', reason: 'Rule 1 allows TCP from any source to port 443.' },
-  { src: '1.2.3.4',   proto: 'TCP', port: 22,  correct: 'deny',  reason: '1.2.3.4 is outside 10.0.0.0/8. Rule 2 doesn\'t match. Rule 3 (DENY ALL) applies.' },
-  { src: '10.0.0.5',  proto: 'UDP', port: 443, correct: 'deny',  reason: 'Rule 1 requires TCP, not UDP. Rule 3 catches this.' },
-  { src: '10.0.0.5',  proto: 'TCP', port: 22,  correct: 'allow', reason: '10.0.0.5 is in 10.0.0.0/8. Rule 2 allows TCP to port 22.' },
-  { src: '1.2.3.4',   proto: 'TCP', port: 80,  correct: 'deny',  reason: 'No rule allows port 80. Rule 3 (DENY ALL) applies.' },
-  { src: '10.0.0.1',  proto: 'TCP', port: 443, correct: 'allow', reason: '10.0.0.1 is internal AND Rule 1 allows any TCP to port 443.' },
+// ── Level 8: Safe vs Unsafe Behaviors ─────────────────────────────────────────
+const L8_BEHAVIORS = [
+  { text: 'Use the same password for all your accounts', correct: 'unsafe', reason: 'If one account is hacked, all others are compromised too.' },
+  { text: 'Enable two-factor authentication (2FA) on email and bank accounts', correct: 'safe', reason: '2FA adds a second verification step, making it much harder for attackers.' },
+  { text: 'Click a link in an unexpected email asking you to "verify your account"', correct: 'unsafe', reason: 'This is a classic phishing technique. Always go to the website directly.' },
+  { text: 'Keep your phone and computer software updated', correct: 'safe', reason: 'Updates patch security vulnerabilities that attackers could exploit.' },
+  { text: 'Connect to any free public Wi-Fi to check your bank account', correct: 'unsafe', reason: 'Public Wi-Fi is unencrypted — attackers on the same network can intercept your data.' },
+  { text: 'Log out of accounts when using a shared or public computer', correct: 'safe', reason: 'Logging out prevents the next person from accessing your account.' },
 ];
 
-const Level9Firewall: React.FC<LevelProps> = ({ onComplete }) => {
-  const [decisions, setDecisions] = useState<Record<number, 'allow' | 'deny'>>({});
+const Level8SafeUnsafe: React.FC<LevelProps> = ({ onComplete }) => {
+  const [answers, setAnswers] = useState<Record<number, 'safe' | 'unsafe'>>({});
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
 
-  const handleDecision = (i: number, d: 'allow' | 'deny') => {
+  const handleToggle = (i: number, val: 'safe' | 'unsafe') => {
     if (submitted) return;
-    setDecisions(p => ({ ...p, [i]: d }));
+    setAnswers(a => ({ ...a, [i]: val }));
   };
 
   const handleSubmit = () => {
     let s = 0;
-    FW_PACKETS.forEach((p, i) => { if (decisions[i] === p.correct) s++; });
+    L8_BEHAVIORS.forEach((b, i) => { if (answers[i] === b.correct) s++; });
     setScore(s);
     setSubmitted(true);
   };
 
-  const allDecided = FW_PACKETS.every((_, i) => decisions[i] !== undefined);
+  const allAnswered = L8_BEHAVIORS.every((_, i) => answers[i] !== undefined);
 
   return (
     <div className="cyber-card p-8">
       <div className="flex items-center gap-3 mb-2">
-        <Shield size={20} className="text-accent-secondary" />
-        <h2 className="text-xl font-black text-white">Firewall Rule Engine</h2>
+        <ShieldCheck size={20} className="text-accent-secondary" />
+        <h2 className="text-xl font-black text-white">Safe or Unsafe?</h2>
       </div>
-      <p className="text-text-secondary text-sm mb-4">Apply the ruleset to decide if each incoming packet should be ALLOWED or DENIED.</p>
-
-      <div className="p-4 bg-bg-tertiary border border-white-10 rounded-xl mb-6 font-mono text-xs">
-        <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Active Ruleset</p>
-        {FW_RULES_TEXT.split('\n').map((rule, i) => (
-          <p key={i} className={`leading-relaxed ${i === 2 ? 'text-accent-tertiary' : 'text-accent-primary'}`}>{rule}</p>
-        ))}
-      </div>
+      <p className="text-text-secondary text-sm mb-5">Rate each behavior. Your choices reveal your cybersecurity instincts!</p>
 
       <div className="space-y-3 mb-5">
-        {FW_PACKETS.map((pkt, i) => {
-          const dec = decisions[i];
-          const isCorrect = submitted && dec === pkt.correct;
-          const isWrong = submitted && dec !== pkt.correct;
+        {L8_BEHAVIORS.map((b, i) => {
+          const ans = answers[i];
+          const isCorrect = submitted && ans === b.correct;
+          const isWrong = submitted && ans && ans !== b.correct;
           return (
             <div key={i} className={`p-4 rounded-xl border transition-all ${isCorrect ? 'border-accent-primary-20 bg-accent-primary-5' : isWrong ? 'border-accent-tertiary-20 bg-accent-tertiary-5' : 'border-white-10 bg-bg-tertiary'}`}>
-              <div className="flex items-center gap-4">
-                <div style={{ flex: 1 }} className="font-mono text-xs">
-                  <span className="text-accent-secondary">{pkt.proto}</span>
-                  <span className="text-text-muted"> from </span>
-                  <span className="text-white">{pkt.src}</span>
-                  <span className="text-text-muted"> → :&nbsp;</span>
-                  <span className="text-accent-primary">{pkt.port}</span>
-                </div>
+              <div className="flex items-center justify-between gap-4">
+                <p className="text-white font-semibold text-sm flex-1">{b.text}</p>
                 <div className="flex gap-2 flex-shrink-0">
-                  <button onClick={() => handleDecision(i, 'allow')} disabled={submitted}
-                    className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase border transition-all ${dec === 'allow' ? 'bg-accent-primary-10 border-accent-primary text-accent-primary' : 'border-white-10 text-text-muted hover:border-accent-primary-20 hover:text-accent-primary cursor-pointer'}`}
-                  >Allow</button>
-                  <button onClick={() => handleDecision(i, 'deny')} disabled={submitted}
-                    className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase border transition-all ${dec === 'deny' ? 'bg-accent-tertiary-10 border-accent-tertiary text-accent-tertiary' : 'border-white-10 text-text-muted hover:border-accent-tertiary-20 hover:text-accent-tertiary cursor-pointer'}`}
-                  >Deny</button>
+                  <button onClick={() => handleToggle(i, 'safe')} disabled={submitted}
+                    className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase border transition-all ${ans === 'safe' ? 'bg-accent-primary-10 border-accent-primary text-accent-primary' : 'border-white-10 text-text-muted hover:border-accent-primary-20 hover:text-accent-primary cursor-pointer'}`}
+                  >✓ Safe</button>
+                  <button onClick={() => handleToggle(i, 'unsafe')} disabled={submitted}
+                    className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase border transition-all ${ans === 'unsafe' ? 'bg-accent-tertiary-10 border-accent-tertiary text-accent-tertiary' : 'border-white-10 text-text-muted hover:border-accent-tertiary-20 hover:text-accent-tertiary cursor-pointer'}`}
+                  >✗ Unsafe</button>
                 </div>
               </div>
               {submitted && (
                 <p className={`text-[10px] mt-2 font-bold ${isCorrect ? 'text-accent-primary' : 'text-accent-tertiary'}`}>
-                  {isCorrect ? '✓' : '✗'} {pkt.reason}
+                  {isCorrect ? '✓' : `✗ This is ${b.correct}.`} {b.reason}
                 </p>
               )}
             </div>
@@ -1007,19 +865,17 @@ const Level9Firewall: React.FC<LevelProps> = ({ onComplete }) => {
       </div>
 
       {!submitted && (
-        <button onClick={handleSubmit} disabled={!allDecided}
+        <button onClick={handleSubmit} disabled={!allAnswered}
           className="neon-button-secondary w-full py-3 text-sm flex items-center justify-center gap-2 disabled:opacity-20 disabled:cursor-not-allowed"
         >
-          Submit Decisions <ArrowRight size={16} />
+          Submit <ArrowRight size={16} />
         </button>
       )}
 
       {submitted && (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
           <div className={`p-4 rounded-xl mb-4 ${score >= 5 ? 'bg-accent-primary-5 border border-accent-primary-20' : 'bg-accent-secondary-5 border border-accent-secondary-20'}`}>
-            <p className={`font-bold ${score >= 5 ? 'text-accent-primary' : 'text-accent-secondary'}`}>
-              {score}/{FW_PACKETS.length} correct — {score >= 5 ? 'Excellent firewall instincts!' : 'Review the rule reasoning above.'}
-            </p>
+            <p className={`font-bold ${score >= 5 ? 'text-accent-primary' : 'text-accent-secondary'}`}>{score}/{L8_BEHAVIORS.length} correct</p>
           </div>
           <button onClick={() => onComplete(score >= 4)} className="neon-button-secondary w-full py-3 text-sm flex items-center justify-center gap-2">
             Continue <ArrowRight size={16} />
@@ -1030,142 +886,153 @@ const Level9Firewall: React.FC<LevelProps> = ({ onComplete }) => {
   );
 };
 
-// ── Level 10: Packet Builder ──────────────────────────────────────────────────
-const Level10PacketBuilder: React.FC<LevelProps> = ({ onComplete }) => {
-  const [dstIP, setDstIP] = useState('');
-  const [protocol, setProtocol] = useState('TCP');
-  const [port, setPort] = useState('');
-  const [useEncryption, setUseEncryption] = useState(false);
-  const [payload, setPayload] = useState('');
-  const [sent, setSent] = useState(false);
-  const [errors, setErrors] = useState<string[]>([]);
-  const [animating, setAnimating] = useState(false);
+// ── Level 9: Password & Network Security Best Practices ───────────────────────
+const L9_QUESTIONS = [
+  {
+    q: 'Which of these is the strongest password?',
+    opts: ['password123', 'John1990', 'Tr0ub4dor&3!zK', 'qwerty'],
+    ans: 2,
+    exp: 'A strong password is long (12+ characters), mixes uppercase, lowercase, numbers, and symbols, and avoids personal information or dictionary words.',
+  },
+  {
+    q: "You're at an airport using public Wi-Fi. What should you avoid doing?",
+    opts: [
+      'Browsing news websites',
+      'Logging into your bank account',
+      'Watching YouTube videos',
+      'Checking the weather',
+    ],
+    ans: 1,
+    exp: "Public Wi-Fi is unencrypted. Avoid logging into sensitive accounts (banking, email) on public networks. If you must, use a VPN.",
+  },
+  {
+    q: 'What does Two-Factor Authentication (2FA) do?',
+    opts: [
+      'Requires you to enter your password twice',
+      'Blocks all hackers automatically',
+      'Adds a second verification step (like a text code) after your password',
+      'Encrypts your entire hard drive',
+    ],
+    ans: 2,
+    exp: 'Even if someone steals your password, 2FA stops them — they also need your phone or a second code to access the account.',
+  },
+  {
+    q: 'You receive an email with an urgent link to "reset your password immediately." What is the safest action?',
+    opts: [
+      'Click the link and enter your new password quickly',
+      'Forward it to all your contacts as a warning',
+      'Delete it and go directly to the website by typing the URL in your browser',
+      'Reply to ask if the email is real',
+    ],
+    ans: 2,
+    exp: 'Never click links in suspicious emails. Always navigate directly to the website yourself. Phishing sites can look identical to real ones.',
+  },
+];
 
-  const validate = (): string[] => {
-    const errs: string[] = [];
-    if (!dstIP.match(/^\d{1,3}(\.\d{1,3}){3}$/))
-      errs.push('Destination IP must be a valid IPv4 address (e.g. 93.184.216.34)');
-    else if (/^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(dstIP))
-      errs.push('Use a public IP address (not private ranges like 10.x, 192.168.x, or 172.16-31.x)');
-    if (!port) errs.push('Select a destination port');
-    if (port === '443' && !useEncryption) errs.push('Port 443 is for HTTPS — toggle Encryption ON');
-    if (port === '80' && useEncryption) errs.push('Port 80 is plain HTTP — use port 443 for encrypted traffic');
-    if (!payload.trim()) errs.push('Payload cannot be empty');
-    return errs;
+const Level9BestPractices: React.FC<LevelProps> = ({ onComplete }) => {
+  const [qIdx, setQIdx] = useState(0);
+  const [score, setScore] = useState(0);
+
+  const handleNext = (correct: boolean) => {
+    const newScore = score + (correct ? 1 : 0);
+    if (qIdx + 1 >= L9_QUESTIONS.length) { onComplete(newScore >= 3); return; }
+    setScore(newScore);
+    setQIdx(i => i + 1);
   };
 
-  const handleSend = () => {
-    const errs = validate();
-    if (errs.length > 0) { setErrors(errs); return; }
-    setErrors([]);
-    setAnimating(true);
-    setTimeout(() => { setAnimating(false); setSent(true); }, 1500);
+  const q = L9_QUESTIONS[qIdx];
+  return (
+    <div className="cyber-card p-8">
+      <div className="flex items-center gap-3 mb-6">
+        <Shield size={20} className="text-accent-secondary" />
+        <h2 className="text-xl font-black text-white">Security Best Practices</h2>
+      </div>
+      <MCQ key={qIdx} question={q.q} options={q.opts} answer={q.ans} explanation={q.exp}
+        qNum={qIdx + 1} qTotal={L9_QUESTIONS.length} onNext={handleNext} />
+    </div>
+  );
+};
+
+// ── Level 10: Real-World Scenario Challenge ───────────────────────────────────
+const L10_SCENARIOS = [
+  {
+    situation: "You're at a café and receive a pop-up: 'Your computer is infected with 3 viruses! Call 1-800-HELP-NOW immediately to fix it.'",
+    question: 'What should you do?',
+    opts: [
+      'Call the number immediately — it sounds urgent',
+      'Close the pop-up and run your real antivirus software',
+      'Give the pop-up access to your computer to remove the viruses',
+      'Pay the fee shown to remove the viruses',
+    ],
+    ans: 1,
+    exp: "This is 'scareware' — a fake pop-up designed to panic you into calling scammers or installing malware. Real antivirus software doesn't work this way. Always close and run your legitimate security software.",
+  },
+  {
+    situation: 'Your friend texts you a link saying "I found a funny video of you, check it out!" but the link looks strange (e.g., bit.ly/xK9pzw).',
+    question: 'What is the safest response?',
+    opts: [
+      'Click it — your friend sent it so it must be safe',
+      "Don't click it and message your friend directly to ask if they actually sent it",
+      'Click it but immediately close your browser if it looks weird',
+      'Share it with other friends so they can check it for you',
+    ],
+    ans: 1,
+    exp: "Attackers can hack your friend's account and send links to all their contacts. Always verify directly through another channel (call or text separately) before clicking suspicious links, even from known contacts.",
+  },
+  {
+    situation: 'You want to create a new account for an online game. The site asks for your full name, home address, phone number, school name, and credit card.',
+    question: 'What should you do?',
+    opts: [
+      'Fill in everything — sites need this information to work',
+      'Fill in only what is absolutely necessary and question why a game needs your home address or credit card',
+      'Use fake information everywhere',
+      'Ask a friend to use their information instead',
+    ],
+    ans: 1,
+    exp: "The principle of 'data minimization' — only share what's necessary. A free game shouldn't need your home address. Always question why a service needs each piece of information before sharing it.",
+  },
+  {
+    situation: 'You log into the school Wi-Fi and notice a network called "FREE_School_WiFi" next to the official "School_Network". You normally use the official one.',
+    question: 'What is the most likely risk of connecting to "FREE_School_WiFi"?',
+    opts: [
+      'Nothing — more Wi-Fi options are always better',
+      'It could be a rogue access point set up by an attacker to intercept your traffic',
+      "It's probably a backup school network for when the main one is busy",
+      'It will drain your battery faster',
+    ],
+    ans: 1,
+    exp: "This is called an 'Evil Twin' attack — a fake Wi-Fi network that mimics a legitimate one. All your traffic goes through the attacker's device. Always connect to verified, official networks.",
+  },
+];
+
+const Level10Scenario: React.FC<LevelProps> = ({ onComplete }) => {
+  const [qIdx, setQIdx] = useState(0);
+  const [score, setScore] = useState(0);
+
+  const handleNext = (correct: boolean) => {
+    const newScore = score + (correct ? 1 : 0);
+    if (qIdx + 1 >= L10_SCENARIOS.length) { onComplete(newScore >= 3); return; }
+    setScore(newScore);
+    setQIdx(i => i + 1);
   };
 
+  const s = L10_SCENARIOS[qIdx];
   return (
     <div className="cyber-card p-8">
       <div className="flex items-center gap-3 mb-2">
-        <Package size={20} className="text-accent-secondary" />
-        <h2 className="text-xl font-black text-white">Build & Send a Secure Packet</h2>
+        <Smartphone size={20} className="text-accent-secondary" />
+        <h2 className="text-xl font-black text-white">Real-World Scenarios</h2>
+        <span className="ml-auto text-xs text-text-muted font-bold">{qIdx + 1}/{L10_SCENARIOS.length}</span>
       </div>
-      <p className="text-text-secondary text-sm mb-6">
-        Fill in the packet fields correctly. The system will validate your configuration before transmitting.
-      </p>
+      <p className="text-text-secondary text-sm mb-5">Apply everything you've learned to handle these real situations.</p>
 
-      {!sent ? (
-        <>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label className="text-[10px] font-black text-text-muted uppercase tracking-widest block mb-2">Source IP (your device)</label>
-              <input value="192.168.1.10" readOnly
-                className="w-full bg-bg-tertiary border border-white-10 rounded-xl px-4 py-3 text-sm text-text-muted opacity-60" />
-            </div>
-            <div>
-              <label className="text-[10px] font-black text-text-muted uppercase tracking-widest block mb-2">Destination IP *</label>
-              <input type="text" value={dstIP} onChange={e => { setDstIP(e.target.value); setErrors([]); }}
-                placeholder="e.g. 93.184.216.34"
-                className="w-full bg-bg-tertiary border border-white-10 rounded-xl px-4 py-3 text-sm text-white placeholder-text-muted focus:outline-none focus:border-accent-secondary transition-all" />
-            </div>
-            <div>
-              <label className="text-[10px] font-black text-text-muted uppercase tracking-widest block mb-2">Protocol *</label>
-              <select value={protocol} onChange={e => setProtocol(e.target.value)}
-                className="w-full bg-bg-tertiary border border-white-10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-accent-secondary transition-all"
-              >
-                <option>TCP</option><option>UDP</option><option>ICMP</option>
-              </select>
-            </div>
-            <div>
-              <label className="text-[10px] font-black text-text-muted uppercase tracking-widest block mb-2">Destination Port *</label>
-              <select value={port} onChange={e => { setPort(e.target.value); setErrors([]); }}
-                className="w-full bg-bg-tertiary border border-white-10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-accent-secondary transition-all"
-              >
-                <option value="">-- Select port --</option>
-                <option value="80">80 (HTTP)</option>
-                <option value="443">443 (HTTPS)</option>
-                <option value="22">22 (SSH)</option>
-                <option value="21">21 (FTP)</option>
-                <option value="53">53 (DNS)</option>
-              </select>
-            </div>
-          </div>
+      <div className="p-5 bg-accent-tertiary-5 border border-accent-tertiary-20 rounded-2xl mb-2">
+        <p className="text-[10px] font-black text-accent-tertiary uppercase tracking-widest mb-2">Situation</p>
+        <p className="text-white font-semibold text-sm leading-relaxed">{s.situation}</p>
+      </div>
 
-          <div className="mb-4">
-            <label className="text-[10px] font-black text-text-muted uppercase tracking-widest block mb-2">Payload / Message *</label>
-            <input type="text" value={payload} onChange={e => { setPayload(e.target.value); setErrors([]); }}
-              placeholder='e.g. GET /index.html HTTP/1.1'
-              className="w-full bg-bg-tertiary border border-white-10 rounded-xl px-4 py-3 text-sm text-white placeholder-text-muted focus:outline-none focus:border-accent-secondary transition-all" />
-          </div>
-
-          <div className="mb-6 flex items-center gap-4 p-4 bg-bg-tertiary rounded-xl border border-white-10">
-            <button onClick={() => { setUseEncryption(e => !e); setErrors([]); }}
-              className={`w-12 h-6 rounded-full border transition-all relative flex-shrink-0 ${useEncryption ? 'bg-accent-primary border-accent-primary' : 'bg-bg-primary border-white-10'}`}
-            >
-              <div className={`absolute top-0.5 w-5 h-5 rounded-full transition-all ${useEncryption ? 'bg-bg-primary left-6' : 'bg-white left-0.5'}`} />
-            </button>
-            <div>
-              <p className="text-white font-bold text-sm">Use Encryption (TLS / HTTPS)</p>
-              <p className="text-text-secondary text-xs">Required for port 443 — encrypts the entire payload</p>
-            </div>
-            {useEncryption && <Lock size={18} className="text-accent-primary" style={{ marginLeft: 'auto' }} />}
-          </div>
-
-          {errors.length > 0 && (
-            <div className="p-4 bg-accent-tertiary-5 border border-accent-tertiary-20 rounded-xl mb-4">
-              {errors.map((e, i) => <p key={i} className="text-accent-tertiary text-xs font-bold">✗ {e}</p>)}
-            </div>
-          )}
-
-          <button onClick={handleSend} disabled={animating}
-            className="neon-button-secondary w-full py-3 text-sm flex items-center justify-center gap-2"
-          >
-            {animating
-              ? <><RefreshCw size={16} className="animate-spin" /> Transmitting...</>
-              : <>Send Packet <ArrowRight size={16} /></>}
-          </button>
-        </>
-      ) : (
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-6">
-          <div className="w-20 h-20 rounded-full bg-accent-primary-10 border-2 border-accent-primary flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 size={40} className="text-accent-primary" />
-          </div>
-          <h3 className="text-2xl font-black text-white mb-2">Packet Delivered!</h3>
-          <div className="p-5 bg-accent-primary-5 border border-accent-primary-20 rounded-2xl mb-4 text-left font-mono text-xs">
-            <p className="text-text-muted">SRC: <span className="text-white">192.168.1.10</span></p>
-            <p className="text-text-muted">DST: <span className="text-white">{dstIP}:{port}</span></p>
-            <p className="text-text-muted">PROTO: <span className="text-white">{protocol}</span></p>
-            <p className="text-text-muted">TLS: <span className={useEncryption ? 'text-accent-primary' : 'text-accent-tertiary'}>{useEncryption ? 'ENABLED ✓' : 'DISABLED'}</span></p>
-            <p className="text-text-muted">PAYLOAD: <span className="text-white">{useEncryption ? '▒▒▒ ENCRYPTED ▒▒▒' : payload}</span></p>
-          </div>
-          <p className="text-text-secondary text-sm mb-6">
-            {useEncryption
-              ? 'Your data is encrypted. A network attacker cannot read the payload.'
-              : 'Warning: payload transmitted in plaintext. Anyone on the network can read it.'}
-          </p>
-          <button onClick={() => onComplete(true)} className="neon-button-secondary px-8 py-3 text-sm flex items-center justify-center gap-2 mx-auto">
-            Complete Lab <Trophy size={16} />
-          </button>
-        </motion.div>
-      )}
+      <MCQ key={qIdx} question={s.question} options={s.opts} answer={s.ans} explanation={s.exp}
+        qNum={qIdx + 1} qTotal={L10_SCENARIOS.length} onNext={handleNext} />
     </div>
   );
 };
@@ -1205,7 +1072,7 @@ const CertScreen: React.FC<{
       </div>
       <h2 className="text-3xl font-black text-white mb-2">Lab Complete!</h2>
       <p className="text-text-secondary mb-2">You've mastered the fundamentals of</p>
-      <p className="text-accent-secondary font-black text-xl mb-8">Network Packet Transmission</p>
+      <p className="text-accent-secondary font-black text-xl mb-8">Network & Cybersecurity Basics</p>
       <p className="text-text-muted text-sm mb-3">Enter your name for the certificate:</p>
       <input type="text" value={certName} onChange={e => setCertName(e.target.value)}
         placeholder="Your full name..."
@@ -1248,11 +1115,11 @@ const NetworkLab: React.FC<NetworkLabProps> = ({ onComplete }) => {
     const name = certName.trim() || 'Student';
     const record: CertificateRecord = {
       moduleId: 'net-packets',
-      moduleName: 'Network Packet Transmission',
+      moduleName: 'Network & Cybersecurity Basics',
       userName: name,
       date: new Date().toLocaleDateString(),
     };
-    await generateCertificate(name, 'Network Packet Transmission');
+    await generateCertificate(name, 'Network & Cybersecurity Basics');
     setCertSaved(true);
     onComplete(record);
   };
@@ -1260,16 +1127,16 @@ const NetworkLab: React.FC<NetworkLabProps> = ({ onComplete }) => {
   const renderLevel = () => {
     if (levelDone) return <LevelResult correct={levelCorrect} level={level} total={TOTAL_LEVELS} onNext={handleNextLevel} />;
     switch (level) {
-      case 1:  return <Level1PacketAnatomy  onComplete={handleLevelComplete} />;
-      case 2:  return <Level2OSIModel       onComplete={handleLevelComplete} />;
-      case 3:  return <Level3IPAddressing   onComplete={handleLevelComplete} />;
-      case 4:  return <Level4TCPHandshake   onComplete={handleLevelComplete} />;
-      case 5:  return <Level5Ports          onComplete={handleLevelComplete} />;
-      case 6:  return <Level6PacketRouting  onComplete={handleLevelComplete} />;
-      case 7:  return <Level7Sniffing       onComplete={handleLevelComplete} />;
-      case 8:  return <Level8ARP            onComplete={handleLevelComplete} />;
-      case 9:  return <Level9Firewall       onComplete={handleLevelComplete} />;
-      case 10: return <Level10PacketBuilder onComplete={handleLevelComplete} />;
+      case 1:  return <Level1WiredWireless       onComplete={handleLevelComplete} />;
+      case 2:  return <Level2NetworkComponents   onComplete={handleLevelComplete} />;
+      case 3:  return <Level3HowDataTravels      onComplete={handleLevelComplete} />;
+      case 4:  return <Level4InternetJourney     onComplete={handleLevelComplete} />;
+      case 5:  return <Level5PrivatePublic       onComplete={handleLevelComplete} />;
+      case 6:  return <Level6CyberRisks          onComplete={handleLevelComplete} />;
+      case 7:  return <Level7Phishing            onComplete={handleLevelComplete} />;
+      case 8:  return <Level8SafeUnsafe          onComplete={handleLevelComplete} />;
+      case 9:  return <Level9BestPractices       onComplete={handleLevelComplete} />;
+      case 10: return <Level10Scenario           onComplete={handleLevelComplete} />;
       default: return null;
     }
   };
@@ -1293,14 +1160,13 @@ const NetworkLab: React.FC<NetworkLabProps> = ({ onComplete }) => {
 
   return (
     <div className="p-8 max-w-4xl mx-auto animate-fade-in">
-      {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-accent-secondary-10 rounded-xl text-accent-secondary">
             <Network size={22} />
           </div>
           <div>
-            <h1 className="text-2xl font-black text-white">Network Packet Lab</h1>
+            <h1 className="text-2xl font-black text-white">Network & Security Lab</h1>
             <p className="text-text-muted text-[10px] font-black uppercase tracking-widest">Level {level} of {TOTAL_LEVELS}</p>
           </div>
         </div>
@@ -1320,7 +1186,6 @@ const NetworkLab: React.FC<NetworkLabProps> = ({ onComplete }) => {
         </div>
       </div>
 
-      {/* Level pills */}
       <div className="flex gap-1 mb-8 overflow-x-auto pb-1">
         {Array.from({ length: TOTAL_LEVELS }, (_, i) => i + 1).map(n => (
           <div key={n}
@@ -1337,7 +1202,6 @@ const NetworkLab: React.FC<NetworkLabProps> = ({ onComplete }) => {
         ))}
       </div>
 
-      {/* Content */}
       <AnimatePresence mode="wait">
         <motion.div
           key={`${level}-${levelDone}`}
