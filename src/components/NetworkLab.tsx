@@ -2,9 +2,9 @@ import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Network, ArrowRight, Lock, Monitor, Globe,
-  CheckCircle2, XCircle, ShieldCheck,
+  CheckCircle2, ShieldCheck,
   Trophy, Download, Check, Shield, Wifi, RefreshCw, Zap,
-  AlertTriangle, Router, Smartphone, Home, WifiOff
+  AlertTriangle, Router, Smartphone, WifiOff
 } from 'lucide-react';
 import { generateCertificate } from '../utils/certificate';
 import type { CertificateRecord } from '../types';
