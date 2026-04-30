@@ -11,7 +11,7 @@ interface DashboardProps {
     certificates: CertificateRecord[];
 }
 
-const TOTAL_MODULES = 5;
+const TOTAL_MODULES = 6;
 
 const MODULE_NAMES: Record<string, string> = {
     'malware-101': 'Malware Lab',
@@ -19,6 +19,7 @@ const MODULE_NAMES: Record<string, string> = {
     'social-eng': 'Phishing Detector',
     'social-eng-sim': 'Social Engineering Pro',
     'net-packets': 'Network Packet Lab',
+    'ip-classifier': 'IP Address Classification',
 };
 
 const Dashboard: React.FC<DashboardProps> = ({ onSelectLesson, completedLessons, certificates }) => {
@@ -31,6 +32,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectLesson, completedLessons,
             case 'ShieldAlert': return <ShieldAlert size={24} />;
             case 'Users': return <Users size={24} />;
             case 'Network': return <Network size={24} />;
+            case 'Globe': return <Globe size={24} />;
             default: return <Zap size={24} />;
         }
     };

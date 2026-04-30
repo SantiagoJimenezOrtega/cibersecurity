@@ -54,5 +54,13 @@ export const lessons: Lesson[] = [
     icon: 'Users',
     difficulty: 'Advanced',
     category: 'Social'
+  },
+  {
+    id: 'ip-classifier',
+    title: 'IP Address Classification',
+    description: 'Learn to classify IPv4 and IPv6 addresses — identify private ranges (RFC 1918), public IPs, loopback, APIPA, broadcast, and link-local addresses across 10 levels.',
+    icon: 'Globe',
+    difficulty: 'Beginner',
+    category: 'Network'
   }
 ];
