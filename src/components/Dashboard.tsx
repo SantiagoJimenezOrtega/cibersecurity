@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Bug, Key, ShieldAlert, Zap, Globe, ArrowRight, Users, Trophy, Award, Download, Network, Database, ShieldCheck, BookOpen, Mail, AlertOctagon, Cpu } from 'lucide-react';
+import { Bug, Key, ShieldAlert, Zap, Globe, ArrowRight, Users, Trophy, Award, Download, Network, Database, ShieldCheck, BookOpen, Mail, AlertOctagon, Cpu, Wrench } from 'lucide-react';
 import { lessons } from '../types';
 import type { CertificateRecord, Grade } from '../types';
 import { generateCertificate } from '../utils/certificate';
@@ -26,6 +26,7 @@ const getIcon = (name: string) => {
         case 'MailWarning':  return <Mail size={24} />;
         case 'AlertOctagon': return <AlertOctagon size={24} />;
         case 'Cpu':          return <Cpu size={24} />;
+        case 'Wrench':       return <Wrench size={24} />;
         default:             return <Zap size={24} />;
     }
 };

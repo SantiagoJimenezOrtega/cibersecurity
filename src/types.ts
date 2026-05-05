@@ -73,6 +73,15 @@ export const lessons: Lesson[] = [
     category: 'Network',
     grade: 'grade11'
   },
+  {
+    id: 'cyber-tools-quiz',
+    title: 'Cyber Tools Quiz',
+    description: 'Demuestra que sabes cuándo y cómo usar cada herramienta: VPN, gestor de contraseñas, VirusTotal, verificadores de URL, navegadores seguros, 2FA y más — 30 preguntas, 50 minutos.',
+    icon: 'Wrench',
+    difficulty: 'Intermediate',
+    category: 'Security',
+    grade: 'grade11'
+  },
   // ── Grado 9 ───────────────────────────────────────────
   {
     id: 'data-risks',

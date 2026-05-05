@@ -8,6 +8,7 @@ import PhishingLab from './components/PhishingLab';
 import SocialEngPro from './components/SocialEngPro';
 import NetworkLab from './components/NetworkLab';
 import IPClassifierLab from './components/IPClassifierLab';
+import CyberToolsQuizLab from './components/CyberToolsQuizLab';
 import DataRisksLab from './components/DataRisksLab';
 import SecurityPracticesLab from './components/SecurityPracticesLab';
 import SecurityGuidesLab from './components/SecurityGuidesLab';
@@ -79,6 +80,8 @@ function App() {
         return <NetworkLab onComplete={(cert) => handleComplete('net-packets', cert)} />;
       case 'ip-classifier':
         return <IPClassifierLab onComplete={(cert) => handleComplete('ip-classifier', cert)} />;
+      case 'cyber-tools-quiz':
+        return <CyberToolsQuizLab onComplete={(cert) => handleComplete('cyber-tools-quiz', cert)} />;
       // ── Grado 9 ───────────────────────────────────────
       case 'data-risks':
         return <DataRisksLab onComplete={(cert) => handleComplete('data-risks', cert)} />;

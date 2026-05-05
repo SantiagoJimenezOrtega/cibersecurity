@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Bug, Key, Home, Settings, Info, Users, CheckCircle2, Trash2, Trophy, BookOpen, X, AlertTriangle, ShieldAlert, Brain, User, Check, Network, Globe, Database, ShieldCheck, Mail, AlertOctagon, Cpu, GraduationCap } from 'lucide-react';
+import { Shield, Bug, Key, Home, Settings, Info, Users, CheckCircle2, Trash2, Trophy, BookOpen, X, AlertTriangle, ShieldAlert, Brain, User, Check, Network, Globe, Database, ShieldCheck, Mail, AlertOctagon, Cpu, GraduationCap, Wrench } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Grade } from '../types';
 
@@ -146,6 +146,7 @@ const HelpModal: React.FC<{ onClose: () => void; grade: Grade }> = ({ onClose, g
         { icon: <Brain size={18} />, name: 'Social Engineering Pro', color: 'text-accent-primary', bg: 'bg-accent-primary-5 border-accent-primary-20', desc: '10 realistic attack scenarios — phone calls, chats, and in-person encounters.' },
         { icon: <Network size={18} />, name: 'Network Packet Lab', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '10 levels covering packet anatomy, OSI model, TCP handshakes, routing, sniffing, ARP spoofing, and firewall rules.' },
         { icon: <Globe size={18} />, name: 'IP Classification', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '10 levels to master IPv4/IPv6 recognition, private vs public ranges, loopback, APIPA, and broadcast addresses.' },
+        { icon: <Wrench size={18} />, name: 'Cyber Tools Quiz', color: 'text-accent-primary', bg: 'bg-accent-primary-5 border-accent-primary-20', desc: '30 preguntas sobre VPN, gestores de contraseñas, VirusTotal, verificadores de URL, navegadores seguros, 2FA y más — formato quiz para 50 minutos.' },
     ];
 
     const grade9Modules = [
@@ -233,6 +234,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentLessonId, onSelectLesson, comp
         { id: 'social-eng-sim', icon: <Users size={20} />,       label: 'Social Engineering' },
         { id: 'net-packets',    icon: <Network size={20} />,     label: 'Network Packets' },
         { id: 'ip-classifier',  icon: <Globe size={20} />,       label: 'IP Classification' },
+        { id: 'cyber-tools-quiz', icon: <Wrench size={20} />,   label: 'Cyber Tools Quiz' },
     ];
 
     const grade9Items = [
