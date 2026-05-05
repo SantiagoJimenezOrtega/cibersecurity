@@ -9,38 +9,38 @@ import type { IntroSlide } from './IntroModal';
 const INTRO_SLIDES: IntroSlide[] = [
     {
         icon: <Shield size={40} />,
-        subtitle: 'Herramientas de ciberseguridad',
-        title: 'Tu Arsenal de Defensa Digital',
-        body: 'Un profesional de seguridad no solo conoce los ataques — sabe exactamente qué herramienta usar en cada situación. VPNs, gestores de contraseñas, navegadores seguros, verificadores de URLs: cada una tiene un propósito específico y un momento correcto de uso.',
-        highlight: 'El 95% de los incidentes de seguridad son evitables con el uso correcto de herramientas disponibles gratuitamente.',
+        subtitle: 'Cybersecurity tools',
+        title: 'Your Digital Defense Arsenal',
+        body: 'A security professional does not just know the attacks — they know exactly which tool to use in each situation. VPNs, password managers, secure browsers, URL checkers: each has a specific purpose and a correct moment of use.',
+        highlight: '95% of security incidents are preventable with the correct use of freely available tools.',
     },
     {
         icon: <Lock size={40} />,
-        subtitle: 'Contraseñas y gestores',
-        title: 'La Primera Línea de Defensa',
-        body: 'Una contraseña débil es una puerta abierta. Los gestores de contraseñas generan y almacenan credenciales únicas y complejas para cada servicio. Combinados con autenticación de dos factores (2FA), hacen casi imposible el acceso no autorizado.',
-        highlight: 'Reutilizar contraseñas es el error #1: si un sitio es hackeado, todos tus demás cuentas quedan expuestas.',
+        subtitle: 'Passwords and managers',
+        title: 'The First Line of Defense',
+        body: 'A weak password is an open door. Password managers generate and store unique, complex credentials for every service. Combined with two-factor authentication (2FA), they make unauthorized access nearly impossible.',
+        highlight: 'Reusing passwords is the #1 mistake: if one site is breached, every other account you use that password on is exposed.',
     },
     {
         icon: <Globe size={40} />,
-        subtitle: 'VPN y navegación segura',
-        title: 'Protege Tu Tráfico',
-        body: 'Una VPN cifra tu conexión y oculta tu IP real, esencial en redes Wi-Fi públicas. Los navegadores seguros como Firefox o Brave bloquean rastreadores, fingerprinting y anuncios maliciosos que los navegadores comerciales permiten por defecto.',
-        highlight: 'Una VPN no te hace anónimo — te protege en redes no confiables. Para anonimato real se necesita Tor.',
+        subtitle: 'VPN and safe browsing',
+        title: 'Protect Your Traffic',
+        body: 'A VPN encrypts your connection and hides your real IP — essential on public Wi-Fi. Secure browsers like Firefox or Brave block trackers, fingerprinting, and malicious ads that commercial browsers allow by default.',
+        highlight: 'A VPN does not make you anonymous — it protects you on untrusted networks. For real anonymity you need Tor.',
     },
     {
         icon: <Eye size={40} />,
-        subtitle: 'Verificación de amenazas',
-        title: 'Antes de Hacer Clic, Verifica',
-        body: 'VirusTotal analiza archivos y URLs contra más de 70 motores antivirus simultáneamente. Los verificadores de URLs como URLVoid detectan phishing, malware y reputación de dominios antes de que visites el sitio.',
-        highlight: 'Un archivo limpio en VirusTotal no garantiza 100% seguridad — algunos malware de día cero aún no están en las bases de datos.',
+        subtitle: 'Threat verification',
+        title: 'Before You Click, Verify',
+        body: 'VirusTotal scans files and URLs against 70+ antivirus engines simultaneously. URL checkers like URLVoid detect phishing, malware, and domain reputation before you visit the site.',
+        highlight: 'A clean result on VirusTotal does not guarantee 100% safety — some zero-day malware is not yet in the databases.',
     },
     {
         icon: <Zap size={40} />,
-        subtitle: 'Tu misión',
-        title: '30 Preguntas — 50 Minutos',
-        body: 'Pondrás a prueba tu conocimiento sobre cuándo y cómo usar cada herramienta. Cada pregunta presenta un escenario real y cuatro opciones. Lee con atención — los detalles importan en ciberseguridad.',
-        highlight: 'Aprueba con 70% o más (21/30) para demostrar competencia profesional en herramientas de seguridad.',
+        subtitle: 'Your mission',
+        title: '30 Questions — 50 Minutes',
+        body: 'You will be tested on when and how to use each tool. Every question presents a real-world scenario with four options. Read carefully — details matter in cybersecurity.',
+        highlight: 'Score 70% or higher (21/30) to demonstrate professional competence in security tools.',
     },
 ];
 
@@ -58,113 +58,113 @@ const QUESTIONS: Question[] = [
     {
         id: 1,
         category: 'VPN',
-        question: 'Estás en un café y necesitas acceder a tu cuenta bancaria desde el Wi-Fi público. ¿Cuál es la acción más segura?',
+        question: 'You are at a café and need to access your bank account over public Wi-Fi. What is the safest action?',
         options: [
-            'Conectarte directamente — el banco usa HTTPS así que ya estás protegido',
-            'Activar tu VPN primero y luego acceder al banco',
-            'Usar el modo incógnito del navegador',
-            'Cambiar la contraseña del Wi-Fi antes de conectarte',
+            'Connect directly — the bank uses HTTPS so you are already protected',
+            'Activate your VPN first, then access the bank',
+            'Use the browser\'s incognito mode',
+            'Change the Wi-Fi password before connecting',
         ],
         correct: 1,
-        explanation: 'HTTPS solo cifra el tráfico entre tú y el servidor, pero no protege contra ataques de intermediario (MITM) en redes locales no confiables. Una VPN cifra todo tu tráfico desde el dispositivo, incluyendo el DNS, protegiéndote del operador de la red Wi-Fi.',
+        explanation: 'HTTPS only encrypts traffic between you and the server, but does not protect against man-in-the-middle (MITM) attacks on untrusted local networks. A VPN encrypts all your traffic from the device — including DNS — protecting you from the Wi-Fi operator.',
     },
     {
         id: 2,
         category: 'VPN',
-        question: '¿Cuál de estas afirmaciones sobre las VPNs es CORRECTA?',
+        question: 'Which of these statements about VPNs is CORRECT?',
         options: [
-            'Una VPN te hace completamente anónimo en internet',
-            'Una VPN protege tu tráfico de ser espiado en redes locales no confiables',
-            'Una VPN evita que los sitios web rastreen tus cookies',
-            'Una VPN acelera tu conexión a internet en todos los casos',
+            'A VPN makes you completely anonymous on the internet',
+            'A VPN protects your traffic from being intercepted on untrusted local networks',
+            'A VPN prevents websites from tracking your cookies',
+            'A VPN always speeds up your internet connection',
         ],
         correct: 1,
-        explanation: 'Una VPN cifra tu tráfico entre tu dispositivo y el servidor VPN, protegiéndote en redes no confiables. No te hace anónimo (el proveedor VPN puede ver tu tráfico), no elimina cookies, y generalmente agrega latencia, no velocidad.',
+        explanation: 'A VPN encrypts your traffic between your device and the VPN server, protecting you on untrusted networks. It does not make you anonymous (the VPN provider can see your traffic), does not remove cookies, and typically adds latency rather than speed.',
     },
     {
         id: 3,
         category: 'VPN',
-        question: 'Tu empresa te exige usar VPN corporativa para acceder a los servidores internos desde casa. ¿Por qué es necesaria esta medida?',
+        question: 'Your company requires you to use a corporate VPN to access internal servers from home. Why is this measure necessary?',
         options: [
-            'Para que la empresa pueda espiar tu navegación personal',
-            'Para crear un túnel cifrado que extiende la red privada corporativa a tu conexión doméstica',
-            'Para bloquear sitios web no relacionados con el trabajo',
-            'Para aumentar la velocidad de descarga de archivos corporativos',
+            'So the company can monitor your personal browsing',
+            'To create an encrypted tunnel that extends the corporate private network to your home connection',
+            'To block websites unrelated to work',
+            'To increase download speed for corporate files',
         ],
         correct: 1,
-        explanation: 'La VPN corporativa crea un túnel cifrado entre tu dispositivo y la red interna de la empresa. Esto permite que tu computador actúe como si estuviera físicamente dentro de la oficina, accediendo a recursos internos que no están expuestos a internet.',
+        explanation: 'The corporate VPN creates an encrypted tunnel between your device and the company\'s internal network, allowing your computer to act as if it were physically inside the office — accessing internal resources not exposed to the public internet.',
     },
     {
         id: 4,
         category: 'VPN',
-        question: '¿En cuál de estos escenarios una VPN NO es la herramienta principal que necesitas?',
+        question: 'In which of these scenarios is a VPN NOT the primary tool you need?',
         options: [
-            'Acceder a contenido bloqueado geográficamente',
-            'Navegar de forma privada en Wi-Fi de aeropuerto',
-            'Eliminar un virus ya instalado en tu computadora',
-            'Ocultar tu actividad del proveedor de internet (ISP)',
+            'Accessing geo-blocked content from another country',
+            'Browsing privately on airport Wi-Fi',
+            'Removing a virus already installed on your computer',
+            'Hiding your activity from your ISP',
         ],
         correct: 2,
-        explanation: 'Para eliminar malware ya instalado necesitas un antivirus/antimalware, no una VPN. La VPN protege el tráfico de red pero no puede detectar ni eliminar software malicioso en tu dispositivo local.',
+        explanation: 'To remove malware already installed you need antivirus/antimalware software, not a VPN. A VPN protects network traffic but cannot detect or remove malicious software on your local device.',
     },
-    // ── Gestores de contraseñas ───────────────────────────────
+    // ── Password Managers ─────────────────────────────────────
     {
         id: 5,
-        category: 'Gestor de contraseñas',
-        question: '¿Cuál es la ventaja principal de usar un gestor de contraseñas como Bitwarden o 1Password?',
+        category: 'Password Managers',
+        question: 'What is the main advantage of using a password manager like Bitwarden or 1Password?',
         options: [
-            'Permite usar la misma contraseña segura en todos los sitios',
-            'Genera y almacena contraseñas únicas y complejas para cada cuenta sin que debas memorizarlas',
-            'Guarda tus contraseñas en un archivo de texto cifrado en tu escritorio',
-            'Comparte automáticamente tus contraseñas con contactos de confianza',
+            'It lets you use the same strong password on every site',
+            'It generates and stores unique, complex passwords for each account without you having to memorize them',
+            'It saves your passwords in an encrypted text file on your desktop',
+            'It automatically shares your passwords with trusted contacts',
         ],
         correct: 1,
-        explanation: 'La ventaja principal es poder tener contraseñas únicas, largas y aleatorias para cada cuenta sin tener que memorizarlas. Solo debes recordar una contraseña maestra robusta. Esto elimina el riesgo de que una brecha en un sitio comprometa otras cuentas.',
+        explanation: 'The key benefit is having unique, long, random passwords for every account without memorizing them — you only need one strong master password. This eliminates the risk of a breach on one site compromising other accounts.',
     },
     {
         id: 6,
-        category: 'Gestor de contraseñas',
-        question: 'Tu contraseña maestra del gestor es "Mi_Perro_Se_Llama_Toby2019". Un compañero dice que es débil porque contiene palabras del diccionario. ¿Quién tiene razón?',
+        category: 'Password Managers',
+        question: 'Your password manager master password is "My_Dog_Is_Named_Toby2019". A colleague says it is weak because it contains dictionary words. Who is right?',
         options: [
-            'Tu compañero — cualquier contraseña con palabras comunes es débil',
-            'Tú — una frase larga con variaciones es más resistente que una cadena corta de caracteres aleatorios',
-            'Ninguno — la longitud y los números son lo único que importa',
-            'Tu compañero — debes usar solo caracteres especiales como @#$%',
+            'Your colleague — any password with common words is weak',
+            'You — a long passphrase with variations is more resistant than a short random character string',
+            'Neither — only length and numbers matter',
+            'Your colleague — you must use only special characters like @#$%',
         ],
         correct: 1,
-        explanation: 'Las frases de contraseña (passphrases) largas son muy resistentes. Con 30+ caracteres, el costo computacional del ataque de fuerza bruta es astronómico. Una contraseña corta de caracteres aleatorios como "Xk!9mP" es más fácil de atacar que una frase larga aunque contenga palabras comunes.',
+        explanation: 'Long passphrases are extremely resistant. With 30+ characters, the computational cost of a brute-force attack is astronomical. A short random string like "Xk!9mP" is actually easier to crack than a long phrase, even if the phrase contains common words.',
     },
     {
         id: 7,
-        category: 'Gestor de contraseñas',
-        question: 'Recibes un email que dice: "Hemos detectado actividad sospechosa en tu Bitwarden. Haz clic aquí para verificar tu contraseña maestra." ¿Qué haces?',
+        category: 'Password Managers',
+        question: 'You receive an email: "We detected suspicious activity on your Bitwarden. Click here to verify your master password." What do you do?',
         options: [
-            'Haces clic y verificas inmediatamente — la seguridad es prioritaria',
-            'Ignoras el email y accedes directamente a bitwarden.com para revisar tu cuenta',
-            'Cambias tu contraseña maestra desde el enlace del email',
-            'Reenvías el email a tus contactos para que también estén alertados',
+            'Click and verify immediately — security is top priority',
+            'Ignore the email and go directly to bitwarden.com to review your account',
+            'Change your master password using the link in the email',
+            'Forward the email to your contacts so they are also alerted',
         ],
         correct: 1,
-        explanation: 'Este es un ataque de phishing clásico dirigido a usuarios de gestores de contraseñas. Nunca hagas clic en enlaces de emails de seguridad — siempre ve directamente al sitio oficial escribiendo la URL. Los gestores legítimos nunca te piden tu contraseña maestra por email.',
+        explanation: 'This is a classic phishing attack targeting password manager users. Never click links in security emails — always go directly to the official site by typing the URL. Legitimate password managers will never ask for your master password via email.',
     },
     {
         id: 8,
-        category: 'Gestor de contraseñas',
-        question: '¿Qué hace la función "auditoría de contraseñas" incluida en la mayoría de gestores de contraseñas?',
+        category: 'Password Managers',
+        question: 'What does the "password audit" feature included in most password managers do?',
         options: [
-            'Cambia automáticamente todas tus contraseñas cada 30 días',
-            'Identifica contraseñas reutilizadas, débiles o que aparecen en bases de datos de brechas conocidas',
-            'Comprueba si los sitios web que usas tienen certificado SSL',
-            'Genera un reporte para compartir con tu empleador',
+            'Automatically changes all your passwords every 30 days',
+            'Identifies reused, weak, or compromised passwords that appear in known breach databases',
+            'Checks whether the websites you use have an SSL certificate',
+            'Generates a report to share with your employer',
         ],
         correct: 1,
-        explanation: 'La auditoría de contraseñas cruza tus credenciales contra bases de datos como HaveIBeenPwned, detecta reutilización de contraseñas entre sitios, identifica contraseñas cortas o simples, y te alerta para que las cambies antes de que sean explotadas.',
+        explanation: 'Password auditing cross-references your credentials against databases like HaveIBeenPwned, flags reused passwords across sites, identifies short or simple passwords, and alerts you to change them before they are exploited.',
     },
-    // ── Contraseñas seguras ───────────────────────────────────
+    // ── Secure Passwords ──────────────────────────────────────
     {
         id: 9,
-        category: 'Contraseñas Seguras',
-        question: '¿Cuál de estas contraseñas es la MÁS SEGURA para una cuenta crítica?',
+        category: 'Secure Passwords',
+        question: 'Which of these passwords is the MOST SECURE for a critical account?',
         options: [
             'Colombia2024!',
             'Tr0ub4dor&3',
@@ -172,299 +172,299 @@ const QUESTIONS: Question[] = [
             'admin123',
         ],
         correct: 2,
-        explanation: '"hV$9kP!mQx2#nL7@wE4z" es la más segura: 20 caracteres con mayúsculas, minúsculas, números y símbolos sin patrón reconocible. "Colombia2024!" usa información predecible. "Tr0ub4dor&3" es popular pero aparece en diccionarios de ataques. "admin123" es trivial.',
+        explanation: '"hV$9kP!mQx2#nL7@wE4z" is the most secure: 20 characters with uppercase, lowercase, numbers, and symbols in no recognizable pattern. "Colombia2024!" uses predictable information. "Tr0ub4dor&3" is popular and appears in attack dictionaries. "admin123" is trivial.',
     },
     {
         id: 10,
-        category: 'Contraseñas Seguras',
-        question: '¿Cuánto tiempo estimado tarda un ataque de fuerza bruta en romper una contraseña de 8 caracteres con solo letras minúsculas en hardware moderno?',
+        category: 'Secure Passwords',
+        question: 'How long does it typically take a modern brute-force attack (using a GPU) to crack an 8-character password using only lowercase letters?',
         options: [
-            'Varios años',
-            'Varios meses',
-            'Menos de un día',
-            'Varias décadas',
+            'Several years',
+            'Several months',
+            'Less than a day',
+            'Several decades',
         ],
         correct: 2,
-        explanation: 'Con hardware moderno (GPU), una contraseña de 8 caracteres en minúsculas (26^8 = ~200 billones de combinaciones) puede romperse en minutos u horas. Agregar mayúsculas, números y símbolos y extender a 12+ caracteres aumenta el tiempo a décadas o siglos.',
+        explanation: 'With modern hardware (GPU), an 8-character lowercase-only password (26^8 ≈ 200 billion combinations) can be cracked in minutes to hours. Adding uppercase, numbers, symbols, and extending to 12+ characters pushes the time to decades or centuries.',
     },
     {
         id: 11,
-        category: 'Contraseñas Seguras',
-        question: 'Tu servicio de email te pide cambiar tu contraseña cada 90 días obligatoriamente. Según las guías modernas del NIST (Instituto Nacional de Estándares), ¿es esta una buena práctica?',
+        category: 'Secure Passwords',
+        question: 'Your email service forces you to change your password every 90 days. According to modern NIST guidelines, is this a good practice?',
         options: [
-            'Sí — cambiar contraseñas frecuentemente siempre mejora la seguridad',
-            'No — el cambio forzado lleva a contraseñas predecibles como "Empresa2024" → "Empresa2025"',
-            'Solo si la contraseña tiene menos de 8 caracteres',
-            'Sí, pero solo para cuentas bancarias',
+            'Yes — changing passwords frequently always improves security',
+            'No — forced rotation leads to predictable patterns like "Company2024" → "Company2025"',
+            'Only if the password has fewer than 8 characters',
+            'Yes, but only for banking accounts',
         ],
         correct: 1,
-        explanation: 'El NIST (SP 800-63B) ya no recomienda rotación periódica obligatoria de contraseñas. Los usuarios tienden a crear variaciones predecibles. La recomendación actual es: contraseñas largas y únicas, cambiadas solo cuando hay evidencia de compromiso, y con 2FA activado.',
+        explanation: 'NIST (SP 800-63B) no longer recommends mandatory periodic password rotation. Users tend to create predictable variations. The current recommendation: long unique passwords, changed only when there is evidence of compromise, with 2FA enabled.',
     },
     {
         id: 12,
-        category: 'Contraseñas Seguras',
-        question: '¿Qué es un ataque de "credential stuffing"?',
+        category: 'Secure Passwords',
+        question: 'What is a "credential stuffing" attack?',
         options: [
-            'Adivinar contraseñas probando todas las combinaciones posibles',
-            'Usar listas de usuario/contraseña robadas de una brecha para probar acceso en otros servicios',
-            'Instalar un keylogger para capturar lo que el usuario escribe',
-            'Engañar al usuario para que revele su contraseña por teléfono',
+            'Guessing passwords by trying every possible combination',
+            'Using stolen username/password lists from one breach to try access on other services',
+            'Installing a keylogger to capture what the user types',
+            'Tricking a user into revealing their password over the phone',
         ],
         correct: 1,
-        explanation: 'El credential stuffing explota la reutilización de contraseñas. Los atacantes toman millones de credenciales filtradas de una brecha (ej: una app de delivery) y las prueban automáticamente en bancos, email, etc. La única defensa efectiva es usar contraseñas únicas + 2FA.',
+        explanation: 'Credential stuffing exploits password reuse. Attackers take millions of credentials leaked from one breach (e.g., a delivery app) and automatically test them on banks, email, and other services. The only effective defense is unique passwords per site combined with 2FA.',
     },
-    // ── Navegadores seguros ───────────────────────────────────
+    // ── Secure Browsers ───────────────────────────────────────
     {
         id: 13,
-        category: 'Navegadores Seguros',
-        question: '¿Cuál es la diferencia principal entre Firefox con uBlock Origin y Chrome sin extensiones de privacidad?',
+        category: 'Secure Browsers',
+        question: 'What is the main difference between Firefox with uBlock Origin and Chrome without privacy extensions?',
         options: [
-            'Firefox es más lento pero descarga archivos más rápido',
-            'Firefox bloquea rastreadores de terceros por defecto; Chrome permite que Google y socios rastreen tu actividad entre sitios',
-            'Chrome tiene mejor soporte para estándares web modernos',
-            'No hay diferencia significativa en privacidad entre los dos navegadores',
+            'Firefox is slower but downloads files faster',
+            'Firefox blocks third-party trackers by default; Chrome allows Google and partners to track your activity across sites',
+            'Chrome has better support for modern web standards',
+            'There is no significant privacy difference between the two browsers',
         ],
         correct: 1,
-        explanation: 'Firefox con uBlock Origin bloquea rastreadores entre sitios, fingerprinting y anuncios maliciosos. Chrome, al ser desarrollado por Google (una empresa publicitaria), permite más rastreo por defecto. Brave va aún más lejos bloqueando scripts de rastreo a nivel del navegador.',
+        explanation: 'Firefox with uBlock Origin blocks cross-site trackers, fingerprinting, and malicious ads. Chrome, developed by Google (an advertising company), allows more tracking by default. Brave goes even further by blocking tracking scripts at the browser engine level.',
     },
     {
         id: 14,
-        category: 'Navegadores Seguros',
-        question: 'Visitas un sitio y el navegador muestra un candado junto a la URL (HTTPS). ¿Esto garantiza que el sitio es legítimo y seguro?',
+        category: 'Secure Browsers',
+        question: 'You visit a site and the browser shows a padlock next to the URL (HTTPS). Does this guarantee the site is legitimate and safe?',
         options: [
-            'Sí — HTTPS garantiza que el sitio es auténtico y no malicioso',
-            'No — HTTPS solo cifra la conexión, pero un sitio de phishing puede tener certificado SSL válido',
-            'Sí — los sitios con HTTPS están verificados por el gobierno',
-            'No — HTTPS ya no es relevante para la seguridad web moderna',
+            'Yes — HTTPS guarantees the site is authentic and not malicious',
+            'No — HTTPS only encrypts the connection; a phishing site can have a valid SSL certificate',
+            'Yes — sites with HTTPS are verified by the government',
+            'No — HTTPS is no longer relevant to modern web security',
         ],
         correct: 1,
-        explanation: 'HTTPS solo garantiza que la comunicación está cifrada y que el dominio corresponde al certificado. Un atacante puede crear "https://paypa1.com" con certificado SSL válido. El candado no valida que el sitio sea legítimo — debes verificar la URL completa con atención.',
+        explanation: 'HTTPS only guarantees the connection is encrypted and the domain matches the certificate. An attacker can create "https://paypa1.com" with a valid free SSL certificate. The padlock does not validate legitimacy — always check the full URL carefully.',
     },
     {
         id: 15,
-        category: 'Navegadores Seguros',
-        question: '¿Para qué sirve el modo incógnito/privado del navegador?',
+        category: 'Secure Browsers',
+        question: 'What does the browser\'s incognito / private mode actually do?',
         options: [
-            'Oculta tu actividad de tu proveedor de internet (ISP)',
-            'No guarda historial, cookies ni datos de formulario en el dispositivo local',
-            'Protege contra virus y malware durante la sesión',
-            'Te hace invisible para los sitios web que visitas',
+            'It hides your activity from your internet service provider (ISP)',
+            'It does not save browsing history, cookies, or form data on the local device',
+            'It protects against viruses and malware during the session',
+            'It makes you invisible to the websites you visit',
         ],
         correct: 1,
-        explanation: 'El modo incógnito solo evita que el navegador guarde historial, cookies y caché en tu dispositivo. Tu ISP, empleador (si usas la red de la empresa), y los sitios web que visitas aún pueden ver tu actividad. No proporciona privacidad en la red ni protección contra malware.',
+        explanation: 'Incognito mode only prevents the browser from saving history, cookies, and cache on your device. Your ISP, employer (if using a company network), and the websites you visit can still see your activity. It provides no network privacy and no malware protection.',
     },
     {
         id: 16,
-        category: 'Navegadores Seguros',
-        question: '¿Qué extensión del navegador representa el mayor riesgo de seguridad si se instala sin verificar?',
+        category: 'Secure Browsers',
+        question: 'Which browser extension represents the greatest security risk if installed without verification?',
         options: [
-            'Un bloqueador de anuncios de una empresa reconocida',
-            'Una extensión de "traductor" de una fuente desconocida que solicita leer y modificar todos los datos del sitio',
-            'El gestor de contraseñas oficial de Bitwarden',
-            'La extensión oficial de tu banco para pagos seguros',
+            'An ad blocker from a well-known company',
+            'A "translator" extension from an unknown source that requests permission to read and modify all data on every site',
+            'The official Bitwarden password manager extension',
+            'Your bank\'s official extension for secure payments',
         ],
         correct: 1,
-        explanation: 'Las extensiones con permisos para "leer y modificar todos los datos en todos los sitios" de fuentes desconocidas son extremadamente peligrosas. Pueden robar contraseñas, interceptar sesiones bancarias e inyectar código malicioso en cualquier página que visites. Solo instala extensiones de fuentes verificadas.',
+        explanation: 'Extensions with permission to "read and modify all data on all websites" from unknown sources are extremely dangerous. They can steal passwords, intercept banking sessions, and inject malicious code into any page you visit. Only install extensions from verified, trusted sources.',
     },
     // ── VirusTotal ────────────────────────────────────────────
     {
         id: 17,
         category: 'VirusTotal',
-        question: 'Descargas un archivo ejecutable (.exe) de internet. ¿Cuál es el procedimiento correcto usando VirusTotal?',
+        question: 'You download an executable file (.exe) from the internet. What is the correct procedure using VirusTotal?',
         options: [
-            'Ejecutar el archivo primero y subirlo a VirusTotal si el antivirus lo detecta',
-            'Subir el archivo a VirusTotal ANTES de ejecutarlo y revisar el resultado de los 70+ motores',
-            'VirusTotal solo sirve para URLs, no para archivos',
-            'Subir el archivo a VirusTotal y ejecutarlo si al menos 1 motor dice que es limpio',
+            'Run the file first and upload it to VirusTotal if your antivirus detects it',
+            'Upload the file to VirusTotal BEFORE running it and review the results from 70+ engines',
+            'VirusTotal only works for URLs, not files',
+            'Upload the file and run it if at least 1 engine says it is clean',
         ],
         correct: 1,
-        explanation: 'Siempre analiza archivos ANTES de ejecutarlos. VirusTotal corre el archivo contra 70+ motores antivirus simultáneamente. Si varios motores lo detectan como malicioso, no lo ejecutes. Si está "limpio" pero es de fuente desconocida, aún procede con cautela — el malware de día cero puede no estar catalogado.',
+        explanation: 'Always analyze files BEFORE executing them. VirusTotal runs the file against 70+ antivirus engines simultaneously. If several engines flag it as malicious, do not run it. Even if "clean," proceed with caution for files from unknown sources — zero-day malware may not yet be cataloged.',
     },
     {
         id: 18,
         category: 'VirusTotal',
-        question: 'Subes un archivo a VirusTotal y 3 de 72 motores lo marcan como sospechoso. Los otros 69 dicen que es limpio. ¿Cómo interpretas este resultado?',
+        question: 'You upload a file to VirusTotal and 3 out of 72 engines flag it as suspicious. The other 69 say it is clean. How do you interpret this result?',
         options: [
-            'El archivo es definitivamente malicioso — cualquier detección es señal de peligro',
-            'El archivo es definitivamente seguro — la mayoría lo aprueba',
-            'Es un "falso positivo" probable, pero si el archivo es de fuente desconocida, investiga más antes de ejecutar',
-            'VirusTotal tiene un error — debes subir el archivo de nuevo',
+            'The file is definitely malicious — any detection is a danger signal',
+            'The file is definitely safe — the majority approves it',
+            'Likely a false positive, but if the file is from an unknown source, investigate further before running it',
+            'VirusTotal has a bug — you should upload the file again',
         ],
         correct: 2,
-        explanation: 'Las detecciones de 1-3 motores cuando la mayoría está limpio son frecuentemente falsos positivos, especialmente en software legítimo nuevo. Sin embargo, si el archivo es de origen desconocido o sospechoso, investiga más: busca el nombre del archivo, verifica el hash SHA256, y considera no ejecutarlo.',
+        explanation: '1–3 detections when the majority is clean are frequently false positives, especially for new legitimate software. However, if the file is from an unknown or suspicious origin, investigate further: search the filename, verify the SHA256 hash, and consider not running it.',
     },
     {
         id: 19,
         category: 'VirusTotal',
-        question: '¿Qué información adicional valiosa ofrece VirusTotal además del análisis antivirus?',
+        question: 'What additional valuable information does VirusTotal provide beyond antivirus scanning?',
         options: [
-            'Solo muestra si el archivo tiene virus o no',
-            'Muestra comportamiento del archivo, relaciones con otros archivos/IPs, metadatos, y historial de detecciones',
-            'Repara automáticamente los archivos infectados',
-            'Bloquea el archivo malicioso antes de que llegue a tu computadora',
+            'It only shows whether the file has a virus or not',
+            'It shows file behavior, relationships with other files/IPs, metadata, and detection history over time',
+            'It automatically repairs infected files',
+            'It blocks malicious files before they reach your computer',
         ],
         correct: 1,
-        explanation: 'VirusTotal es mucho más que un escáner: muestra análisis de comportamiento en sandbox, relaciones con dominios/IPs/archivos relacionados, metadatos (fecha de compilación, strings internos), y el historial temporal de detecciones. Esta información es invaluable para análisis forense.',
+        explanation: 'VirusTotal is far more than a scanner: it shows sandbox behavior analysis, relationships to domains/IPs/related files, metadata (compilation date, internal strings), and the timeline of detection changes. This information is invaluable for forensic analysis.',
     },
     {
         id: 20,
         category: 'VirusTotal',
-        question: 'Un investigador de seguridad te advierte: "No subas documentos confidenciales a VirusTotal." ¿Por qué?',
+        question: 'A security researcher warns you: "Do not upload confidential documents to VirusTotal." Why?',
         options: [
-            'VirusTotal cobra por analizar documentos con datos privados',
-            'Los archivos subidos se comparten con los socios de VirusTotal y pueden ser descargados por otros investigadores',
-            'VirusTotal solo puede analizar archivos ejecutables (.exe)',
-            'No hay razón — VirusTotal es completamente privado',
+            'VirusTotal charges extra for documents with private data',
+            'Uploaded files are shared with VirusTotal\'s partners and can be downloaded by other researchers',
+            'VirusTotal can only analyze executable files (.exe)',
+            'There is no reason — VirusTotal is completely private',
         ],
         correct: 1,
-        explanation: 'VirusTotal comparte muestras con sus socios (empresas de seguridad) y los archivos pueden ser accedidos por investigadores con cuentas premium. Nunca subas documentos con datos personales, contratos confidenciales, código fuente propietario o cualquier información sensible.',
+        explanation: 'VirusTotal shares samples with its security-company partners, and files can be accessed by researchers with premium accounts. Never upload documents containing personal data, confidential contracts, proprietary source code, or any sensitive information.',
     },
-    // ── Verificadores de URL ──────────────────────────────────
+    // ── URL Checkers ──────────────────────────────────────────
     {
         id: 21,
-        category: 'Verificadores de URL',
-        question: 'Recibes el link "http://amaz0n-ofertas.com/descuento-50". ¿Qué herramienta usarías para verificarlo antes de hacer clic?',
+        category: 'URL Checkers',
+        question: 'You receive the link "http://amaz0n-deals.com/50-off". What tool would you use to verify it before clicking?',
         options: [
-            'Google Maps — para ver si la empresa existe físicamente',
-            'URLVoid o VirusTotal para verificar la reputación y seguridad del dominio',
-            'Simplemente buscar el dominio en Google',
-            'Copiar la URL en el chat de WhatsApp para que otros opinen',
+            'Google Maps — to see if the company exists physically',
+            'URLVoid or VirusTotal to check the domain\'s reputation and safety',
+            'Simply search the domain on Google',
+            'Copy the URL into a WhatsApp chat for others to review',
         ],
         correct: 1,
-        explanation: 'URLVoid, VirusTotal y URLScan.io analizan la reputación del dominio contra múltiples bases de datos de phishing y malware. En este caso, "amaz0n" usa un cero en lugar de la letra "o" — técnica de typosquatting clásica. Nunca hagas clic en URLs con sustituciones de caracteres.',
+        explanation: 'URLVoid, VirusTotal, and URLScan.io check domain reputation against multiple phishing and malware databases. In this case, "amaz0n" uses a zero instead of the letter "o" — a classic typosquatting technique. Never click URLs with character substitutions.',
     },
     {
         id: 22,
-        category: 'Verificadores de URL',
-        question: '¿Qué es el "typosquatting" en el contexto de URLs maliciosas?',
+        category: 'URL Checkers',
+        question: 'What is "typosquatting" in the context of malicious URLs?',
         options: [
-            'Registrar dominios con errores tipográficos comunes para engañar usuarios que escriben mal la URL',
-            'Un ataque que modifica los paquetes de red para cambiar la URL de destino',
-            'El uso de URLs muy largas para ocultar el destino real',
-            'Crear subdominios que parecen dominios legítimos (ej: paypal.com.malicioso.xyz)',
+            'Registering domains with common typos to trap users who mistype the URL',
+            'An attack that modifies network packets to change the destination URL',
+            'Using very long URLs to hide the real destination',
+            'Creating subdomains that look like legitimate domains (e.g., paypal.com.malicious.xyz)',
         ],
         correct: 0,
-        explanation: 'El typosquatting registra dominios como "gooogle.com", "faceboook.com" o "paypa1.com" para capturar usuarios que escriben mal la URL. Cuando el usuario llega al sitio falso, parece legítimo y puede robar credenciales. Siempre verifica la URL completa antes de ingresar datos.',
+        explanation: 'Typosquatting registers domains like "gooogle.com," "faceboook.com," or "paypa1.com" to catch users who mistype the URL. When the user lands on the fake site, it looks legitimate and can steal credentials. Always verify the full URL before entering any data.',
     },
     {
         id: 23,
-        category: 'Verificadores de URL',
-        question: 'Usas un acortador de URL (bit.ly) para compartir un enlace. ¿Por qué esto puede representar un riesgo de seguridad?',
+        category: 'URL Checkers',
+        question: 'You use a URL shortener (bit.ly) to share a link. Why can this represent a security risk?',
         options: [
-            'Los acortadores siempre añaden malware a los enlaces',
-            'Ocultan el destino real del enlace, impidiendo verificar la URL antes de hacer clic',
-            'Los acortadores solo funcionan en navegadores inseguros',
-            'Los acortadores revelan tu dirección IP al receptor',
+            'URL shorteners always add malware to links',
+            'They hide the real destination, making it impossible to verify the URL before clicking',
+            'URL shorteners only work in insecure browsers',
+            'URL shorteners reveal your IP address to the recipient',
         ],
         correct: 1,
-        explanation: 'Los acortadores de URL ocultan el destino real. Un link como "bit.ly/xK3m9" puede llevar a cualquier sitio, incluyendo phishing o malware. Usa servicios como "checkshorturl.com" o añade "+" al final de links de bit.ly (bit.ly/xK3m9+) para ver el destino antes de visitar.',
+        explanation: 'URL shorteners hide the real destination. A link like "bit.ly/xK3m9" can lead anywhere, including phishing or malware sites. Use services like checkshorturl.com, or add "+" to the end of bit.ly links (bit.ly/xK3m9+) to preview the destination before visiting.',
     },
     {
         id: 24,
-        category: 'Verificadores de URL',
-        question: 'Analizas una URL con URLScan.io y ves que el dominio fue registrado hace 2 días, tiene un certificado SSL válido, y su contenido imita la página de login de tu banco. ¿Qué concluyes?',
+        category: 'URL Checkers',
+        question: 'You analyze a URL with URLScan.io and see the domain was registered 2 days ago, has a valid SSL certificate, and its content mimics your bank\'s login page. What do you conclude?',
         options: [
-            'Es seguro porque tiene certificado SSL',
-            'Es casi definitivamente un sitio de phishing — dominio nuevo + imitación de banco = señales de alarma críticas',
-            'Es probablemente una página de pruebas del banco',
-            'No hay suficiente información para concluir nada',
+            'It is safe because it has an SSL certificate',
+            'It is almost certainly a phishing site — new domain + bank imitation = critical red flags',
+            'It is probably a bank testing environment',
+            'There is not enough information to draw any conclusion',
         ],
         correct: 1,
-        explanation: 'Dominio recién creado + copia visual de un banco = phishing con alta probabilidad. Los atacantes compran dominios nuevos para cada campaña (evitan reputación negativa acumulada) y pueden obtener SSL gratuito con Let\'s Encrypt en minutos. Reporta el sitio y no ingreses ningún dato.',
+        explanation: 'Newly created domain + visual copy of a bank = phishing with high confidence. Attackers buy fresh domains for each campaign (to avoid accumulated bad reputation) and can get free SSL from Let\'s Encrypt in minutes. Report the site and do not enter any data.',
     },
     // ── 2FA / MFA ─────────────────────────────────────────────
     {
         id: 25,
-        category: 'Autenticación 2FA/MFA',
-        question: '¿Cuál de estas opciones de segundo factor (2FA) es la MÁS SEGURA?',
+        category: '2FA / MFA',
+        question: 'Which of these second-factor (2FA) options is the MOST SECURE?',
         options: [
-            'Código SMS enviado al celular',
-            'Email de verificación a la cuenta de correo',
-            'Aplicación autenticadora (Google Authenticator, Authy) basada en TOTP',
-            'Pregunta de seguridad como "¿Nombre de tu primera mascota?"',
+            'SMS code sent to a mobile phone',
+            'Verification email sent to your email account',
+            'Authenticator app (Google Authenticator, Authy) based on TOTP',
+            'Security question like "What was your first pet\'s name?"',
         ],
         correct: 2,
-        explanation: 'Las aplicaciones TOTP (Time-based One-Time Password) son más seguras que SMS o email porque los códigos se generan localmente y no pueden ser interceptados por SIM-swapping. Las preguntas de seguridad son el método más débil — las respuestas suelen ser públicas o adivinables.',
+        explanation: 'TOTP (Time-based One-Time Password) authenticator apps are more secure than SMS or email because codes are generated locally and cannot be intercepted via SIM-swapping. Security questions are the weakest method — answers are often publicly available or guessable.',
     },
     {
         id: 26,
-        category: 'Autenticación 2FA/MFA',
-        question: '¿Qué es un ataque de "SIM swapping" y cómo afecta la seguridad del 2FA por SMS?',
+        category: '2FA / MFA',
+        question: 'What is a "SIM swapping" attack and how does it compromise SMS-based 2FA?',
         options: [
-            'Un ataque físico para robar la tarjeta SIM del teléfono de la víctima',
-            'Engañar al operador telefónico para transferir el número de la víctima a una SIM del atacante, recibiendo así sus SMS de verificación',
-            'Un virus que intercepta mensajes SMS en el dispositivo',
-            'Clonar la señal Bluetooth del teléfono para recibir SMS en otro dispositivo',
+            'A physical attack to steal the SIM card from the victim\'s phone',
+            'Tricking the mobile carrier into transferring the victim\'s number to an attacker\'s SIM, intercepting their SMS verification codes',
+            'A virus that intercepts SMS messages on the device',
+            'Cloning the phone\'s Bluetooth signal to receive SMS on another device',
         ],
         correct: 1,
-        explanation: 'En SIM swapping, el atacante llama al operador haciéndose pasar por la víctima (usando datos robados de redes sociales) y transfiere el número a una nueva SIM. A partir de ahí recibe todos los SMS, incluyendo los códigos 2FA del banco o email. Esto hace al 2FA por SMS vulnerable.',
+        explanation: 'In SIM swapping, the attacker calls the carrier impersonating the victim (using data stolen from social media) and transfers the phone number to a new SIM. From that point they receive all SMS including 2FA codes for banking and email — making SMS-based 2FA vulnerable.',
     },
     // ── Antivirus / Firewall ──────────────────────────────────
     {
         id: 27,
-        category: 'Antivirus y Firewall',
-        question: '¿Cuál es la diferencia fundamental entre un antivirus y un firewall?',
+        category: 'Antivirus & Firewall',
+        question: 'What is the fundamental difference between an antivirus and a firewall?',
         options: [
-            'El antivirus es de pago y el firewall es gratuito',
-            'El antivirus detecta y elimina malware en el sistema; el firewall controla el tráfico de red entrante y saliente',
-            'El firewall protege contra virus y el antivirus protege contra hackers',
-            'Son la misma herramienta con diferentes nombres',
+            'Antivirus is paid and firewall is free',
+            'Antivirus detects and removes malware on the system; a firewall controls incoming and outgoing network traffic',
+            'The firewall protects against viruses and the antivirus protects against hackers',
+            'They are the same tool with different names',
         ],
         correct: 1,
-        explanation: 'El antivirus analiza archivos y procesos buscando código malicioso conocido. El firewall actúa como guardia de tráfico de red, bloqueando conexiones no autorizadas. Son complementarios: el antivirus protege contra amenazas en el dispositivo, el firewall controla lo que entra y sale por la red.',
+        explanation: 'Antivirus scans files and processes for known malicious code. A firewall acts as a network traffic guard, blocking unauthorized connections. They are complementary: antivirus protects against threats on the device, the firewall controls what enters and leaves through the network.',
     },
     {
         id: 28,
-        category: 'Antivirus y Firewall',
-        question: 'Tu antivirus no detecta nada sospechoso, pero notas que tu computador envía tráfico inusual a IPs desconocidas a las 3 AM. ¿Qué tipo de amenaza podría ser?',
+        category: 'Antivirus & Firewall',
+        question: 'Your antivirus detects nothing suspicious, but you notice your computer is sending unusual traffic to unknown IPs at 3 AM. What type of threat could this be?',
         options: [
-            'No es una amenaza — el antivirus dice que todo está bien',
-            'Posiblemente un malware de día cero o APT (Amenaza Persistente Avanzada) que el antivirus aún no tiene en su base de firmas',
-            'El sistema operativo enviando actualizaciones automáticas',
-            'Definitivamente el proveedor de internet realizando mantenimiento',
+            'Not a threat — the antivirus says everything is fine',
+            'Possibly a zero-day malware or APT (Advanced Persistent Threat) that the antivirus does not yet have in its signature database',
+            'The operating system sending automatic updates',
+            'Definitely the ISP performing network maintenance',
         ],
         correct: 1,
-        explanation: 'Los antivirus basados en firmas no detectan malware nuevo (día cero) o APTs diseñados para evadir detección. Tráfico saliente no explicado hacia IPs desconocidas a horas inusuales es señal de compromiso. Solución: análisis de comportamiento de red, EDR (Endpoint Detection & Response), y aislamiento del equipo.',
+        explanation: 'Signature-based antivirus does not detect new (zero-day) malware or APTs designed to evade detection. Unexplained outbound traffic to unknown IPs at unusual hours is a strong indicator of compromise. Response: network behavior analysis, EDR (Endpoint Detection & Response), and isolating the machine.',
     },
-    // ── Escenarios combinados ─────────────────────────────────
+    // ── Integrated Scenarios ──────────────────────────────────
     {
         id: 29,
-        category: 'Escenario Integrado',
-        question: 'Un colega te envía por WhatsApp: "Urgent! Tu cuenta fue hackeada. Haz clic en bit.ly/r3c0ver-acc para recuperarla en los próximos 10 minutos." ¿Cuál es tu respuesta correcta?',
+        category: 'Integrated Scenario',
+        question: 'A colleague sends you via WhatsApp: "Urgent! Your account was hacked. Click bit.ly/r3c0ver-acc to recover it within 10 minutes." What is the correct response?',
         options: [
-            'Haces clic inmediatamente — 10 minutos es poco tiempo para pensar',
-            'Verificas la URL con CheckShortURL, llamas directamente a tu colega para confirmar que él lo envió, y revisas tu cuenta desde el sitio oficial',
-            'Reenvías el mensaje a 5 amigos para que te ayuden a decidir',
-            'Respondes al mensaje pidiendo más información',
+            'Click immediately — 10 minutes is too short to think',
+            'Expand the URL with CheckShortURL, call your colleague directly to confirm they sent it, and check your account from the official site',
+            'Forward the message to 5 friends to help you decide',
+            'Reply to the message asking for more information',
         ],
         correct: 1,
-        explanation: 'Este es un ataque de urgencia con múltiples señales de alerta: URL acortada, urgencia extrema ("10 minutos"), por mensaje informal. El procedimiento correcto: 1) No hagas clic. 2) Expande la URL primero. 3) Verifica directamente con tu colega por llamada. 4) Accede a tu cuenta desde la URL oficial.',
+        explanation: 'This is an urgency attack with multiple red flags: shortened URL, extreme time pressure ("10 minutes"), sent via informal channel. Correct procedure: 1) Do not click. 2) Expand the URL first. 3) Verify with your colleague via phone call. 4) Log in to your account from the official URL.',
     },
     {
         id: 30,
-        category: 'Escenario Integrado',
-        question: '¿Cuál de estos conjuntos de herramientas y prácticas representa la "postura de seguridad" más completa para un usuario cotidiano?',
+        category: 'Integrated Scenario',
+        question: 'Which combination of tools and practices represents the most complete "security posture" for an everyday user?',
         options: [
-            'Solo un buen antivirus de pago',
-            'VPN + gestor de contraseñas + 2FA en cuentas críticas + navegador con bloqueador de rastreadores + verificar URLs sospechosas',
-            'Cambiar contraseñas cada semana y no guardarlas en ningún lado',
-            'No descargar nada de internet y solo usar aplicaciones preinstaladas',
+            'Just a good paid antivirus',
+            'VPN + password manager + 2FA on critical accounts + privacy-focused browser + verify suspicious URLs',
+            'Changing passwords every week and not saving them anywhere',
+            'Never downloading anything and only using pre-installed apps',
         ],
         correct: 1,
-        explanation: 'La seguridad en capas es el enfoque correcto. VPN protege en redes no confiables, el gestor de contraseñas garantiza credenciales únicas y fuertes, 2FA dificulta el acceso aunque te roben la contraseña, el navegador configurado reduce el rastreo y anuncios maliciosos, y verificar URLs previene phishing. Ninguna herramienta sola es suficiente.',
+        explanation: 'Layered security is the correct approach. VPN protects on untrusted networks, password manager ensures unique strong credentials, 2FA blocks access even if your password is stolen, a configured browser reduces tracking and malicious ads, and URL verification prevents phishing. No single tool is enough on its own.',
     },
 ];
 
 const CATEGORY_COLORS: Record<string, string> = {
     'VPN': 'text-accent-primary border-accent-primary-20 bg-accent-primary-5',
-    'Gestor de contraseñas': 'text-accent-secondary border-accent-secondary-20 bg-accent-secondary-5',
-    'Contraseñas Seguras': 'text-accent-secondary border-accent-secondary-20 bg-accent-secondary-5',
-    'Navegadores Seguros': 'text-accent-tertiary border-accent-tertiary-20 bg-accent-tertiary-5',
+    'Password Managers': 'text-accent-secondary border-accent-secondary-20 bg-accent-secondary-5',
+    'Secure Passwords': 'text-accent-secondary border-accent-secondary-20 bg-accent-secondary-5',
+    'Secure Browsers': 'text-accent-tertiary border-accent-tertiary-20 bg-accent-tertiary-5',
     'VirusTotal': 'text-accent-primary border-accent-primary-20 bg-accent-primary-5',
-    'Verificadores de URL': 'text-accent-tertiary border-accent-tertiary-20 bg-accent-tertiary-5',
-    'Autenticación 2FA/MFA': 'text-accent-secondary border-accent-secondary-20 bg-accent-secondary-5',
-    'Antivirus y Firewall': 'text-accent-primary border-accent-primary-20 bg-accent-primary-5',
-    'Escenario Integrado': 'text-accent-tertiary border-accent-tertiary-20 bg-accent-tertiary-5',
+    'URL Checkers': 'text-accent-tertiary border-accent-tertiary-20 bg-accent-tertiary-5',
+    '2FA / MFA': 'text-accent-secondary border-accent-secondary-20 bg-accent-secondary-5',
+    'Antivirus & Firewall': 'text-accent-primary border-accent-primary-20 bg-accent-primary-5',
+    'Integrated Scenario': 'text-accent-tertiary border-accent-tertiary-20 bg-accent-tertiary-5',
 };
 
 interface CyberToolsQuizLabProps {
@@ -482,7 +482,7 @@ const CyberToolsQuizLab: React.FC<CyberToolsQuizLabProps> = ({ onComplete }) => 
     const [isGenerating, setIsGenerating] = React.useState(false);
 
     const question = QUESTIONS[currentIndex];
-    const progress = ((currentIndex) / QUESTIONS.length) * 100;
+    const progress = (currentIndex / QUESTIONS.length) * 100;
     const categoryColor = CATEGORY_COLORS[question?.category] ?? 'text-accent-primary border-accent-primary-20 bg-accent-primary-5';
 
     const handleSelect = (optionIndex: number) => {
@@ -541,49 +541,49 @@ const CyberToolsQuizLab: React.FC<CyberToolsQuizLabProps> = ({ onComplete }) => 
                 </motion.div>
 
                 <h2 className="text-5xl font-black text-white mb-4 tracking-tight uppercase">
-                    {passed ? '¡Quiz Completado!' : 'Sigue Practicando'}
+                    {passed ? 'Quiz Complete!' : 'Keep Practicing'}
                 </h2>
                 <p className="text-xl text-text-secondary max-w-2xl mb-6">
                     {passed
-                        ? 'Demostraste competencia en el uso correcto de herramientas de ciberseguridad.'
-                        : `Necesitabas ${passing} respuestas correctas para aprobar. Repasa los temas y vuelve a intentarlo.`}
+                        ? 'You demonstrated competence in the correct use of cybersecurity tools.'
+                        : `You needed ${passing} correct answers to pass. Review the topics and try again.`}
                 </p>
 
                 <div className={`text-6xl font-mono mb-4 ${passed ? 'text-accent-primary' : 'text-accent-tertiary'}`}>
                     {score} / {QUESTIONS.length}
                 </div>
                 <div className="text-sm text-text-muted mb-12 uppercase tracking-widest">
-                    {Math.round((score / QUESTIONS.length) * 100)}% — {passed ? 'APROBADO' : 'NO APROBADO'}
+                    {Math.round((score / QUESTIONS.length) * 100)}% — {passed ? 'PASSED' : 'NOT PASSED'}
                 </div>
 
                 {passed ? (
                     <div className="cyber-card p-12 bg-bg-secondary border-accent-primary-30 max-w-xl w-full mb-10">
                         <h3 className="text-accent-primary font-bold uppercase tracking-widest text-sm mb-6 flex items-center justify-center gap-3">
-                            <User className="inline" size={18} /> Nombre para el certificado
+                            <User className="inline" size={18} /> Enter your name for the certificate
                         </h3>
                         <input
                             type="text"
-                            placeholder="TU NOMBRE COMPLETO"
+                            placeholder="YOUR FULL NAME"
                             value={userName}
                             onChange={(e) => setUserName(e.target.value)}
                             className="w-full bg-black border-2 border-white-10 rounded-2xl py-5 px-8 text-center text-2xl font-black text-white focus:border-accent-primary focus:shadow-neon outline-none transition-all placeholder:opacity-20 mb-8"
                         />
                         <div className="flex gap-4">
                             <button onClick={handleRestart} className="flex-1 py-5 bg-bg-tertiary border rounded-2xl text-text-muted hover:text-white transition-all text-sm font-bold uppercase tracking-widest">
-                                REINICIAR
+                                RESTART
                             </button>
                             <button
                                 disabled={!userName.trim() || isGenerating}
                                 onClick={() => {
                                     setIsGenerating(true);
                                     setTimeout(async () => {
-                                        const moduleName = 'Cyber Tools Quiz — Grado 11';
+                                        const moduleName = 'Cyber Tools Quiz — Grade 11';
                                         await generateCertificate(userName, moduleName);
                                         onComplete({
                                             moduleId: 'cyber-tools-quiz',
                                             moduleName,
                                             userName,
-                                            date: new Date().toLocaleDateString('es-CO'),
+                                            date: new Date().toLocaleDateString('en-US'),
                                         });
                                         setIsGenerating(false);
                                     }, 1000);
@@ -591,16 +591,16 @@ const CyberToolsQuizLab: React.FC<CyberToolsQuizLabProps> = ({ onComplete }) => 
                                 className="flex-2 neon-button py-5 text-lg disabled:opacity-20 disabled:grayscale transition-all"
                             >
                                 {isGenerating ? (
-                                    <span className="flex items-center gap-3"><RotateCcw className="animate-spin" /> GENERANDO...</span>
+                                    <span className="flex items-center gap-3"><RotateCcw className="animate-spin" /> GENERATING...</span>
                                 ) : (
-                                    <span className="flex items-center gap-3"><Download size={24} /> OBTENER CERTIFICADO</span>
+                                    <span className="flex items-center gap-3"><Download size={24} /> GET CERTIFICATE</span>
                                 )}
                             </button>
                         </div>
                     </div>
                 ) : (
                     <button onClick={handleRestart} className="neon-button py-5 px-16 text-lg">
-                        <RotateCcw size={20} className="inline mr-3" /> INTENTAR DE NUEVO
+                        <RotateCcw size={20} className="inline mr-3" /> TRY AGAIN
                     </button>
                 )}
             </div>
@@ -609,20 +609,19 @@ const CyberToolsQuizLab: React.FC<CyberToolsQuizLabProps> = ({ onComplete }) => 
 
     return (
         <div className="p-10 animate-fade-in max-w-1200 mx-auto min-h-full">
-            {/* Header */}
             <header className="mb-8">
                 <div className="flex items-center gap-2 text-accent-primary text-xs font-bold uppercase tracking-widest mb-1">
-                    Grado 11 — Herramientas de Ciberseguridad
+                    Grade 11 — Cybersecurity Tools
                 </div>
-                <h2 className="text-4xl font-extrabold text-white">Quiz: Uso Correcto de Herramientas</h2>
-                <p className="text-text-secondary">Demuestra que sabes cuándo y cómo aplicar cada herramienta de seguridad.</p>
+                <h2 className="text-4xl font-extrabold text-white">Quiz: Correct Use of Security Tools</h2>
+                <p className="text-text-secondary">Prove you know when and how to apply each security tool.</p>
             </header>
 
             {/* Progress bar */}
             <div className="mb-8">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-text-muted font-bold uppercase tracking-widest">Pregunta {currentIndex + 1} de {QUESTIONS.length}</span>
-                    <span className="text-xs text-accent-primary font-mono font-bold">{score} correctas</span>
+                    <span className="text-xs text-text-muted font-bold uppercase tracking-widest">Question {currentIndex + 1} of {QUESTIONS.length}</span>
+                    <span className="text-xs text-accent-primary font-mono font-bold">{score} correct</span>
                 </div>
                 <div className="w-full h-2 bg-bg-tertiary rounded-full overflow-hidden">
                     <motion.div
@@ -643,7 +642,6 @@ const CyberToolsQuizLab: React.FC<CyberToolsQuizLabProps> = ({ onComplete }) => 
                     transition={{ duration: 0.25 }}
                     className="cyber-card bg-bg-secondary border p-0 overflow-hidden mb-6"
                 >
-                    {/* Category badge + question */}
                     <div className="p-8 border-b bg-bg-tertiary">
                         <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-black uppercase tracking-widest mb-4 ${categoryColor}`}>
                             <Shield size={12} />
@@ -652,7 +650,6 @@ const CyberToolsQuizLab: React.FC<CyberToolsQuizLabProps> = ({ onComplete }) => 
                         <h3 className="text-xl font-bold text-white leading-relaxed">{question.question}</h3>
                     </div>
 
-                    {/* Options */}
                     <div className="p-8 grid grid-cols-1 gap-3">
                         {question.options.map((option, i) => {
                             const isCorrect = i === question.correct;
@@ -691,7 +688,6 @@ const CyberToolsQuizLab: React.FC<CyberToolsQuizLabProps> = ({ onComplete }) => 
                         })}
                     </div>
 
-                    {/* Explanation */}
                     <AnimatePresence>
                         {answered && (
                             <motion.div
@@ -706,7 +702,7 @@ const CyberToolsQuizLab: React.FC<CyberToolsQuizLabProps> = ({ onComplete }) => 
                                 <HelpCircle className={`shrink-0 mt-0.5 ${selected === question.correct ? 'text-accent-primary' : 'text-accent-tertiary'}`} size={20} />
                                 <div>
                                     <p className={`font-bold text-sm mb-1 uppercase tracking-widest ${selected === question.correct ? 'text-accent-primary' : 'text-accent-tertiary'}`}>
-                                        {selected === question.correct ? '¡Correcto!' : 'Respuesta incorrecta'}
+                                        {selected === question.correct ? 'Correct!' : 'Incorrect'}
                                     </p>
                                     <p className="text-text-secondary text-sm leading-relaxed">{question.explanation}</p>
                                 </div>
@@ -716,14 +712,13 @@ const CyberToolsQuizLab: React.FC<CyberToolsQuizLabProps> = ({ onComplete }) => 
                 </motion.div>
             </AnimatePresence>
 
-            {/* Next button */}
             {answered && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-end">
                     <button
                         onClick={handleNext}
                         className="neon-button px-12 py-4 text-base flex items-center gap-3"
                     >
-                        {currentIndex < QUESTIONS.length - 1 ? 'SIGUIENTE PREGUNTA' : 'VER RESULTADOS'}
+                        {currentIndex < QUESTIONS.length - 1 ? 'NEXT QUESTION' : 'SEE RESULTS'}
                         <ChevronRight size={20} />
                     </button>
                 </motion.div>

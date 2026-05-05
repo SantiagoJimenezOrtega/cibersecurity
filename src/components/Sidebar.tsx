@@ -146,7 +146,7 @@ const HelpModal: React.FC<{ onClose: () => void; grade: Grade }> = ({ onClose, g
         { icon: <Brain size={18} />, name: 'Social Engineering Pro', color: 'text-accent-primary', bg: 'bg-accent-primary-5 border-accent-primary-20', desc: '10 realistic attack scenarios — phone calls, chats, and in-person encounters.' },
         { icon: <Network size={18} />, name: 'Network Packet Lab', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '10 levels covering packet anatomy, OSI model, TCP handshakes, routing, sniffing, ARP spoofing, and firewall rules.' },
         { icon: <Globe size={18} />, name: 'IP Classification', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '10 levels to master IPv4/IPv6 recognition, private vs public ranges, loopback, APIPA, and broadcast addresses.' },
-        { icon: <Wrench size={18} />, name: 'Cyber Tools Quiz', color: 'text-accent-primary', bg: 'bg-accent-primary-5 border-accent-primary-20', desc: '30 preguntas sobre VPN, gestores de contraseñas, VirusTotal, verificadores de URL, navegadores seguros, 2FA y más — formato quiz para 50 minutos.' },
+        { icon: <Wrench size={18} />, name: 'Cyber Tools Quiz', color: 'text-accent-primary', bg: 'bg-accent-primary-5 border-accent-primary-20', desc: '30 questions on VPN, password managers, VirusTotal, URL checkers, secure browsers, 2FA, and more — a timed quiz designed for 50 minutes.' },
     ];
 
     const grade9Modules = [
@@ -185,7 +185,7 @@ const HelpModal: React.FC<{ onClose: () => void; grade: Grade }> = ({ onClose, g
                                 'Read the theory intro — each module starts with real-world context.',
                                 'Complete all 10 levels to earn your certificate. Each level must be passed to unlock the next.',
                                 'Enter your name and download your PDF certificate when finished.',
-                                grade === 'grade9' ? 'All 6 Grado 9 modules are available — no unlock requirements between modules.' : 'All 6 Grado 11 modules are available from day one.',
+                                grade === 'grade9' ? 'All 6 Grado 9 modules are available — no unlock requirements between modules.' : 'All 7 Grado 11 modules are available from day one.',
                             ].map((step, i) => (
                                 <div key={i} className="flex items-start gap-3 text-sm text-text-secondary">
                                     <div className="w-5 h-5 rounded-full bg-accent-primary-10 border border-accent-primary-20 text-accent-primary text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">{i + 1}</div>

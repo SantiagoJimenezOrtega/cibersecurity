@@ -48,10 +48,10 @@ const GradeSelector: React.FC<Props> = ({ onSelect }) => (
         <span className="text-accent-primary font-black text-xs uppercase tracking-widest block mb-2">Advanced Level</span>
         <h2 className="text-2xl font-black text-white mb-3">Grado 11</h2>
         <p className="text-text-secondary text-sm leading-relaxed mb-6">
-          Master advanced techniques: malware analysis, password cracking, network packets, social engineering, phishing, and IP classification.
+          Master advanced techniques: malware analysis, password cracking, network packets, social engineering, phishing, IP classification, and security tools.
         </p>
         <div className="flex items-center gap-2 text-accent-primary font-bold text-sm">
-          6 Modules · 60 Levels <ChevronRight size={16} />
+          7 Modules <ChevronRight size={16} />
         </div>
       </motion.button>
     </div>
