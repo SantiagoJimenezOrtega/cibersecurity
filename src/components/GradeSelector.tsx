@@ -51,7 +51,7 @@ const GradeSelector: React.FC<Props> = ({ onSelect }) => (
           Master advanced techniques: malware analysis, password cracking, network packets, social engineering, phishing, IP classification, and security tools.
         </p>
         <div className="flex items-center gap-2 text-accent-primary font-bold text-sm">
-          7 Modules <ChevronRight size={16} />
+          8 Modules <ChevronRight size={16} />
         </div>
       </motion.button>
     </div>

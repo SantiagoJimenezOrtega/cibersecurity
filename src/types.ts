@@ -82,6 +82,15 @@ export const lessons: Lesson[] = [
     category: 'Security',
     grade: 'grade11'
   },
+  {
+    id: 'final-quiz-g11',
+    title: 'Grade 11 Final Quiz',
+    description: 'Comprehensive 35-question assessment covering all 7 Grado 11 modules: malware, passwords, phishing, networking, social engineering, IP classification, and cyber tools. Certificate shows correct/incorrect breakdown.',
+    icon: 'GraduationCap',
+    difficulty: 'Advanced',
+    category: 'Security',
+    grade: 'grade11'
+  },
   // ── Grado 9 ───────────────────────────────────────────
   {
     id: 'data-risks',

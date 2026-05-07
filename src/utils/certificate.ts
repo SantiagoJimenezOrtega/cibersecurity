@@ -21,7 +21,11 @@ const loadImage = (src: string): Promise<HTMLImageElement> =>
         img.src = src;
     });
 
-export const generateCertificate = async (userName: string, moduleName: string) => {
+export const generateCertificate = async (
+    userName: string,
+    moduleName: string,
+    score?: { correct: number; incorrect: number; total: number }
+) => {
 
     // A4 landscape: 297 × 210 mm
     const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
@@ -112,6 +116,21 @@ export const generateCertificate = async (userName: string, moduleName: string) 
     doc.setTextColor(...RED);
     doc.setFont('helvetica', 'bold');
     doc.text(moduleName, CX, nameY + 28, { align: 'center' });
+
+    // Score block (optional)
+    if (score) {
+        const scoreY = nameY + 44;
+        const pct = Math.round((score.correct / score.total) * 100);
+        const scoreText = `${score.correct} correct · ${score.incorrect} incorrect · ${pct}% (${score.correct}/${score.total})`;
+        doc.setFontSize(9);
+        doc.setTextColor(...MID);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Score:', CX, scoreY, { align: 'center' });
+        doc.setFontSize(11);
+        doc.setTextColor(...DARK);
+        doc.setFont('helvetica', 'bold');
+        doc.text(scoreText, CX, scoreY + 8, { align: 'center' });
+    }
 
     /* ── 6. Footer signature blocks ──────────────────────────────── */
     const footerY = H - 42;  // fixed distance from bottom
