@@ -93,6 +93,15 @@ export const lessons: Lesson[] = [
   },
   // ── Grado 9 ───────────────────────────────────────────
   {
+    id: 'final-quiz-g9',
+    title: 'Grade 9 Final Quiz',
+    description: 'Comprehensive 30-question assessment covering all 6 Grado 9 modules: data risks, security practices, security guides, phishing signs, scam responses, and malware concepts. Certificate shows correct/incorrect breakdown.',
+    icon: 'GraduationCap',
+    difficulty: 'Intermediate',
+    category: 'Security',
+    grade: 'grade9'
+  },
+  {
     id: 'data-risks',
     title: 'Data Risks',
     description: 'Learn to recognize when personal data is at risk — 10 real-world scenarios covering personal data, breaches, oversharing, IoT risks, and data harvesting attacks.',

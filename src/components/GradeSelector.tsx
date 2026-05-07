@@ -33,7 +33,7 @@ const GradeSelector: React.FC<Props> = ({ onSelect }) => (
           Learn the foundations of cybersecurity: data risks, security practices, phishing detection, scam responses, and malware basics.
         </p>
         <div className="flex items-center gap-2 text-accent-secondary font-bold text-sm">
-          6 Modules · 60 Levels <ChevronRight size={16} />
+          7 Modules <ChevronRight size={16} />
         </div>
       </motion.button>
 

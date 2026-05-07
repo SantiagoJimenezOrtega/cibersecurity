@@ -157,6 +157,7 @@ const HelpModal: React.FC<{ onClose: () => void; grade: Grade }> = ({ onClose, g
         { icon: <Mail size={18} />, name: 'Phishing Signs', color: 'text-accent-tertiary', bg: 'bg-accent-tertiary-5 border-accent-tertiary-20', desc: '10 levels identifying fake domains, urgency tactics, suspicious links, dangerous attachments, and smishing.' },
         { icon: <AlertOctagon size={18} />, name: 'Scam Responses', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '10 scenarios: tech support scams, lottery fraud, romance scams, fake jobs, and how to respond and report.' },
         { icon: <Cpu size={18} />, name: 'Malware Builder Lab', color: 'text-accent-tertiary', bg: 'bg-accent-tertiary-5 border-accent-tertiary-20', desc: '10 drag-and-drop challenges: assemble attack components, map kill chain phases, and build complete attack scenarios.' },
+        { icon: <ClipboardList size={18} />, name: 'Grade 9 Final Quiz', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '30-question comprehensive assessment covering all 6 modules. Certificate shows correct and incorrect answer breakdown.' },
     ];
 
     const modules = grade === 'grade9' ? grade9Modules : grade11Modules;
@@ -186,7 +187,7 @@ const HelpModal: React.FC<{ onClose: () => void; grade: Grade }> = ({ onClose, g
                                 'Read the theory intro — each module starts with real-world context.',
                                 'Complete all 10 levels to earn your certificate. Each level must be passed to unlock the next.',
                                 'Enter your name and download your PDF certificate when finished.',
-                                grade === 'grade9' ? 'All 6 Grado 9 modules are available — no unlock requirements between modules.' : 'All 8 Grado 11 modules are available from day one — including the Final Quiz that covers all topics.',
+                                grade === 'grade9' ? 'All 7 Grado 9 modules are available — including the Final Quiz that covers all 6 topics.' : 'All 8 Grado 11 modules are available from day one — including the Final Quiz that covers all topics.',
                             ].map((step, i) => (
                                 <div key={i} className="flex items-start gap-3 text-sm text-text-secondary">
                                     <div className="w-5 h-5 rounded-full bg-accent-primary-10 border border-accent-primary-20 text-accent-primary text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">{i + 1}</div>
@@ -240,12 +241,13 @@ const Sidebar: React.FC<SidebarProps> = ({ currentLessonId, onSelectLesson, comp
     ];
 
     const grade9Items = [
-        { id: 'data-risks',          icon: <Database size={20} />,     label: 'Data Risks' },
-        { id: 'security-practices',  icon: <ShieldCheck size={20} />,  label: 'Security Practices' },
-        { id: 'security-guides',     icon: <BookOpen size={20} />,     label: 'Security Guides' },
-        { id: 'phishing-signs',      icon: <Mail size={20} />,         label: 'Phishing Signs' },
-        { id: 'scam-responses',      icon: <AlertOctagon size={20} />, label: 'Scam Responses' },
-        { id: 'malware-builder',     icon: <Cpu size={20} />,          label: 'Malware Builder Lab' },
+        { id: 'data-risks',          icon: <Database size={20} />,      label: 'Data Risks' },
+        { id: 'security-practices',  icon: <ShieldCheck size={20} />,   label: 'Security Practices' },
+        { id: 'security-guides',     icon: <BookOpen size={20} />,      label: 'Security Guides' },
+        { id: 'phishing-signs',      icon: <Mail size={20} />,          label: 'Phishing Signs' },
+        { id: 'scam-responses',      icon: <AlertOctagon size={20} />,  label: 'Scam Responses' },
+        { id: 'malware-builder',     icon: <Cpu size={20} />,           label: 'Malware Builder Lab' },
+        { id: 'final-quiz-g9',       icon: <ClipboardList size={20} />, label: 'Final Quiz G9' },
     ];
 
     const moduleItems = selectedGrade === 'grade9' ? grade9Items : grade11Items;
