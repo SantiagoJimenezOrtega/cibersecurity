@@ -1,5 +1,5 @@
 import React from 'react';
-import { GraduationCap, CheckCircle, XCircle, ChevronRight, Download, RotateCcw, User, Shield, Bug, Key, ShieldAlert, Network, Globe, Wrench, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { GraduationCap, CheckCircle, XCircle, ChevronRight, Download, RotateCcw, User, Shield, Bug, Network, Globe, Wrench, AlertTriangle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { generateCertificate } from '../utils/certificate';
 import type { CertificateRecord } from '../types';
