@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Bug, Key, Home, Settings, Info, Users, CheckCircle2, Trash2, Trophy, BookOpen, X, AlertTriangle, ShieldAlert, Brain, User, Check, Network, Globe, Database, ShieldCheck, Mail, AlertOctagon, Cpu, GraduationCap, Wrench, ClipboardList } from 'lucide-react';
+import { Shield, Bug, Key, Home, Settings, Info, Users, CheckCircle2, Trash2, Trophy, BookOpen, X, AlertTriangle, ShieldAlert, Brain, User, Check, Network, Globe, Database, ShieldCheck, Mail, AlertOctagon, Cpu, GraduationCap, Wrench, ClipboardList, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Grade } from '../types';
 
@@ -147,7 +147,8 @@ const HelpModal: React.FC<{ onClose: () => void; grade: Grade }> = ({ onClose, g
         { icon: <Network size={18} />, name: 'Network Packet Lab', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '10 levels covering packet anatomy, OSI model, TCP handshakes, routing, sniffing, ARP spoofing, and firewall rules.' },
         { icon: <Globe size={18} />, name: 'IP Classification', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '10 levels to master IPv4/IPv6 recognition, private vs public ranges, loopback, APIPA, and broadcast addresses.' },
         { icon: <Wrench size={18} />, name: 'Cyber Tools Quiz', color: 'text-accent-primary', bg: 'bg-accent-primary-5 border-accent-primary-20', desc: '30 questions on VPN, password managers, VirusTotal, URL checkers, secure browsers, 2FA, and more — a timed quiz designed for 50 minutes.' },
-        { icon: <ClipboardList size={18} />, name: 'Grade 11 Final Quiz', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '35-question comprehensive assessment covering all 7 modules. Certificate shows correct and incorrect answer breakdown.' },
+        { icon: <AlertTriangle size={18} />, name: 'Real-World Cyber Risks', color: 'text-accent-primary', bg: 'bg-accent-primary-5 border-accent-primary-20', desc: '20 scenario-based questions on real incidents: BEC, deepfakes, Evil Twin attacks, ransomware response, forensic evidence, and APTs — 45-minute timed assessment.' },
+        { icon: <ClipboardList size={18} />, name: 'Grade 11 Final Quiz', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '35-question comprehensive assessment covering all 7 core modules. Certificate shows correct and incorrect answer breakdown.' },
     ];
 
     const grade9Modules = [
@@ -157,7 +158,8 @@ const HelpModal: React.FC<{ onClose: () => void; grade: Grade }> = ({ onClose, g
         { icon: <Mail size={18} />, name: 'Phishing Signs', color: 'text-accent-tertiary', bg: 'bg-accent-tertiary-5 border-accent-tertiary-20', desc: '10 levels identifying fake domains, urgency tactics, suspicious links, dangerous attachments, and smishing.' },
         { icon: <AlertOctagon size={18} />, name: 'Scam Responses', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '10 scenarios: tech support scams, lottery fraud, romance scams, fake jobs, and how to respond and report.' },
         { icon: <Cpu size={18} />, name: 'Malware Builder Lab', color: 'text-accent-tertiary', bg: 'bg-accent-tertiary-5 border-accent-tertiary-20', desc: '10 drag-and-drop challenges: assemble attack components, map kill chain phases, and build complete attack scenarios.' },
-        { icon: <ClipboardList size={18} />, name: 'Grade 9 Final Quiz', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '30-question comprehensive assessment covering all 6 modules. Certificate shows correct and incorrect answer breakdown.' },
+        { icon: <Lock size={18} />, name: 'Advanced Data Risks', color: 'text-accent-primary', bg: 'bg-accent-primary-5 border-accent-primary-20', desc: '10 specialized levels covering GDPR rights, data brokers, biometric data, behavioral profiling, dark patterns, metadata, aggregation, and surveillance capitalism.' },
+        { icon: <ClipboardList size={18} />, name: 'Grade 9 Final Quiz', color: 'text-accent-secondary', bg: 'bg-accent-secondary-5 border-accent-secondary-20', desc: '30-question comprehensive assessment covering all 6 core modules. Certificate shows correct and incorrect answer breakdown.' },
     ];
 
     const modules = grade === 'grade9' ? grade9Modules : grade11Modules;
@@ -187,7 +189,7 @@ const HelpModal: React.FC<{ onClose: () => void; grade: Grade }> = ({ onClose, g
                                 'Read the theory intro — each module starts with real-world context.',
                                 'Complete all 10 levels to earn your certificate. Each level must be passed to unlock the next.',
                                 'Enter your name and download your PDF certificate when finished.',
-                                grade === 'grade9' ? 'All 7 Grado 9 modules are available — including the Final Quiz that covers all 6 topics.' : 'All 8 Grado 11 modules are available from day one — including the Final Quiz that covers all topics.',
+                                grade === 'grade9' ? 'All 8 Grado 9 modules are available — including the Final Quiz that covers all 6 core topics.' : 'All 9 Grado 11 modules are available from day one — including the Final Quiz that covers all core topics.',
                             ].map((step, i) => (
                                 <div key={i} className="flex items-start gap-3 text-sm text-text-secondary">
                                     <div className="w-5 h-5 rounded-full bg-accent-primary-10 border border-accent-primary-20 text-accent-primary text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">{i + 1}</div>
@@ -236,8 +238,9 @@ const Sidebar: React.FC<SidebarProps> = ({ currentLessonId, onSelectLesson, comp
         { id: 'social-eng-sim', icon: <Users size={20} />,       label: 'Social Engineering' },
         { id: 'net-packets',    icon: <Network size={20} />,     label: 'Network Packets' },
         { id: 'ip-classifier',  icon: <Globe size={20} />,       label: 'IP Classification' },
-        { id: 'cyber-tools-quiz', icon: <Wrench size={20} />,        label: 'Cyber Tools Quiz' },
-        { id: 'final-quiz-g11',   icon: <ClipboardList size={20} />, label: 'Final Quiz G11' },
+        { id: 'cyber-tools-quiz',   icon: <Wrench size={20} />,        label: 'Cyber Tools Quiz' },
+        { id: 'real-world-risks',   icon: <AlertTriangle size={20} />, label: 'Real-World Risks' },
+        { id: 'final-quiz-g11',     icon: <ClipboardList size={20} />, label: 'Final Quiz G11' },
     ];
 
     const grade9Items = [
@@ -246,7 +249,8 @@ const Sidebar: React.FC<SidebarProps> = ({ currentLessonId, onSelectLesson, comp
         { id: 'security-guides',     icon: <BookOpen size={20} />,      label: 'Security Guides' },
         { id: 'phishing-signs',      icon: <Mail size={20} />,          label: 'Phishing Signs' },
         { id: 'scam-responses',      icon: <AlertOctagon size={20} />,  label: 'Scam Responses' },
-        { id: 'malware-builder',     icon: <Cpu size={20} />,           label: 'Malware Builder Lab' },
+        { id: 'malware-builder',      icon: <Cpu size={20} />,           label: 'Malware Builder Lab' },
+        { id: 'advanced-data-risks', icon: <Lock size={20} />,          label: 'Advanced Data Risks' },
         { id: 'final-quiz-g9',       icon: <ClipboardList size={20} />, label: 'Final Quiz G9' },
     ];
 

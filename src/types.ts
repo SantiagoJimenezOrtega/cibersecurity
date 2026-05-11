@@ -83,6 +83,15 @@ export const lessons: Lesson[] = [
     grade: 'grade11'
   },
   {
+    id: 'real-world-risks',
+    title: 'Real-World Cyber Risks',
+    description: 'Face 20 scenario-based situations drawn from real incidents — workplace BEC, deepfakes, Evil Twin attacks, ransomware response, forensic evidence, APTs, and more. 45-minute timed assessment.',
+    icon: 'AlertTriangle',
+    difficulty: 'Advanced',
+    category: 'Security',
+    grade: 'grade11'
+  },
+  {
     id: 'final-quiz-g11',
     title: 'Grade 11 Final Quiz',
     description: 'Comprehensive 35-question assessment covering all 7 Grado 11 modules: malware, passwords, phishing, networking, social engineering, IP classification, and cyber tools. Certificate shows correct/incorrect breakdown.',
@@ -144,6 +153,15 @@ export const lessons: Lesson[] = [
     icon: 'AlertOctagon',
     difficulty: 'Intermediate',
     category: 'Scam',
+    grade: 'grade9'
+  },
+  {
+    id: 'advanced-data-risks',
+    title: 'Advanced Data Risks',
+    description: 'Go beyond the basics: GDPR rights, data brokers, biometric data dangers, behavioral profiling, dark patterns, metadata exposure, data aggregation, surveillance capitalism — 10 specialized levels.',
+    icon: 'Lock',
+    difficulty: 'Intermediate',
+    category: 'DataRisk',
     grade: 'grade9'
   },
   {

@@ -17,6 +17,8 @@ import SecurityGuidesLab from './components/SecurityGuidesLab';
 import PhishingSignsLab from './components/PhishingSignsLab';
 import ScamResponsesLab from './components/ScamResponsesLab';
 import MalwareDragDropLab from './components/MalwareDragDropLab';
+import RealWorldRisksLab from './components/RealWorldRisksLab';
+import AdvancedDataRisksLab from './components/AdvancedDataRisksLab';
 import type { CertificateRecord, Grade } from './types';
 
 const STORAGE_KEYS = {
@@ -86,6 +88,8 @@ function App() {
         return <CyberToolsQuizLab onComplete={(cert) => handleComplete('cyber-tools-quiz', cert)} />;
       case 'final-quiz-g11':
         return <FinalQuizG11Lab onComplete={(cert) => handleComplete('final-quiz-g11', cert)} />;
+      case 'real-world-risks':
+        return <RealWorldRisksLab onComplete={(cert) => handleComplete('real-world-risks', cert)} />;
       // ── Grado 9 ───────────────────────────────────────
       case 'final-quiz-g9':
         return <FinalQuizG9Lab onComplete={(cert) => handleComplete('final-quiz-g9', cert)} />;
@@ -101,6 +105,8 @@ function App() {
         return <ScamResponsesLab onComplete={(cert) => handleComplete('scam-responses', cert)} />;
       case 'malware-builder':
         return <MalwareDragDropLab onComplete={(cert) => handleComplete('malware-builder', cert)} />;
+      case 'advanced-data-risks':
+        return <AdvancedDataRisksLab onComplete={(cert) => handleComplete('advanced-data-risks', cert)} />;
       default:
         return (
           <Dashboard
