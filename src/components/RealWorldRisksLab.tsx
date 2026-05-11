@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { AlertTriangle, GraduationCap, CheckCircle, XCircle, Download, RotateCcw, User, Clock, Briefcase, Smartphone, Shield } from 'lucide-react';
+import { AlertTriangle, GraduationCap, CheckCircle, XCircle, Download, RotateCcw, User, Clock, Briefcase, Smartphone, Shield, Lightbulb } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { generateCertificate } from '../utils/certificate';
 import type { CertificateRecord } from '../types';
@@ -25,14 +25,14 @@ const INTRO_SLIDES: IntroSlide[] = [
         icon: <Smartphone size={40} />,
         subtitle: 'Topics 3–4',
         title: 'Device Security & Incident Response',
-        body: 'Real situations involving Evil Twin attacks, physical security failures, IoT vulnerabilities, and BYOD risks — plus the correct steps when a breach actually happens: containment, forensics, notification.',
+        body: 'Real situations involving Evil Twin attacks, physical security failures, IoT vulnerabilities, and BYOD risks — plus the correct steps when a breach happens: containment, forensics, notification.',
         highlight: 'Knowing what to do in the first 60 minutes of an incident determines the outcome.',
     },
     {
         icon: <Shield size={40} />,
         subtitle: 'Your Mission',
         title: 'Think Like a Security Analyst',
-        body: 'Read each scenario carefully. Some answers seem obvious but contain traps. Focus on what the REAL risk is. Your certificate will show your exact score broken down by correct and incorrect answers.',
+        body: 'Each question includes a small hint about the concept being tested. Read the scenario carefully and use the hint to guide your thinking. Your certificate will show your exact score.',
         highlight: 'Real security is about judgment, not just memorizing rules.',
     },
 ];
@@ -41,6 +41,7 @@ interface Question {
     id: number;
     category: string;
     scenario: string;
+    hint: string;
     question: string;
     options: string[];
     correct: number;
@@ -60,6 +61,7 @@ const QUESTIONS: Question[] = [
         id: 1,
         category: 'Workplace Threats',
         scenario: 'An employee receives an email appearing to come from the CEO requesting an urgent wire transfer of $47,000 to a new vendor. The sender address is "ceo@company-corp.net" — the real company domain is company.com.',
+        hint: 'Attackers register lookalike domains — one letter different from the real company. Always verify financial requests through a separate channel such as a direct phone call, never by replying to the same email.',
         question: 'What type of attack is this, and what should the employee do?',
         options: [
             'It is a phishing email — delete it and ignore it completely',
@@ -74,6 +76,7 @@ const QUESTIONS: Question[] = [
         id: 2,
         category: 'Workplace Threats',
         scenario: 'A nurse at a hospital accesses the patient records of a celebrity who was recently admitted — out of curiosity, not for any treatment purpose. She does not share the records with anyone.',
+        hint: 'Privacy laws like HIPAA govern HOW data is accessed, not only whether it is shared externally. Accessing records without a legitimate clinical need is a violation even if nothing is disclosed to anyone.',
         question: 'Has a security incident occurred?',
         options: [
             'No — she did not share the data, so no harm was done',
@@ -82,12 +85,13 @@ const QUESTIONS: Question[] = [
             'Only if the celebrity files a complaint — otherwise no action is required',
         ],
         correct: 2,
-        explanation: 'This is a HIPAA violation and a data breach regardless of whether the data was shared. Viewing records without a legitimate clinical need is unauthorized access. Healthcare workers can face termination, civil penalties, and criminal charges for "snooping." Minimum necessary access is a core HIPAA principle.',
+        explanation: 'This is a HIPAA violation and a breach regardless of whether the data was shared. Viewing records without a legitimate clinical need is unauthorized access. Healthcare workers can face termination, civil penalties, and criminal charges for "snooping." Minimum necessary access is a core HIPAA principle.',
     },
     {
         id: 3,
         category: 'Workplace Threats',
         scenario: 'An employee loses a company laptop containing unencrypted customer data: names, emails, and payment information for 15,000 clients. The laptop had no screen lock or password.',
+        hint: 'Most countries have mandatory breach notification laws with strict time deadlines — 72 hours under GDPR, for example. "Wait and see" is never a legal option when personal data has been exposed.',
         question: 'What is the MOST critical immediate action the company must take?',
         options: [
             'Purchase a replacement laptop and configure a password this time',
@@ -96,26 +100,28 @@ const QUESTIONS: Question[] = [
             'Report only to the IT department and handle it internally',
         ],
         correct: 1,
-        explanation: 'Under GDPR, CCPA, and most breach notification laws, companies must notify supervisory authorities within 72 hours and affected individuals without undue delay. Waiting to observe misuse is illegal and makes liability far worse. This incident also demonstrates why full-disk encryption is mandatory for all portable devices.',
+        explanation: 'Under GDPR, CCPA, and most breach notification laws, companies must notify authorities within 72 hours and affected individuals without undue delay. Waiting to observe misuse is illegal and dramatically increases liability. This incident also shows why full-disk encryption is mandatory for all portable devices.',
     },
     {
         id: 4,
         category: 'Workplace Threats',
         scenario: 'A developer pushes code to a public GitHub repository and accidentally includes AWS access keys and a production database password inside a configuration file.',
+        hint: 'Public repositories are indexed by search engines and continuously scanned by automated bots. Credentials exposed online should be treated as immediately and permanently compromised — no matter how quickly you react.',
         question: 'What must be done FIRST?',
         options: [
             'Delete the commit from history and hope nobody scraped the credentials',
-            'Set the repository to private immediately to limit exposure',
+            'Set the repository to private immediately to limit further exposure',
             'Immediately revoke and rotate all exposed credentials, then audit cloud access logs for unauthorized activity',
             'Add the config file to .gitignore to prevent the same mistake in the future',
         ],
         correct: 2,
-        explanation: 'Credentials are compromised the instant they are publicly visible — automated bots scan GitHub continuously and can harvest secrets within minutes of a push. Deleting commits or setting repos private does not help because the credentials were already exposed. Revoke everything immediately, rotate all affected secrets, then audit logs.',
+        explanation: 'Credentials are compromised the instant they are publicly visible — automated bots scan GitHub continuously and can harvest secrets within minutes of a push. Deleting commits or setting the repo private does not help because the credentials were already exposed. Revoke everything immediately, rotate all affected secrets, then audit logs.',
     },
     {
         id: 5,
         category: 'Workplace Threats',
         scenario: 'An IT administrator leaves the company. Two months later, the organization discovers someone used the former admin\'s still-active credentials to access internal systems and exfiltrate HR data.',
+        hint: 'The most dangerous access is often the simplest — an account nobody remembered to close. Privileged accounts left active after an employee\'s departure are one of the most common and preventable breach vectors.',
         question: 'What security control failure caused this breach?',
         options: [
             'The former admin chose a weak password that was easy to guess',
@@ -131,6 +137,7 @@ const QUESTIONS: Question[] = [
         id: 6,
         category: 'Social & Personal',
         scenario: 'Maria posts on her public Instagram: a photo at home showing her street address on a package, a caption reading "Back to the office all week starting Monday!", and a selfie next to her car with a visible license plate.',
+        hint: 'OSINT (Open Source Intelligence) means gathering intelligence from publicly available sources. Think about what a motivated attacker could learn by combining all the information from a single person\'s public social media profile.',
         question: 'What is the most serious combined risk created by these posts?',
         options: [
             'Her followers might unfollow her for oversharing personal details',
@@ -139,12 +146,13 @@ const QUESTIONS: Question[] = [
             'She might violate Instagram\'s terms of service by showing a license plate publicly',
         ],
         correct: 2,
-        explanation: 'The combination of home address, work schedule, and vehicle creates a stalker\'s and burglar\'s toolkit. Criminals use OSINT (Open Source Intelligence) from social media to identify when homes are empty and plan physical crimes. The aggregation of individually harmless posts creates serious real-world danger.',
+        explanation: 'The combination of home address, work schedule, and vehicle creates a stalker\'s and burglar\'s toolkit. Criminals use OSINT from social media to identify when homes are empty and plan physical crimes. The aggregation of individually harmless posts creates serious real-world danger.',
     },
     {
         id: 7,
         category: 'Social & Personal',
         scenario: 'Carlos receives a video call from what appears to be his grandmother. Her face and voice look completely authentic. She says she is stranded abroad and needs him to wire $500 immediately.',
+        hint: 'AI tools can convincingly clone a person\'s voice and face from just a few seconds of publicly available video. Think about what verification method an attacker cannot fake — something that requires prior, independent contact.',
         question: 'What should Carlos do before sending any money?',
         options: [
             'Send the money immediately — he can see and hear his grandmother on the call',
@@ -153,12 +161,13 @@ const QUESTIONS: Question[] = [
             'Ask her to hold up a piece of paper with today\'s date to prove the call is live',
         ],
         correct: 2,
-        explanation: 'AI deepfake technology can clone a person\'s face and voice from just seconds of publicly available video. This fraud technique has been used against families and corporate executives. Always verify financial requests through a separate, pre-existing communication channel — never based on the call requesting the money.',
+        explanation: 'AI deepfake technology can clone a person\'s face and voice from just seconds of public video. This fraud technique has been used against families and corporate executives. Always verify financial requests through a separate, pre-existing communication channel — never based on the call requesting the money.',
     },
     {
         id: 8,
         category: 'Social & Personal',
         scenario: 'Sofia\'s email and password from a 2019 data breach appear in a leaked database on the dark web. She uses that same password for her email account, bank, and social media profiles.',
+        hint: 'Leaked credentials from old breaches do not expire. Automated tools test them against hundreds of different services simultaneously — a technique called credential stuffing — within hours of a database appearing online.',
         question: 'What is the immediate risk she faces?',
         options: [
             'Only her 2019 account is at risk — current accounts with the same password are safe',
@@ -167,12 +176,13 @@ const QUESTIONS: Question[] = [
             'She should create a new email address to avoid the problem',
         ],
         correct: 1,
-        explanation: 'Credential stuffing uses leaked username/password pairs to automatically attack other services — attackers try millions of combinations per hour across thousands of sites. Password reuse is the single most dangerous password habit. One breach becomes a breach of every account that shares that password. Use a password manager to generate unique passwords for every service.',
+        explanation: 'Credential stuffing uses leaked username/password pairs to automatically attack other services. Attackers try millions of combinations per hour across thousands of sites. Password reuse is the single most dangerous password habit — one breach becomes a breach of every account that shares that password. Use a password manager to generate unique passwords for every service.',
     },
     {
         id: 9,
         category: 'Social & Personal',
         scenario: 'A pop-up fills a student\'s screen: "VIRUS DETECTED! Your computer is at risk! Call 1-800-XXX-XXXX immediately to prevent data loss!" The phone number connects to someone claiming to be a Microsoft technician.',
+        hint: 'Legitimate technology companies like Microsoft, Apple, or Google have no mechanism to detect viruses on your personal device and will never display a browser pop-up telling you to call a phone number.',
         question: 'What is happening and what should the student do?',
         options: [
             'Call the number — Microsoft proactively contacts users when they detect infected systems',
@@ -181,12 +191,13 @@ const QUESTIONS: Question[] = [
             'Grant them remote access so they can prove the warning is a false alarm',
         ],
         correct: 1,
-        explanation: 'Microsoft, Apple, and Google NEVER display pop-ups telling you to call a phone number. This is a classic tech support scam designed to gain remote access or extract payment for fake services. The pop-up is usually a browser page — force-quit the browser or press F11 to escape fullscreen. Never call numbers from pop-up warnings.',
+        explanation: 'Microsoft, Apple, and Google NEVER display pop-ups telling you to call a phone number. This is a classic tech support scam designed to gain remote access or extract payment for fake services. The pop-up is usually just a browser page — force-quit the browser or press F11 to escape fullscreen. Never call numbers from pop-up warnings.',
     },
     {
         id: 10,
         category: 'Social & Personal',
         scenario: 'A gaming app demands access to contacts, location, camera, microphone, and the ability to make phone calls. Without granting all permissions at once, the game cannot start.',
+        hint: 'Apply the principle of least privilege — every permission granted is a potential attack surface. Ask yourself: what does a game genuinely need each of these permissions for?',
         question: 'What does this permission request indicate?',
         options: [
             'These are completely normal — all modern apps need a full suite of permissions to function',
@@ -202,6 +213,7 @@ const QUESTIONS: Question[] = [
         id: 11,
         category: 'Device & Network',
         scenario: 'At a coffee shop you connect to a WiFi network named "CoffeeShop_Free" to check your bank balance and work email. A sign on the counter shows the real coffee shop WiFi is "CafeWiFi_2G".',
+        hint: 'Anyone with a laptop can create a WiFi hotspot with any name they choose in seconds. Look carefully at the difference between the network you connected to and the real network name displayed on the sign.',
         question: 'What attack are you likely experiencing?',
         options: [
             'A DDoS attack — too many users are overwhelming the network bandwidth',
@@ -210,12 +222,13 @@ const QUESTIONS: Question[] = [
             'No attack — HTTPS encryption makes any public WiFi completely safe for banking',
         ],
         correct: 1,
-        explanation: 'An Evil Twin attack creates a fake WiFi hotspot that mimics a legitimate network name. The attacker controls all traffic, including HTTPS when combined with SSL stripping techniques. Always confirm the exact network name with staff, use a VPN on all public WiFi, and avoid banking or work email on networks you do not control.',
+        explanation: 'An Evil Twin attack creates a fake WiFi hotspot that mimics a legitimate network name. The attacker controls all traffic, including HTTPS when combined with SSL stripping. Always confirm the exact network name with staff, use a VPN on all public WiFi, and avoid banking or work email on networks you do not control.',
     },
     {
         id: 12,
         category: 'Device & Network',
         scenario: 'A remote employee\'s home router has never been updated since purchase four years ago, still uses the default admin password "admin/admin," and connects to their employer\'s internal network via VPN daily.',
+        hint: 'When employees work remotely via VPN, their home network effectively becomes an extension of the corporate network perimeter. A compromised home router is a compromised corporate entry point.',
         question: 'What is the PRIMARY security risk for the company?',
         options: [
             'Outdated firmware may cause slower internet speeds affecting productivity',
@@ -230,6 +243,7 @@ const QUESTIONS: Question[] = [
         id: 13,
         category: 'Device & Network',
         scenario: 'You find a USB drive in the company parking lot labeled "PAYROLL — CONFIDENTIAL 2024." You want to identify the owner and return it.',
+        hint: 'USB attacks can use a technique called BadUSB — the drive emulates a keyboard and automatically injects malicious commands before any antivirus software has a chance to react, even on isolated computers.',
         question: 'What is the correct action?',
         options: [
             'Plug it into your workstation to browse the files and find the owner\'s name',
@@ -243,7 +257,8 @@ const QUESTIONS: Question[] = [
     {
         id: 14,
         category: 'Device & Network',
-        scenario: 'An employee uses their personal smartphone for work email and stores company documents on it under a BYOD (Bring Your Own Device) policy. Their phone is lost on public transport.',
+        scenario: 'An employee uses their personal smartphone for work email and stores company documents on it under a BYOD policy. Their phone is lost on public transport.',
+        hint: 'A BYOD policy must balance the employee\'s right to personal privacy with the company\'s need to protect corporate data. Think about a solution that can address both concerns independently.',
         question: 'What capability should a proper corporate BYOD policy provide?',
         options: [
             'No capabilities — personal phones belong entirely to the employee and cannot be touched by the company',
@@ -252,18 +267,19 @@ const QUESTIONS: Question[] = [
             'The ability to track the phone\'s real-time GPS location at all times through a monitoring app',
         ],
         correct: 2,
-        explanation: 'MDM (Mobile Device Management) solutions allow companies to remotely wipe only corporate data from lost or stolen devices while leaving personal photos and apps untouched. MDM enrollment is a fundamental BYOD policy requirement. Without it, there is no way to protect company data on a personal device that is lost, stolen, or returned to a departing employee.',
+        explanation: 'MDM (Mobile Device Management) solutions allow companies to remotely wipe only corporate data from lost or stolen devices while leaving personal photos and apps untouched. MDM enrollment is a fundamental BYOD policy requirement. Without it, there is no way to protect company data on a personal device that is lost, stolen, or returned by a departing employee.',
     },
     {
         id: 15,
         category: 'Device & Network',
         scenario: 'An office security camera still uses the manufacturer default password "1234" and runs three-year-old firmware. It is connected to the same network segment as all employee workstations and servers.',
+        hint: 'IoT devices on the same network as computers create a flat, unzoned attack surface. Attackers use compromised IoT devices as a stepping stone to reach more valuable targets — a technique called lateral movement.',
         question: 'What risk does this camera create beyond the camera itself?',
         options: [
             'The camera will likely produce lower-quality footage than current models',
             'The camera is an IoT device that can be compromised and used as a lateral movement pivot to attack workstations and servers on the same network segment',
             'The camera might overheat and cause a fire or equipment failure',
-            'No network risk — cameras are isolated media devices that have no ability to affect other network devices',
+            'No network risk — cameras are isolated media devices with no ability to affect other network devices',
         ],
         correct: 1,
         explanation: 'IoT devices with default credentials on the same network as critical systems are a proven lateral movement vector. The Mirai botnet compromised millions of cameras and routers using default passwords. A compromised camera gives attackers a persistent foothold inside the corporate network to scan, pivot, and launch further attacks against workstations and servers.',
@@ -273,6 +289,7 @@ const QUESTIONS: Question[] = [
         id: 16,
         category: 'Incident Response',
         scenario: 'Company files begin encrypting across three departments simultaneously. A ransom note demands $50,000 in Bitcoin within 48 hours. New systems are being encrypted every few minutes.',
+        hint: 'Every second a ransomware binary runs, it encrypts more files and potentially spreads to new systems via network shares. Containment must always come before investigation or recovery attempts.',
         question: 'What is the correct FIRST response action?',
         options: [
             'Pay the ransom immediately to stop the encryption and recover access',
@@ -287,6 +304,7 @@ const QUESTIONS: Question[] = [
         id: 17,
         category: 'Incident Response',
         scenario: 'An employee notices unusual outbound network traffic from their workstation and suspects compromise. The IT team must investigate the incident and preserve evidence for potential legal proceedings.',
+        hint: 'Computer forensics follows strict legal standards. Some evidence only exists in volatile memory (RAM) and disappears permanently when the machine is rebooted. Evidence not properly collected may be inadmissible in court.',
         question: 'What must the IT team do to properly preserve forensic evidence?',
         options: [
             'Wipe the hard drive and reinstall the OS immediately to eliminate the threat',
@@ -301,6 +319,7 @@ const QUESTIONS: Question[] = [
         id: 18,
         category: 'Incident Response',
         scenario: 'A company discovers it was breached six months ago. The attacker had stealthy persistent access throughout the entire period and exfiltrated terabytes of sensitive data without triggering any security alerts.',
+        hint: '"Advanced" in APT does not always mean the most sophisticated malware — it means advanced in patience, stealth, and operational security. The goal is long-term, undetected access, not immediate disruption.',
         question: 'What type of threat actor behavior does this describe?',
         options: [
             'A script kiddie attack — fast, noisy, and opportunistic',
@@ -315,6 +334,7 @@ const QUESTIONS: Question[] = [
         id: 19,
         category: 'Incident Response',
         scenario: 'After a ransomware attack, the IT team realizes they can restore from backups. However, the backup device was a Network-Attached Storage (NAS) drive connected to the same LAN — and it was encrypted by the ransomware too.',
+        hint: 'Ransomware operators often wait weeks or months after initial infection before triggering encryption — giving the malware time to replicate itself into backup systems that are still connected to the network.',
         question: 'Which backup principle was violated?',
         options: [
             'Backups should use faster SSD hardware to reduce restore time',
@@ -329,6 +349,7 @@ const QUESTIONS: Question[] = [
         id: 20,
         category: 'Incident Response',
         scenario: 'A journalist contacts a company to inform them that their customer data — including names, credit card numbers, and Social Security Numbers — is actively being sold on a dark web marketplace. The company\'s security team had no prior knowledge of any breach.',
+        hint: 'Mature security programs use internal monitoring tools (SIEM, dark web intelligence feeds, EDR alerts) to detect breaches before external parties do. Discovering your own breach from a journalist signals a critical detection gap.',
         question: 'What does this reveal about the company\'s security posture?',
         options: [
             'The journalist is conducting social engineering and should be reported to law enforcement',
@@ -337,7 +358,7 @@ const QUESTIONS: Question[] = [
             'The company should publicly deny the breach until legal counsel can verify the claims internally',
         ],
         correct: 1,
-        explanation: 'Discovering your own breach from an external party signals a critical monitoring failure. Organizations should have dark web monitoring, SIEM alerting, and threat intelligence feeds to detect breaches proactively. Responsible disclosure from journalists must be investigated immediately and taken seriously. Public denial without investigation dramatically increases legal liability and reputational damage.',
+        explanation: 'Discovering your own breach from an external party signals a critical monitoring failure. Organizations should have dark web monitoring, SIEM alerting, and threat intelligence feeds to detect breaches proactively. Responsible disclosure from journalists must be investigated immediately. Public denial without investigation dramatically increases legal liability and reputational damage.',
     },
 ];
 
@@ -545,9 +566,16 @@ const RealWorldRisksLab: React.FC<RealWorldRisksLabProps> = ({ onComplete }) => 
 
             {/* Question card */}
             <div className="cyber-card p-8 mb-4">
-                <div className="bg-bg-tertiary border border-glass rounded-xl p-5 mb-6">
+                {/* Scenario */}
+                <div className="bg-bg-tertiary border border-glass rounded-xl p-5 mb-4">
                     <p className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Scenario</p>
                     <p className="text-sm text-text-secondary leading-relaxed">{question.scenario}</p>
+                </div>
+
+                {/* Hint */}
+                <div className="flex items-start gap-3 bg-yellow-500/5 border border-yellow-500/20 rounded-xl px-4 py-3 mb-5">
+                    <Lightbulb size={15} className="text-yellow-400 shrink-0 mt-0.5" />
+                    <p className="text-xs text-yellow-200/80 leading-relaxed"><span className="font-black text-yellow-400 mr-1">Hint:</span>{question.hint}</p>
                 </div>
 
                 <p className="font-bold text-white text-lg mb-6">{question.question}</p>
